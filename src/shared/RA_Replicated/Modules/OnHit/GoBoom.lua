@@ -10,8 +10,8 @@ local fallbacks = {
 	["maxDamage"] = 200,
 }
 
-function GoBoom:new(args)
-	self = {}
+function GoBoom.new(args)
+	local self = {}
 	self.config = conf.new(args, fallbacks)
 	self.blastRadius = self.config.Get("blastRadius")
 	setmetatable(self, GoBoom)

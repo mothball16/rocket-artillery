@@ -1,6 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local net, evts = dir.GetNetwork()
-local RASetup = require(dir.Modules.Core.RASetup)
+local TurretSetup = require(dir.Modules.Core.TurretSetup)
 
 --[[
 local Update = dir.Events:WaitForChild("UpdateWelds")
@@ -30,7 +30,7 @@ local function SetupTurret(required)
     assert(pitchMotor.Value and pitchMotor.Value:IsA("ManualWeld"), "turret setup failed: no/invalid pitchMotor assigned")
 
 	print(TAG_NAME .. ": vehicle initialized successfully")
-    RASetup.SetupTurret(required)
+    TurretSetup.SetupTurret(required)
 end
 
 for _, v in ipairs(CS:GetTagged(TAG_NAME)) do

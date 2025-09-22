@@ -40,6 +40,10 @@ function module.new(args, state, rotMotor, pitchMotor)
     self.curX = self.state:GetAttribute("X")
     self.curY = self.state:GetAttribute("Y")
 
+    -- TBA
+    self.targetX = self.curX
+    self.targetY = self.curY
+
     setmetatable(self, module)
 
     self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
@@ -82,8 +86,24 @@ function module:Update(dt)
     end
 end
 
+function module:SetEnable(on)
+    self.enabled = on
+end
+
+function module:SetTarget(x, y)
+    self.targetX = x;
+    self.targetY = y;
+end
+
+function module:SetTargetRelative(x, y)
+    self.targetX = self.curX + x;
+    self.targetY = self.curY + y;
+end
+
 function module:Destroy()
     self.maid:DoCleaning()
 end
+
+
 
 return module
