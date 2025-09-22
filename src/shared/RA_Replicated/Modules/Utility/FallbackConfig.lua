@@ -7,10 +7,10 @@ function conf.new(args, fallbacks)
     local self = {}
 
     for k,v in pairs(fallbacks) do
-        conf[args[k]] = v
+        self[k] = v
     end
     for k,v in pairs(args) do
-        conf[args[k]] = v
+        self[k] = v
     end
     
     setmetatable(self, conf)
