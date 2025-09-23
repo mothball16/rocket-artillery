@@ -16,4 +16,9 @@ pipeline:
 7. Projectile's OnFire runs until it determines it had hit something/ended its lifespan
 8. Projectile's OnHit runs
 9. Projectile is destroyed
+
+revisions on OnHit
+- OnHit should be accessible from the config itself
+- it should mostly be a server thing, with something for the client optionally that we can pass to the end of our projectile behavior
 ]=]
+

@@ -3,12 +3,16 @@
 local repl = game:WaitForChild("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("RA_Replicated")
 local modules = repl:WaitForChild("Modules")
 local assets = repl:WaitForChild("Assets")
+local configs = repl:WaitForChild("Configs")
 local events = repl:WaitForChild("Events")
 local net = modules.Utility:WaitForChild("Net")
+local signals = repl:WaitForChild("Signals")
 local refs = {
     Shared = repl,
+    Configs = configs,
     Modules = modules,
     Assets = assets,
+    Signals = signals,
 }
 
 -- short-cut for getting events and network at the top of a script, since you will almost 

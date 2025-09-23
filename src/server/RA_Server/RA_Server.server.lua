@@ -26,20 +26,23 @@ local function SetupTurret(required)
     local pitchMotor = required:FindFirstChild("PitchMotor")
 
     assert(rotMotor and pitchMotor and controlSeat, "turret setup failed: missing required children in folder")
-    assert(rotMotor.Value and rotMotor.Value:IsA("ManualWeld"), "turret setup failed: no/invalid rotMotor assigned")
-    assert(pitchMotor.Value and pitchMotor.Value:IsA("ManualWeld"), "turret setup failed: no/invalid pitchMotor assigned")
+    assert(rotMotor.Value and (rotMotor.Value:IsA("Weld") or rotMotor.Value:IsA("ManualWeld")), "turret setup failed: no/invalid rotMotor assigned")
+    assert(pitchMotor.Value and (pitchMotor.Value:IsA("Weld") or pitchMotor.Value:IsA("ManualWeld")), "turret setup failed: no/invalid pitchMotor assigned")
 
-	print(TAG_NAME .. ": vehicle initialized successfully")
+	print(TAG_NAME .. ": vehicle initialized successfully" .. required.ClassName)
     TurretSetup.SetupTurret(required)
 end
 
-for _, v in ipairs(CS:GetTagged(TAG_NAME)) do
+for _, v in pairs(CS:GetTagged(TAG_NAME)) do
     SetupTurret(v)
 end
 
 CS:GetInstanceAddedSignal(TAG_NAME):Connect(SetupTurret)
 
-
+net:Connect(evts.OnTurretWeldsUpdated, function(player, state, x, y)
+	state:SetAttribute("X", x)
+	state:SetAttribute("Y", y)
+end)
 
 
 

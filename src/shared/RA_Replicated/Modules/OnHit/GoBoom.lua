@@ -1,5 +1,5 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local conf = require(dir.Modules.FallbackConfig)
+local conf = require(dir.Modules.Utility.FallbackConfig)
 local GoBoom = {}
 GoBoom.__index = GoBoom
 
@@ -17,6 +17,7 @@ function GoBoom.new(args)
 	setmetatable(self, GoBoom)
 	return self
 end
+
 
 function GoBoom:Execute(pos)
 	local exp = Instance.new("Explosion", game.Workspace)
@@ -38,6 +39,7 @@ function GoBoom:Execute(pos)
 			part.Parent:FindFirstChild("Humanoid"):TakeDamage(damageFinal)
 		end
 	end)
+	--[[
 	local effects = dir.Shared:WaitForChild("Resources"):WaitForChild("Explosion"):Clone()
 	effects.Parent = game.Workspace
 	effects.Position = pos
@@ -46,6 +48,6 @@ function GoBoom:Execute(pos)
 			v.Enabled = false
 		end)
 	end
-	game.Debris:AddItem(effects,4)
+	game.Debris:AddItem(effects,4)]]
 end
 return GoBoom

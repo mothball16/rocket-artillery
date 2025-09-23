@@ -26,8 +26,8 @@ local module = {}
 module.__index = module
 
 function module.new(args, state, rotMotor, pitchMotor)
-    assert(rotMotor.ClassName == "ManualWeld", "(RA) twoaxisrotator setup fail: rotMotor isn't a ManualWeld")
-    assert(pitchMotor.ClassName == "ManualWeld", "(RA) twoaxisrotator setup fail: pitchMotor isn't a ManualWeld")
+    assert(rotMotor.ClassName == "ManualWeld" or rotMotor.ClassName == "Weld", "(RA) twoaxisrotator setup fail: rotMotor isn't a ManualWeld")
+    assert(pitchMotor.ClassName == "ManualWeld" or pitchMotor.ClassName == "Weld", "(RA) twoaxisrotator setup fail: pitchMotor isn't a ManualWeld")
     local self = {}
     self.maid = maid.new()
     self.config = conf.new(args, fallbacks)

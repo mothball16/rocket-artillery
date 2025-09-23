@@ -14,6 +14,7 @@ resources.UpdateWelds.OnClientEvent:Connect(function(required,yaw,pitch)
 	end
 end)
 
+
 resources.ReplicateRocket.OnClientEvent:Connect(function(baseRocket,config,inaccuracy)
 
 	for i,v in pairs(baseRocket:GetChildren()) do

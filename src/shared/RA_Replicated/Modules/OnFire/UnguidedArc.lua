@@ -8,6 +8,7 @@ UnguidedArc.__index = UnguidedArc
 
 -- notes for future refactoring - i'm not too sure about putting the callback here
 -- maybe attach a bindable to report back that our arc has finished instead, or just poll (easier)?
+-- TODO: this would probably do better as a use and dump instead of making a weird set of coroutines
 
 local fallbacks = {
 	["initSpeed"] = 30;
@@ -27,44 +28,44 @@ local fallbacks = {
 function UnguidedArc.new(args, callback)
 	local self = {}
 	self.config = conf.new(args, fallbacks)
-	self.speed = 0
-	self.lifetime = 0
 	self.maid = maid.new()
-	self.onFinish = callback
+	self.onHit = callback
 	setmetatable(self, UnguidedArc)
 	return self
 end
 
-function UnguidedArc:SetupBodyMovers()
-	local bv = Instance.new("BodyVelocity", self.main)
+function UnguidedArc:SetupBodyMovers(main)
+	local bv = Instance.new("BodyVelocity", main)
 	bv.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
-	bv.Velocity = self.main.CFrame.LookVector * self.speed
-	local bav = Instance.new("BodyAngularVelocity",self.main)
+	bv.Velocity = main.CFrame.LookVector * self.config:Get("initSpeed")
+	local bav = Instance.new("BodyAngularVelocity", main)
 	bav.MaxTorque = Vector3.new(math.huge,math.huge,math.huge)
-	bav.AngularVelocity = self.main.CFrame:VectorToWorldSpace(
-		Vector3.new(-math.rad(self.config.Get("arc")),0,0))
+	bav.AngularVelocity = main.CFrame:VectorToWorldSpace(
+		Vector3.new(-math.rad(self.config:Get("arc")),0,0))
 
 	return bv, bav
 end
 
-function UnguidedArc:SetupSpeedLoop()
+function UnguidedArc:SetupSpeedLoop(main)	
+	main:SetAttribute("Speed", self.config:Get("initSpeed"))
+
 	local lifetime = 0
-	self.speed = self.config:Get("initSpeed")
-	self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
-		-- could just dispose of this individually, but i cant find the maid api : ( negligible impact anyways
-		if lifetime > self.config.Get("burnOut") then return end
+	local connection
+	connection = RuS.RenderStepped:Connect(function(dt)
+		if lifetime > self.config:Get("burnOut") then connection:Disconnect() end
 		lifetime += dt
-		self.speed = math.clamp(
-			self.speed + (self.config:Get("accel") * dt), 
-			self.config:Get("initSpeed"), self.config:Get("maxSpeed"))
-	end))
+		main:SetAttribute("Speed", math.clamp(
+			main:GetAttribute("Speed") + (self.config:Get("accel") * dt), 
+			self.config:Get("initSpeed"), self.config:Get("maxSpeed")))
+	end)
 end
 
-function UnguidedArc:SetupRaycastLoop(bv, main, rayParams)
+function UnguidedArc:SetupRaycastLoop(main, bv, rayParams)
 	local lastPos = main.Position
-	self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
+	local connection
+	connection = RuS.RenderStepped:Connect(function(dt)
 		
-		bv.Velocity = (self.main.CFrame).LookVector * self.speed
+		bv.Velocity = (main.CFrame).LookVector * main:GetAttribute("Speed")
 
 		local direction = (main.Position - lastPos).Unit
 		local mag = (main.Position - lastPos).Magnitude
@@ -72,26 +73,27 @@ function UnguidedArc:SetupRaycastLoop(bv, main, rayParams)
 
 		local result = game.Workspace:Raycast(lastPos,direction * mag, rayParams)
 		if result and result.Instance.Transparency < 1 then
-			self:Destroy()
+			connection:Disconnect()
+			self.config.onHit:Execute(result.Position)
 		end
 		lastPos = main.Position
-	end))
+	end)
 end
 
-function UnguidedArc:Fire(main, rayParams)
+function UnguidedArc:Execute(main, rayParams)
+	print("Execed")
 	assert(main:IsA("BasePart"), "UnguidedArc fire fail: main should be a BasePart")
-	assert(rayParams:IsA("RaycastParams"), "UnguidedArc fire fail: rayParams should be a RaycastParams")
-	local bv, _ = self:SetupBodyMovers()
+	local bv, _ = self:SetupBodyMovers(main)
+
 	coroutine.resume(coroutine.create(function()
 		task.wait(self.config:Get("burnIn"))
-		if not self or not self.Parent then return end
-		self:SetupSpeedLoop(bv)
+		if not main or not main.Parent then return end
+		self:SetupSpeedLoop(main)
 	end))
-	self:SetupRaycastLoop(bv, main, rayParams)
+	self:SetupRaycastLoop(main, bv, rayParams)
 end
 
 function UnguidedArc:Destroy()
-	self.onFinish()
 	self.maid:Destroy()
 end
 
