@@ -1,4 +1,5 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local _, _, validator = dir.GetComponentUtilities(script.Name)
 local configs = dir.Configs.Projectiles
 local models = dir.Assets.Projectiles
 local rayParams = RaycastParams.new()
@@ -27,13 +28,12 @@ end
 
 function ProjectileController.Fire(firePart, ammoName)
     local data = GetAssets(ammoName)
-    assert(data.Config["OnFire"], "ProjectileController fire fail: incorrectly configured projectile config. are you missing OnFire?")
-
+    local onFire = validator:Exists(data.Config["OnFire"], "OnFire prop. of config of projectile " .. ammoName)
     local projectile = data.Model:Clone()
     projectile.Parent = game.Workspace
     projectile:SetPrimaryPartCFrame(firePart.CFrame)
 
-    for _, behavior in pairs(data.Config.OnFire) do
+    for _, behavior in pairs(onFire) do
         behavior:Execute(projectile.PrimaryPart, rayParams)
     end
 end
