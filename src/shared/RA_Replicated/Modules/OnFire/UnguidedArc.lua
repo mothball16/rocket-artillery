@@ -1,6 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local conf = require(dir.Modules.Utility.FallbackConfig)
-local maid = require(dir.Modules.Utility.Maid)
+local conf = require(dir.Utility.FallbackConfig)
+local maid = require(dir.Utility.Maid)
 local RuS = game:GetService("RunService")
 local UnguidedArc = {}
 UnguidedArc.__index = UnguidedArc
@@ -47,13 +47,16 @@ function UnguidedArc:SetupBodyMovers(main)
 end
 
 function UnguidedArc:SetupSpeedLoop(main)	
-	main:SetAttribute("Speed", self.config:Get("initSpeed"))
-
 	local lifetime = 0
 	local connection
 	connection = RuS.RenderStepped:Connect(function(dt)
+		if not main.Parent then 
+			connection:Disconnect() 
+			return 
+		end
 		if lifetime > self.config:Get("burnOut") then connection:Disconnect() end
 		lifetime += dt
+
 		main:SetAttribute("Speed", math.clamp(
 			main:GetAttribute("Speed") + (self.config:Get("accel") * dt), 
 			self.config:Get("initSpeed"), self.config:Get("maxSpeed")))
@@ -64,12 +67,14 @@ function UnguidedArc:SetupRaycastLoop(main, bv, rayParams)
 	local lastPos = main.Position
 	local connection
 	connection = RuS.RenderStepped:Connect(function(dt)
-		
+		if not main.Parent then 
+			connection:Disconnect() 
+			return 
+		end
 		bv.Velocity = (main.CFrame).LookVector * main:GetAttribute("Speed")
 
 		local direction = (main.Position - lastPos).Unit
 		local mag = (main.Position - lastPos).Magnitude
-
 
 		local result = game.Workspace:Raycast(lastPos,direction * mag, rayParams)
 		if result and result.Instance.Transparency < 1 then
@@ -81,9 +86,9 @@ function UnguidedArc:SetupRaycastLoop(main, bv, rayParams)
 end
 
 function UnguidedArc:Execute(main, rayParams)
-	print("Execed")
 	assert(main:IsA("BasePart"), "UnguidedArc fire fail: main should be a BasePart")
 	local bv, _ = self:SetupBodyMovers(main)
+	main:SetAttribute("Speed", self.config:Get("initSpeed"))
 
 	coroutine.resume(coroutine.create(function()
 		task.wait(self.config:Get("burnIn"))

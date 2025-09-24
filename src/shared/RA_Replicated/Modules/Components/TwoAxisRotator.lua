@@ -1,7 +1,5 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local maid = require(dir.Modules.Utility.Maid)
-local conf = require(dir.Modules.Utility.FallbackConfig)
-local logger = require(dir.Modules.Utility.Logger)
+local maid, conf, validator = dir.GetComponentUtilities(script.Name)
 local net, evts = dir.GetNetwork()
 local WeldsUpdated = net:UnreliableRemoteEvent(evts.OnTurretWeldsUpdated)
 
@@ -22,12 +20,19 @@ local fallbacks = {
     pitchSpeed = 1,
 }
 
-local module = {}
-module.__index = module
+local TwoAxisRotator = {}
+TwoAxisRotator.__index = TwoAxisRotator
 
-function module.new(args, state, rotMotor, pitchMotor)
-    assert(rotMotor.ClassName == "ManualWeld" or rotMotor.ClassName == "Weld", "(RA) twoaxisrotator setup fail: rotMotor isn't a ManualWeld")
-    assert(pitchMotor.ClassName == "ManualWeld" or pitchMotor.ClassName == "Weld", "(RA) twoaxisrotator setup fail: pitchMotor isn't a ManualWeld")
+-- helper for construction so the constructor isnt 50% assertions lol
+local function _checkSetup(required)
+    local rotMotor = validator:ValueIsOfClass(required:FindFirstChild("RotMotor"), "ManualWeld")
+    local pitchMotor = validator:ValueIsOfClass(required:FindFirstChild("PitchMotor"), "ManualWeld")
+    local state = validator:IsOfClass(required:FindFirstChild("TwoAxisRotatorState"), "Folder")
+    return rotMotor, pitchMotor, state
+end
+
+function TwoAxisRotator.new(args, required)
+    local rotMotor, pitchMotor, state = _checkSetup(required)
     local self = {}
     self.maid = maid.new()
     self.config = conf.new(args, fallbacks)
@@ -44,18 +49,17 @@ function module.new(args, state, rotMotor, pitchMotor)
     self.targetX = self.curX
     self.targetY = self.curY
 
-    setmetatable(self, module)
+    setmetatable(self, TwoAxisRotator)
 
     self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
         self:Update(dt)
     end))
 
     self:UpdateWelds(self.curX, self.curY)
-    logger.Print("twoAxisRotator loaded")
     return self
 end
 
-function module:UpdateWelds(x, y)
+function TwoAxisRotator:UpdateWelds(x, y)
     self.rotMotor.C1 = CFrame.Angles(0,math.rad(x),0)
     self.pitchMotor.C1 = CFrame.Angles(0,0,-math.rad(y))
     if self.tick > WELD_UPDATE_THROTTLE then
@@ -64,7 +68,7 @@ function module:UpdateWelds(x, y)
     end
 end
 -- TODO: logic for input should be moved out!!! this module should really only be rotating stuff - how we decide to rotate it should be decided elsewhere
-function module:Update(dt)
+function TwoAxisRotator:Update(dt)
     self.tick += dt
     local adjustForDt = dt * 60
     if self.enabled then
@@ -86,24 +90,24 @@ function module:Update(dt)
     end
 end
 
-function module:SetEnable(on)
+function TwoAxisRotator:SetEnable(on)
     self.enabled = on
 end
 
-function module:SetTarget(x, y)
+function TwoAxisRotator:SetTarget(x, y)
     self.targetX = x;
     self.targetY = y;
 end
 
-function module:SetTargetRelative(x, y)
+function TwoAxisRotator:SetTargetRelative(x, y)
     self.targetX = self.curX + x;
     self.targetY = self.curY + y;
 end
 
-function module:Destroy()
+function TwoAxisRotator:Destroy()
     self.maid:DoCleaning()
 end
 
 
 
-return module
+return TwoAxisRotator

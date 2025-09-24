@@ -1,14 +1,20 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local UnguidedArc = require(dir.Modules.OnFire.UnguidedArc)
-local GoBoom = require(dir.Modules.OnHit.GoBoom)
 local ParticleActivator = require(dir.Modules.OnFire.ParticleActivator)
-
+local GoBoom = require(dir.Modules.OnHit.GoBoom).new({
+	["blastRadius"] = 60,
+	["blastPressure"] = 1000,
+	["breakJoints"] = false,
+	["maxDamage"] = 150
+})
 return {
 	-- gen. config
 	name = "220mm MO.1.01.04 Thermobaric";
+
+	-- ammo slot config
 	slot = { "TOSSeries" };
 	
-	-- onFire config
+	-- projectile config
 	OnFire = {
 		UnguidedArc.new({
 			["initSpeed"] = 30;
@@ -23,15 +29,13 @@ return {
 			["flyInacc"] = 0.1;
 
 			["despawn"] = 10;
-			["onHit"] = GoBoom.new({
-				["blastRadius"] = 60,
-				["blastPressure"] = 1000,
-				["breakJoints"] = false,
-				["maxDamage"] = 150
-			});
+			["onHit"] = GoBoom;
 		}),
 		ParticleActivator.new({
 			["lookFor"] = "Particles"
 		})
 	};
+	OnHit = {
+		GoBoom
+	}
 }

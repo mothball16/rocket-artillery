@@ -39,7 +39,7 @@ end
 
 CS:GetInstanceAddedSignal(TAG_NAME):Connect(SetupTurret)
 
-net:Connect(evts.OnTurretWeldsUpdated, function(player, state, x, y)
+net:ConnectUnreliable(evts.OnTurretWeldsUpdated, function(player, state, x, y)
 	state:SetAttribute("X", x)
 	state:SetAttribute("Y", y)
 end)

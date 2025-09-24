@@ -1,6 +1,5 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local conf = require(dir.Modules.Utility.FallbackConfig)
-local maid = require(dir.Modules.Utility.Maid)
+local conf = require(dir.Utility.FallbackConfig)
 
 local ParticleActivator = {}
 ParticleActivator.__index = ParticleActivator
@@ -22,6 +21,7 @@ function ParticleActivator.new(args, callback)
 	setmetatable(self, ParticleActivator)
 	return self
 end
+
 
 function ParticleActivator:Execute(main, _)
 	for _, v in pairs(main.Parent:GetChildren()) do

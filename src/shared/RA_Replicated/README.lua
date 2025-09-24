@@ -7,21 +7,27 @@ PHYSICAL TURRET SETUP
 yourself. Then, set the object values as to what they're named. This should be fairly obvious.
 
 - Welding: The setup I usually do is:
-    1. Begin with a "Base" part, which is welded to the outside model or whatever you're using 
-    to attach your turret to. Make sure it's facing upright and forward relative to the turret.
-    IMPORTANT: A lot of common vehicle scripts on Roblox may auto-weld your vehicle. Make sure
-    that your turret is ignored by the auto-weld or everything will not work.
+    1. 
+    - Add a "Base" part as your anchor to the outside model or whatever you're 
+      using to attach your turret to
+    - Orient part to the center of your pivot and make sure it's forward and upright
+      (A lot of common vehicle scripts on Roblox may auto-weld your vehicle. Make sure 
+      that your turret is ignored by the auto-weld or everything will not work)
 
-    2. Add a "BaseRot" part at the exact same position and orientation. Weld all parts you want 
-    rotating left/right to this part. (Only the BaseRot should be welded to the Base.)
+    2. 
+    - Add a "BaseRot" part at the exact same position and orientation
+    - Weld all parts you want rotating left/right to this part. 
+    - Only the BaseRot should be welded to the Base
 
-    3. Add an "ElevationBase" part, which is placed wherever you want the vertical pivot to be. 
-    IMPORTANT: The ElevationBase should be placed to the right-side of the turret, facing 
-    leftward. It should also be upright. Once done, weld this Elevation part to the BaseRot.
+    3. 
+    - Place "ElevationBase" part wherever you want the vertical pivot to be 
+    - Orient part to the right-side of the turret, facing leftward and upright
+    - Weld this Elevation part to the BaseRot
 
-    4. Add an "ElevationRot" part, at the exact same position and orientation. Weld all parts
-    you want rotating up/down to this part. (Only the ElevationRot should be welded to the 
-    ElevationBase.)
+    4. 
+    - Add an "ElevationRot" part at the exact same position and orientation
+    - Weld all parts you want rotating up/down to this part
+    - Only the ElevationRot should be welded to the ElevationBase
 
 PHYSICAL PROJECTILE SETUP
 tba
@@ -38,4 +44,29 @@ look like. If you're doing something with this I'm assuming you code better than
 should probably be able to figure it out pretty easily.
 
 
+- Template for a component
+========================================================================================
+local component = {}
+component.__index = component
+
+-- this isn't necessary, but ideally you want to put all assertions and extraction of info from required here
+-- this way the constructor isnt filled with that and your code fails fast if not properly setup
+local function _checkSetup(required)
+    
+end
+
+-- args is the table you use as the config for your component, validate before using
+function component.new(args, required)
+    local self = {}
+
+    assert()
+    return self
+end
+
+function component:DoSomething()
+    do something here : o
+end
+
+return component
+========================================================================================
 ]=]
