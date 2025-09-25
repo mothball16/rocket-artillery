@@ -23,7 +23,6 @@ local fallbacks = {
 local TwoAxisRotator = {}
 TwoAxisRotator.__index = TwoAxisRotator
 
--- helper for construction so the constructor isnt 50% assertions lol
 local function _checkSetup(required)
     local rotMotor = validator:ValueIsOfClass(required:FindFirstChild("RotMotor"), "ManualWeld")
     local pitchMotor = validator:ValueIsOfClass(required:FindFirstChild("PitchMotor"), "ManualWeld")
@@ -33,23 +32,19 @@ end
 
 function TwoAxisRotator.new(args, required)
     local rotMotor, pitchMotor, state = _checkSetup(required)
-    local self = {}
-    self.maid = maid.new()
-    self.config = conf.new(args, fallbacks)
-    self.state = state
-    self.rotMotor = rotMotor
-    self.pitchMotor = pitchMotor
-    self.enabled = true
-    self.tick = 0
-    -- we want to sync our client rots with the server rots here
-    self.curX = self.state:GetAttribute("X")
-    self.curY = self.state:GetAttribute("Y")
-
-    -- TBA
-    self.targetX = self.curX
-    self.targetY = self.curY
-
-    setmetatable(self, TwoAxisRotator)
+    local self = setmetatable({
+        maid = maid.new(),
+        config = conf.new(args, fallbacks),
+        state = state,
+        rotMotor = rotMotor,
+        pitchMotor = pitchMotor,
+        enabled = true,
+        tick = 0,
+        curX = state:GetAttribute("X"),
+        curY = state:GetAttribute("Y"),
+        targetX = state:GetAttribute("X"),
+        targetY = state:GetAttribute("Y"),
+    }, TwoAxisRotator)
 
     self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
         self:Update(dt)

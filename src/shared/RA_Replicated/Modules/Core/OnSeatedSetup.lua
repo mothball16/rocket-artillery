@@ -2,10 +2,10 @@ local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local net, evts = dir.GetNetwork()
 local OnSeated = net:RemoteEvent(evts.OnSeated)
 local OnUnseated = net:RemoteEvent(evts.OnUnseated)
-local RASetup = {}
+local OnSeatedSetup = {}
 
 
-function RASetup.SetupTurret(required)
+function OnSeatedSetup.ConnectControlSeat(required)
     local seat = required.ControlSeat.Value
     local lastOccupant
     seat:GetPropertyChangedSignal("Occupant"):Connect(function()
@@ -26,4 +26,4 @@ function RASetup.SetupTurret(required)
     end)
 end
 
-return RASetup
+return OnSeatedSetup

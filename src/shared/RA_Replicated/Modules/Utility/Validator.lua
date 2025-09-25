@@ -28,8 +28,8 @@ end
 
 function Validator:Exists(obj, from)
     if devMode then
-        local err = (self:FailHead() .. "obj" .. (from or "") .. " doesn't exist")
-        assert(obj and obj.Parent, err)
+        local err = (self:FailHead() .. (from or "") .. " doesn't exist")
+        assert(obj, err)
     end
     return obj
 end

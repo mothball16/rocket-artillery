@@ -10,9 +10,8 @@ local ProjectileController = {}
 
 local function GetAssets(name)
     if not cache[name] then
-        local config = require(configs:FindFirstChild(name))
-        local model = models:FindFirstChild(name)
-        assert(config and model, "config or model is mising for projectile " .. name)
+        local config = require(validator:Exists(configs:FindFirstChild(name),"config for projectile " .. name))
+        local model = validator:Exists(models:FindFirstChild(name), "model for projectile " .. name)
         cache[name] = {
             Config = config,
             Model = model

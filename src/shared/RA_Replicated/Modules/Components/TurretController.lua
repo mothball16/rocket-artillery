@@ -10,17 +10,17 @@ TurretController.__index = TurretController
 
 
 function TurretController.new(args, required)
-    local self = {}
-    self.maid = maid.new()
+    local self = setmetatable({
+            maid = maid.new()
+        }, TurretController)
     self.Rotator = self.maid:GiveTask(
         TwoAxisRotator.new(args.rotArgs, required)
     )
 
-    mouse.Button1Down:Connect(function()
+    self.maid:GiveTask(mouse.Button1Down:Connect(function()
         signals.FireProjectile:Fire(required.FirePartTest.Value, "TOS220Short")
-    end)
+    end))
 
-    setmetatable(self, TurretController)
     return self
 end
 
