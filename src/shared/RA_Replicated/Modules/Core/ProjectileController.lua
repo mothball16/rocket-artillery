@@ -6,7 +6,7 @@ local registry = require(dir.Modules.Core.ProjectileRegistry)
 local ProjectileController = {}
 
 -- ()
-function ProjectileController.Init()
+function ProjectileController:Init()
     rayParams.FilterType = Enum.RaycastFilterType.Exclude
     rayParams.IgnoreWater = false
 end

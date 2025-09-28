@@ -5,7 +5,7 @@ duration of play
 
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local ProjectileController = require(dir.Modules.Core.ProjectileController)
-local TurretController = require(dir.Modules.Components.TurretController)
+local TurretController = require(dir.Modules.Turret.TurretController)
 local ObjRegistry = require(dir.Modules.Core.ObjRegistry)
 local owned = nil
 -- load order

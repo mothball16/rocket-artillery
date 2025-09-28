@@ -1,6 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 
-local TwoAxisRotator = require(dir.Modules.Components.TwoAxisRotator)
+local TwoAxisRotator = require(dir.Modules.Turret.TwoAxisRotator)
 local AttachSelector = require(dir.Modules.AttachmentSystem.AttachSelector)
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()

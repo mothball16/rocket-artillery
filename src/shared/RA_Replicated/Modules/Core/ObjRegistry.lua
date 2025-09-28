@@ -18,7 +18,7 @@ function ObjRegistry:Register(obj, required)
         validator.Error("obj")
     end
     objects[ident] = obj
-    return obj
+    return obj, required
 end
 
 function ObjRegistry:Deregister(required)
