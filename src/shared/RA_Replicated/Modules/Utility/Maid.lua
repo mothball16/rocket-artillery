@@ -28,6 +28,7 @@ function Maid.new()
 	return  newMaid
 end
 
+-- (value)
 function Maid.isMaid(value)
 	return type(value) == "table" and value.ClassName == "Maid"
 end
@@ -94,6 +95,7 @@ function Maid:GiveTask(task)
 	return taskId
 end
 
+-- (promise)
 function Maid:GivePromise(promise)
 	if not promise:IsPending() then
 		return promise

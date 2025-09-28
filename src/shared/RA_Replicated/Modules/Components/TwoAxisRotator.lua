@@ -1,7 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local maid, conf, validator = dir.GetComponentUtilities(script.Name)
-local net, evts = dir.GetNetwork()
-local WeldsUpdated = net:UnreliableRemoteEvent(evts.OnTurretWeldsUpdated)
+local validator = dir.Validator.new(script.Name)
+local WeldsUpdated = dir.Net:UnreliableRemoteEvent(dir.Events.OnTurretWeldsUpdated)
 
 local RuS = game:GetService("RunService")
 local camera = game.Workspace.CurrentCamera
@@ -24,17 +23,21 @@ local TwoAxisRotator = {}
 TwoAxisRotator.__index = TwoAxisRotator
 
 local function _checkSetup(required)
-    local rotMotor = validator:ValueIsOfClass(required:FindFirstChild("RotMotor"), "ManualWeld")
-    local pitchMotor = validator:ValueIsOfClass(required:FindFirstChild("PitchMotor"), "ManualWeld")
-    local state = validator:IsOfClass(required:FindFirstChild("TwoAxisRotatorState"), "Folder")
+    local rotMotor = validator:ValueIsOfClass(
+        required:FindFirstChild("RotMotor"), "ManualWeld")
+    local pitchMotor = validator:ValueIsOfClass(
+        required:FindFirstChild("PitchMotor"), "ManualWeld")
+    local state = validator:IsOfClass(
+        required:FindFirstChild("TwoAxisRotatorState"), "Folder")
     return rotMotor, pitchMotor, state
 end
 
+-- (args, required)
 function TwoAxisRotator.new(args, required)
     local rotMotor, pitchMotor, state = _checkSetup(required)
     local self = setmetatable({
-        maid = maid.new(),
-        config = conf.new(args, fallbacks),
+        maid = dir.Maid.new(),
+        config = dir.FallbackConfig.new(args, fallbacks),
         state = state,
         rotMotor = rotMotor,
         pitchMotor = pitchMotor,
@@ -54,6 +57,7 @@ function TwoAxisRotator.new(args, required)
     return self
 end
 
+-- (x, y)
 function TwoAxisRotator:UpdateWelds(x, y)
     self.rotMotor.C1 = CFrame.Angles(0,math.rad(x),0)
     self.pitchMotor.C1 = CFrame.Angles(0,0,-math.rad(y))
@@ -85,20 +89,24 @@ function TwoAxisRotator:Update(dt)
     end
 end
 
+-- (on)
 function TwoAxisRotator:SetEnable(on)
     self.enabled = on
 end
 
+-- (x, y)
 function TwoAxisRotator:SetTarget(x, y)
     self.targetX = x;
     self.targetY = y;
 end
 
+-- (x, y)
 function TwoAxisRotator:SetTargetRelative(x, y)
     self.targetX = self.curX + x;
     self.targetY = self.curY + y;
 end
 
+-- ()
 function TwoAxisRotator:Destroy()
     self.maid:DoCleaning()
 end

@@ -1,4 +1,6 @@
 --[=[
+this codebase used to be 400 lines long...
+
 mothball rocket arty system - how to set up everything
 msg me on cord @ mothball16 for help
 
@@ -63,6 +65,7 @@ function component.new(args, required)
     return self
 end
 
+-- ()
 function component:DoSomething()
     do something here : o
 end

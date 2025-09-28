@@ -48,10 +48,12 @@ mouse.TargetFilter = required.Parent
 camera.CameraType = Enum.CameraType.Scriptable
 camera.CameraSubject = required:WaitForChild("Camera")
 
+-- (num, numDecimalPlaces)
 function roundNumber(num, numDecimalPlaces)
 	return tonumber(string.format("%." .. (numDecimalPlaces or 0) .. "f", num))
 end
 
+-- ()
 function calculateAmmo()
 	count = 0
 	ready = 0
@@ -66,6 +68,7 @@ end
 
 calculateAmmo()
 
+-- ()
 function fireRocket()
 	local baseRocket = nil
 	for i,v in pairs(required:WaitForChild("RocketHolder"):GetChildren()) do
@@ -95,10 +98,12 @@ function fireRocket()
 	calculateAmmo()
 end
 
+-- (Start, Direction, Ignore)
 function Raycast(Start, Direction, Ignore)
 	return game.Workspace:FindPartOnRayWithIgnoreList(Ray.new(Start, Direction * Vector3.new(config.cameraXOffset,config.cameraYOffset,config.cameraZOffset).Magnitude), Ignore)
 end
 
+-- ()
 function cameraLogic()
 	local obstructionPercent = 1
 	local dir = CFrame.new(
@@ -117,6 +122,7 @@ end
 
 
 
+-- ()
 function updateUI()
 	
 

@@ -3,6 +3,7 @@
 local conf = {}
 conf.__index = conf
 
+-- (args, fallbacks)
 function conf.new(args, fallbacks)
     local self = {}
 
@@ -17,6 +18,7 @@ function conf.new(args, fallbacks)
     return self
 end
 
+-- (key)
 function conf:Get(key)
     return self[key]
 end

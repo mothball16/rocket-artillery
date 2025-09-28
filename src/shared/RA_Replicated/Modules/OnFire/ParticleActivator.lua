@@ -1,5 +1,4 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local conf = require(dir.Utility.FallbackConfig)
 
 local ParticleActivator = {}
 ParticleActivator.__index = ParticleActivator
@@ -14,16 +13,16 @@ local fallbacks = {
 	["lookFor"] = "Particles"
 }
 
+-- (args, callback)
 function ParticleActivator.new(args, callback)
 	local self = {}
-	self.config = conf.new(args, fallbacks)
+	self.config = dir.FallbackConfig.new(args, fallbacks)
 	self.onHit = callback
 	setmetatable(self, ParticleActivator)
 	return self
 end
 
-
-function ParticleActivator:Execute(main, _)
+local function _execute(self, main)
 	for _, v in pairs(main.Parent:GetChildren()) do
 		if v.Name == self.config:Get("lookFor") then
 			for _, b in pairs(v:GetChildren()) do
@@ -36,6 +35,17 @@ function ParticleActivator:Execute(main, _)
 	end
 end
 
+-- (main, _)
+function ParticleActivator:ExecuteServer(main, _)
+	_execute(self, main)
+end
+
+-- (main, _)
+function ParticleActivator:ExecuteClient(main, _)
+	_execute(self, main)
+end
+
+-- ()
 function ParticleActivator:Destroy()
 	self.maid:Destroy()
 end

@@ -4,26 +4,28 @@ duration of play
 ]]
 
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local maid = require(dir.Utility.Maid).new()
 local ProjectileController = require(dir.Modules.Core.ProjectileController)
 local TurretController = require(dir.Modules.Components.TurretController)
-local signals = require(dir.Signals)
-
-local net, evts = dir.GetNetwork()
+local ObjRegistry = require(dir.Modules.Core.ObjRegistry)
+local owned = nil
 -- load order
 
-net:Connect(evts.OnSeated, function(required)
-    maid:GiveTask(TurretController.new({
-        rotArgs = {}
-    }, required))
+dir.Net:Connect(dir.Events.OnSeated, function(required)
+    local turret = TurretController.new({rotArgs = {}}, required)
+    owned = {
+        object = ObjRegistry:Register(turret, required),
+        destroy = function() ObjRegistry:Deregister(required) end,
+    }
 end)
 
-net:Connect(evts.OnUnseated, function(required)
-    maid:DoCleaning()
+dir.Net:Connect(dir.Events.OnUnseated, function(required)
+    if owned then
+        owned.destroy()
+    end
 end)
 
-net:ConnectUnreliable(evts.OnTurretWeldsUpdated, function(state)
+dir.Net:ConnectUnreliable(dir.Events.OnTurretWeldsUpdated, function(state)
 
 end)
 
-signals.FireProjectile:Connect(ProjectileController.Fire)
+dir.Signals.FireProjectile:Connect(ProjectileController.Fire)

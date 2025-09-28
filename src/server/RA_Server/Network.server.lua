@@ -1,20 +1,13 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local net, evts = dir.GetNetwork()
-
---[[
-local Update = dir.Events:WaitForChild("UpdateWelds")
-local Fire = dir.Events:WaitForChild("FireRocket")
-local Hit = dir.Events:WaitForChild("HitEffect")
-local RepRocket = dir.Events:WaitForChild("ReplicateRocket")
-local ReloadRocket = dir.Events:WaitForChild("ReloadRocket")]]
+local evts = dir.Events
 
 local function InitEvents()
-	net:RemoteEvent(evts.OnSeated)
-	net:RemoteEvent(evts.OnUnseated)
-	net:UnreliableRemoteEvent(evts.OnTurretWeldsUpdated)
+	dir.Net:RemoteEvent(evts.OnSeated)
+	dir.Net:RemoteEvent(evts.OnUnseated)
+	dir.Net:UnreliableRemoteEvent(evts.OnTurretWeldsUpdated)
 end
 
-net:ConnectUnreliable(evts.OnTurretWeldsUpdated, function(player, state, x, y)
+dir.Net:ConnectUnreliable(evts.OnTurretWeldsUpdated, function(player, state, x, y)
 	state:SetAttribute("X", x)
 	state:SetAttribute("Y", y)
 end)

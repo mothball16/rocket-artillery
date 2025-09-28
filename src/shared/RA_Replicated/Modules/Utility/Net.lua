@@ -22,6 +22,7 @@ local Net = {}
 	local remoteEvent = Net:RemoteEvent("PointsChanged")
 	```
 ]=]
+-- (name: string)
 function Net:RemoteEvent(name: string): RemoteEvent
 	name = "RE/" .. name
 	if RunService:IsServer() then
@@ -56,6 +57,7 @@ end
 	local unreliableRemoteEvent = Net:UnreliableRemoteEvent("PositionChanged")
 	```
 ]=]
+-- (name: string)
 function Net:UnreliableRemoteEvent(name: string): UnreliableRemoteEvent
 	name = "URE/" .. name
 	if RunService:IsServer() then
@@ -88,6 +90,7 @@ end
 	Net:Connect("SomeEvent", function(player, ...) end)
 	```
 ]=]
+-- (name: string, handler: (...any)
 function Net:Connect(name: string, handler: (...any) -> ()): RBXScriptConnection
 	if RunService:IsServer() then
 		return self:RemoteEvent(name).OnServerEvent:Connect(handler)
@@ -109,6 +112,7 @@ end
 	Net:ConnectUnreliable("SomeEvent", function(player, ...) end)
 	```
 ]=]
+-- (name: string, handler: (...any)
 function Net:ConnectUnreliable(name: string, handler: (...any) -> ()): RBXScriptConnection
 	if RunService:IsServer() then
 		return self:UnreliableRemoteEvent(name).OnServerEvent:Connect(handler)
@@ -132,6 +136,7 @@ end
 	local remoteFunction = Net:RemoteFunction("GetPoints")
 	```
 ]=]
+-- (name: string)
 function Net:RemoteFunction(name: string): RemoteFunction
 	name = "RF/" .. name
 	if RunService:IsServer() then
@@ -161,6 +166,7 @@ end
 	end)
 	```
 ]=]
+-- (name: string, handler: (player: Player, ...any)
 function Net:Handle(name: string, handler: (player: Player, ...any) -> ...any)
 	self:RemoteFunction(name).OnServerInvoke = handler
 end
@@ -173,6 +179,7 @@ end
 	local points = Net:Invoke("GetPoints")
 	```
 ]=]
+-- (name: string, ...: any)
 function Net:Invoke(name: string, ...: any): ...any
 	return self:RemoteFunction(name):InvokeServer(...)
 end
@@ -183,6 +190,7 @@ end
 	should really only be used in testing environments
 	and not during runtime.
 ]=]
+-- ()
 function Net:Clean()
 	script:ClearAllChildren()
 end

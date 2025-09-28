@@ -1,10 +1,8 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local net, evts = dir.GetNetwork()
-local OnSeated = net:RemoteEvent(evts.OnSeated)
-local OnUnseated = net:RemoteEvent(evts.OnUnseated)
 local OnSeatedSetup = {}
-
-
+local OnSeated = dir.Net:RemoteEvent(dir.Events.OnSeated)
+local OnUnseated = dir.Net:RemoteEvent(dir.Events.OnUnseated)
+-- (required)
 function OnSeatedSetup.ConnectControlSeat(required)
     local seat = required.ControlSeat.Value
     local lastOccupant

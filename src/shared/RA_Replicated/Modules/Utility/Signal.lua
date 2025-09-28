@@ -78,6 +78,7 @@ end
 local Connection = {}
 Connection.__index = Connection
 
+-- ()
 function Connection:Disconnect()
 	if not self.Connected then
 		return
@@ -150,6 +151,7 @@ Signal.__index = Signal
 
 	@return Signal
 ]=]
+-- ()
 function Signal.new<T...>(): Signal<T...>
 	local self = setmetatable({
 		_handlerListHead = false,
@@ -173,6 +175,7 @@ end
 	Instance.new("Part").Parent = workspace
 	```
 ]=]
+-- (rbxScriptSignal: RBXScriptSignal)
 function Signal.Wrap<T...>(rbxScriptSignal: RBXScriptSignal): Signal<T...>
 	assert(
 		typeof(rbxScriptSignal) == "RBXScriptSignal",
@@ -193,6 +196,7 @@ end
 	@param obj any -- Object to check
 	@return boolean -- `true` if the object is a Signal.
 ]=]
+-- (obj: any)
 function Signal.Is(obj: any): boolean
 	return type(obj) == "table" and getmetatable(obj) == Signal
 end
@@ -210,6 +214,7 @@ end
 	signal:Fire("Hello", 25)
 	```
 ]=]
+-- (fn)
 function Signal:Connect(fn)
 	local connection = setmetatable({
 		Connected = true,
@@ -233,6 +238,7 @@ end
 	@param fn ConnectionFn
 	@return SignalConnection
 ]=]
+-- (fn)
 function Signal:ConnectOnce(fn)
 	return self:Once(fn)
 end
@@ -252,6 +258,7 @@ end
 	signal:Fire("This message will not go through", 10)
 	```
 ]=]
+-- (fn)
 function Signal:Once(fn)
 	local connection
 	local done = false
@@ -269,6 +276,7 @@ function Signal:Once(fn)
 	return connection
 end
 
+-- ()
 function Signal:GetConnections()
 	local items = {}
 
@@ -289,6 +297,7 @@ end
 	signal:DisconnectAll()
 	```
 ]=]
+-- ()
 function Signal:DisconnectAll()
 	local item = self._handlerListHead
 	while item do
@@ -324,6 +333,7 @@ end
 	signal:Fire("Hello", 32, {Test = "Test"}, true)
 	```
 ]=]
+-- (...)
 function Signal:Fire(...)
 	local item = self._handlerListHead
 	while item do
@@ -345,6 +355,7 @@ end
 	signal:FireDeferred("Hello")
 	```
 ]=]
+-- (...)
 function Signal:FireDeferred(...)
 	local item = self._handlerListHead
 	while item do
@@ -373,6 +384,7 @@ end
 	signal:Fire("Hello", 32)
 	```
 ]=]
+-- ()
 function Signal:Wait()
 	local yieldedThreads = rawget(self, "_yieldedThreads")
 	if not yieldedThreads then
@@ -406,6 +418,7 @@ end
 	signal:Destroy()
 	```
 ]=]
+-- ()
 function Signal:Destroy()
 	self:DisconnectAll()
 

@@ -1,6 +1,4 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local conf = require(dir.Utility.FallbackConfig)
-local maid = require(dir.Utility.Maid)
 local RuS = game:GetService("RunService")
 local UnguidedArc = {}
 UnguidedArc.__index = UnguidedArc
@@ -25,15 +23,17 @@ local fallbacks = {
 	["despawn"] = 10;
 }
 
+-- (args, callback)
 function UnguidedArc.new(args, callback)
 	local self = {}
-	self.config = conf.new(args, fallbacks)
-	self.maid = maid.new()
+	self.config = dir.FallbackConfig.new(args, fallbacks)
+	self.maid = dir.Maid.new()
 	self.onHit = callback
 	setmetatable(self, UnguidedArc)
 	return self
 end
 
+-- (main)
 function UnguidedArc:SetupBodyMovers(main)
 	local bv = Instance.new("BodyVelocity", main)
 	bv.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
@@ -46,30 +46,32 @@ function UnguidedArc:SetupBodyMovers(main)
 	return bv, bav
 end
 
-function UnguidedArc:SetupSpeedLoop(main)	
+-- (main)
+function UnguidedArc:SetupSpeedLoop(main)
 	local lifetime = 0
 	local connection
 	connection = RuS.RenderStepped:Connect(function(dt)
-		if not main.Parent then 
-			connection:Disconnect() 
-			return 
+		if not main.Parent then
+			connection:Disconnect()
+			return
 		end
 		if lifetime > self.config:Get("burnOut") then connection:Disconnect() end
 		lifetime += dt
 
 		main:SetAttribute("Speed", math.clamp(
-			main:GetAttribute("Speed") + (self.config:Get("accel") * dt), 
+			main:GetAttribute("Speed") + (self.config:Get("accel") * dt),
 			self.config:Get("initSpeed"), self.config:Get("maxSpeed")))
 	end)
 end
 
+-- (main, bv, rayParams)
 function UnguidedArc:SetupRaycastLoop(main, bv, rayParams)
 	local lastPos = main.Position
 	local connection
 	connection = RuS.RenderStepped:Connect(function(dt)
-		if not main.Parent then 
-			connection:Disconnect() 
-			return 
+		if not main.Parent then
+			connection:Disconnect()
+			return
 		end
 		bv.Velocity = (main.CFrame).LookVector * main:GetAttribute("Speed")
 
@@ -79,12 +81,13 @@ function UnguidedArc:SetupRaycastLoop(main, bv, rayParams)
 		local result = game.Workspace:Raycast(lastPos,direction * mag, rayParams)
 		if result and result.Instance.Transparency < 1 then
 			connection:Disconnect()
-			self.config.onHit:Execute(result.Position)
+			self.config.onHit(result.Position)
 		end
 		lastPos = main.Position
 	end)
 end
 
+-- (main, rayParams)
 function UnguidedArc:Execute(main, rayParams)
 	assert(main:IsA("BasePart"), "UnguidedArc fire fail: main should be a BasePart")
 	local bv, _ = self:SetupBodyMovers(main)
@@ -98,6 +101,7 @@ function UnguidedArc:Execute(main, rayParams)
 	self:SetupRaycastLoop(main, bv, rayParams)
 end
 
+-- ()
 function UnguidedArc:Destroy()
 	self.maid:Destroy()
 end

@@ -2,11 +2,13 @@
 
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local OnSeatedSetup = require(dir.Modules.Core.OnSeatedSetup)
-
+local HTTP = game:GetService("HttpService")
 local CS = game:GetService("CollectionService")
 local SEATED_INIT_TAG_NAME = "mothballArtySystem_RunOnSeated"
 
 local function AddSeatListeners(required)
+    required:SetAttribute(dir.Consts.OBJECT_IDENT_ATTR, HTTP:GenerateGUID())
+    print(required)
     OnSeatedSetup.ConnectControlSeat(required)
 end
 

@@ -18,8 +18,11 @@ function GoBoom.new(args)
 	return self
 end
 
+function GoBoom:ClientExecute(pos)
+	
+end
 
-function GoBoom:Execute(pos)
+function GoBoom:ServerExecute(pos)
 	local exp = Instance.new("Explosion", game.Workspace)
 	exp.Position = pos
 	exp.BlastRadius = self.config.blastRadius
