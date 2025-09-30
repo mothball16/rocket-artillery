@@ -18,6 +18,7 @@ local refs = {
     Assets = assets,
     Utility = utility,
     Signals = require(repl:WaitForChild("Signals")),
+    ServerSignals = require(repl:WaitForChild("ServerSignals")),
     Consts = require(modules:WaitForChild("Constants")),
     Maid = require(utility:WaitForChild("Maid")),
     FallbackConfig = require(utility:WaitForChild("FallbackConfig")),

@@ -1,13 +1,12 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local evts = dir.Events
 
 local function InitEvents()
-	dir.Net:RemoteEvent(evts.OnSeated)
-	dir.Net:RemoteEvent(evts.OnUnseated)
-	dir.Net:UnreliableRemoteEvent(evts.OnTurretWeldsUpdated)
+	dir.Net:RemoteEvent(dir.Events.OnDestroy)
+	dir.Net:RemoteEvent(dir.Events.OnInitialize)
+	dir.Net:UnreliableRemoteEvent(dir.Events.OnTurretWeldsUpdated)
 end
 
-dir.Net:ConnectUnreliable(evts.OnTurretWeldsUpdated, function(player, state, x, y)
+dir.Net:ConnectUnreliable(dir.Events.OnTurretWeldsUpdated, function(player, state, x, y)
 	state:SetAttribute("X", x)
 	state:SetAttribute("Y", y)
 end)

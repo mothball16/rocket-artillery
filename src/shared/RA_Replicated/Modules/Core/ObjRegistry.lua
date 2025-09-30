@@ -15,7 +15,13 @@ local ObjRegistry = {}
 function ObjRegistry:Register(obj, required)
     local ident = validator:HasAttr(required, dir.Consts.OBJECT_IDENT_ATTR)
     if type(validator:Exists(obj.Destroy, "destroy method of obj")) ~= "function" then
-        validator.Error("obj")
+        validator.Error("obj metatable needs a destroy method")
+    end
+
+    if objects[ident] then
+        warn("object of GUID " ..  ident 
+        .. " already exists in table. (This may be intended behavior on the server.)")
+        return
     end
     objects[ident] = obj
     return obj, required

@@ -67,12 +67,18 @@ end
 -- (main, bv, rayParams)
 function UnguidedArc:SetupRaycastLoop(main, bv, rayParams)
 	local lastPos = main.Position
+	local timepasu = 0
 	local connection
 	connection = RuS.RenderStepped:Connect(function(dt)
 		if not main.Parent then
 			connection:Disconnect()
 			return
 		end
+		timepasu += dt
+		if timepasu > dir.Consts.REPLICATION_THROTTLE then
+			
+		end
+
 		bv.Velocity = (main.CFrame).LookVector * main:GetAttribute("Speed")
 
 		local direction = (main.Position - lastPos).Unit
