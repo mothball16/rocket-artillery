@@ -41,4 +41,13 @@ function Helpers:ExecuteServer(tbl, main, required)
     end
 end
 
+function Helpers:ToConfigTable(folder)
+    assert(folder:IsA("Folder"), "pass a folder to Helpers:ToConfigTable()!!!")
+    local cfg = {}
+    for _, v in pairs(folder:GetChildren()) do
+        cfg[v.Name] = v.Value
+    end
+    return cfg
+end
+
 return Helpers

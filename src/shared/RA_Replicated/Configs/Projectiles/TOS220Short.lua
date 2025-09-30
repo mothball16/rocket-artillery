@@ -19,6 +19,14 @@ local TOS220Short = {
 	slot = { "TOSSeries" };
 
 	-- projectile config
+
+	GoBoom = {
+		["blastRadius"] = 60,
+		["blastPressure"] = 1000,
+		["breakJoints"] = false,
+		["maxDamage"] = 150
+	};
+
 	OnFire = {
 		UnguidedArc.new({
 			["initSpeed"] = 30; ["maxSpeed"] = 600; ["accel"] = 800;

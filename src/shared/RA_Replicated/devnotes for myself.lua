@@ -23,7 +23,7 @@ revisions on OnHit
 
 revisions on Config/Required/Prefab responsibilities
 - required: ONLY should hold either state or object values. No configuration is to be performed through the required folder.
-- config: Used for single component configurations. May initialize sub-components but is not intended to auto-run on initialization.
+- config: Used for component configurations. STRICTLY cannot be responsible for any initialization.
 - prefab: Used for entire system configuration, including addition and removal from the object registry. Defines which configs to use for
   a set of components, with the assumption that whatever controller takes the prefab will know what to do with it.
 ]=]

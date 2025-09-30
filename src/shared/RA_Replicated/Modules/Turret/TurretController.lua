@@ -9,17 +9,20 @@ TurretController.__index = TurretController
 
 
 
--- (args, required)
 function TurretController.new(args, required)
     local self = setmetatable({}, TurretController)
     self.maid = dir.Maid.new()
-    self.Rotator = self.maid:GiveTask(TwoAxisRotator.new(args.rotArgs, required))
-    self.AttachSelector = self.maid:GiveTask(AttachSelector.new({}, required))
-
+    self.Rotator = TwoAxisRotator.new(args.Turret, required)
+    self.AttachSelector = AttachSelector.new(args.AttachSelector, required)
     self.maid:GiveTask(mouse.Button1Down:Connect(function()
+        local nextSlot = self.AttachSelector:FindNextFull()
+        if nextSlot then
+            print("yoyo")
+        end
         dir.Signals.FireProjectile:Fire(required.FirePartTest.Value, "TOS220Short")
     end))
-
+    self.maid:GiveTask(self.Rotator)
+    self.maid:GiveTask(self.AttachSelector)
     return self
 end
 

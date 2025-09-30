@@ -19,7 +19,6 @@ function ProjectileRegistry:GetProjectile(name)
             Model = model,
             AttachModel = attachModels:FindFirstChild(name)
         }
-        print(config)
     end
 return cache[name]
 end
