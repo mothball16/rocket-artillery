@@ -1,6 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local ParticleActivator = require(dir.Modules.OnFire.ParticleActivator)
-
+local DetachAndRemove = require(dir.Modules.OnFire.DetachAndRemove)
 local RocketAttachableBase = {
 	ClientModelOnUse = {
 		ParticleActivator.new({
@@ -9,7 +9,9 @@ local RocketAttachableBase = {
 		})
 	};
 	ClientModelOnAttach = {};
-	ClientModelOnDetach = {};
+	ClientModelOnDetach = {
+		DetachAndRemove.new({})
+	};
 
 	ServerModelOnUse = {
 		ParticleActivator.new({
@@ -18,7 +20,9 @@ local RocketAttachableBase = {
 		})
 	};
 	ServerModelOnAttach = {};
-	ServerModelOnDetach = {};
+	ServerModelOnDetach = {
+		DetachAndRemove.new({})
+	};
 }
 
 return RocketAttachableBase

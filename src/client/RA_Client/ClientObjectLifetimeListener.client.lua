@@ -10,20 +10,19 @@ local objectInitializer = require(dir.Modules.Core.ObjectInitializer).new("Local
 local owned = {}
 -- load order
 
-dir.Net:Connect(dir.Events.OnInitialize, function(required)
-    print("yo")
+dir.Net:Connect(dir.Events.Reliable.OnInitialize, function(required)
     if owned[required] then return end
     owned[required] = objectInitializer:Execute(required)
 end)
 
-dir.Net:Connect(dir.Events.OnDestroy, function(required)
+dir.Net:Connect(dir.Events.Reliable.OnDestroy, function(required)
     if owned[required] then
         owned[required].destroy()
         owned[required] = nil
     end
 end)
 
-dir.Net:ConnectUnreliable(dir.Events.OnTurretWeldsUpdated, function(state)
+dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnTurretWeldsUpdated, function(state)
 
 end)
 

@@ -57,7 +57,6 @@ function UnguidedArc:SetupSpeedLoop(main)
 		end
 		if lifetime > self.config:Get("burnOut") then connection:Disconnect() end
 		lifetime += dt
-
 		main:SetAttribute("Speed", math.clamp(
 			main:GetAttribute("Speed") + (self.config:Get("accel") * dt),
 			self.config:Get("initSpeed"), self.config:Get("maxSpeed")))

@@ -26,5 +26,8 @@ revisions on Config/Required/Prefab responsibilities
 - config: Used for component configurations. STRICTLY cannot be responsible for any initialization.
 - prefab: Used for entire system configuration, including addition and removal from the object registry. Defines which configs to use for
   a set of components, with the assumption that whatever controller takes the prefab will know what to do with it.
+
+todo for ObjectRegistry/ObjectLifetimeListener/ObjectInitializer relationship
+- there is way too much indirection going on with this an ObjectLifetimeListeners have their own registry. this is dumb
 ]=]
 

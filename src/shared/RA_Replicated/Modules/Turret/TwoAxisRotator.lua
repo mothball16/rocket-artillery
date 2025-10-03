@@ -1,6 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local validator = dir.Validator.new(script.Name)
-local WeldsUpdated = dir.Net:UnreliableRemoteEvent(dir.Events.OnTurretWeldsUpdated)
+local WeldsUpdated = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.OnTurretWeldsUpdated)
 
 local RuS = game:GetService("RunService")
 local camera = game.Workspace.CurrentCamera
@@ -75,14 +75,14 @@ function TwoAxisRotator:Update(dt)
         local xRatio = math.clamp(3 * (mouse.X/res.X) - 1.5, -1, 1)
         local yRatio = math.clamp(3 * (mouse.Y/res.Y) - 1.5, -1, 1)
 
-        local rotSpeed = self.config:Get("rotSpeed")
+        local rotSpeed = math.rad(self.config:Get("rotSpeed"))
         local rotLimited = self.config:Get("rotLimited")
         self.curX += xRatio * rotSpeed * adjustForDt
         if rotLimited then
             self.curX = math.clamp(self.curX, self.config:Get("rotMin"), self.config:Get("rotMax"))
         end
 
-        local pitchSpeed = self.config:Get("pitchSpeed")
+        local pitchSpeed = math.rad(self.config:Get("pitchSpeed"))
         self.curY = math.clamp(self.curY - (yRatio * pitchSpeed * adjustForDt), self.config:Get("pitchMin"), self.config:Get("pitchMax"))
         
         self:UpdateWelds(self.curX, self.curY)

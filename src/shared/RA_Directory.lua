@@ -24,6 +24,7 @@ local refs = {
     FallbackConfig = require(utility:WaitForChild("FallbackConfig")),
     Validator = require(utility:WaitForChild("Validator")),
     Helpers = require(utility:WaitForChild("Helpers")),
+    NetUtils = require(utility:WaitForChild("NetUtils")),
     Net = require(utility:WaitForChild("Net")),
     Events = require(repl:WaitForChild("Events")),
 }

@@ -19,30 +19,8 @@ function Helpers:Weld(p1: BasePart, p2: BasePart): WeldConstraint
 	return weld
 end
 
--- (tbl, main, required)
-function Helpers:ExecuteClient(tbl, main, required)
-    for _, v in pairs(tbl) do
-        if v["ExecuteClient"] then
-            v:ExecuteClient(main, required)
-        else
-            v:Execute(main, required)
-        end
-    end
-end
-
--- (tbl, main, required)
-function Helpers:ExecuteServer(tbl, main, required)
-    for _, v in pairs(tbl) do
-        if v["ExecuteServer"] then
-            v:ExecuteServer(main, required)
-        else
-            v:Execute(main, required)
-        end
-    end
-end
-
 function Helpers:ToConfigTable(folder)
-    assert(folder:IsA("Folder"), "pass a folder to Helpers:ToConfigTable()!!!")
+    assert(folder:IsA("Folder"), "foldeer attempted to be converted into config, but wasn't a folder... idiot....")
     local cfg = {}
     for _, v in pairs(folder:GetChildren()) do
         cfg[v.Name] = v.Value

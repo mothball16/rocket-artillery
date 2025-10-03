@@ -1,13 +1,19 @@
+local SPEED_MULT = 2
+
 return {
     Turret = {
         rotLimited = false,
-        rotSpeed = 6,
+        rotSpeed = 6 * SPEED_MULT,
         pitchMax = 48,
         pitchMin = -3,
-        pitchSpeed = 2.2,
+        pitchSpeed = 2.2 * SPEED_MULT,
     };
 
     AttachSelector = {
         
+    };
+
+    AttachServerController = {
+
     };
 }

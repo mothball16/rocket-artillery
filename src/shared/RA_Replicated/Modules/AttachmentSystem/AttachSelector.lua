@@ -7,6 +7,7 @@ The selector now handles sequential indices based on numeric part names (1, 2, 3
 
 
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
 local validator = dir.Validator.new(script.Name)
 local AttachSelector = {}
 AttachSelector.__index = AttachSelector
@@ -18,6 +19,7 @@ local function _checkSetup(required)
 	local slotsByIndex = {}
 
 	for i = 1, #attachPoints:GetChildren() do
+		
 		table.insert(slotsByIndex, validator:IsOfClass(attachPoints:FindFirstChild(i), "BasePart"))
 	end
 
@@ -42,6 +44,7 @@ end
 
 -- (index)
 function AttachSelector:SlotAt(index)
+	print(self.slotsByIndex)
 	return self.slotsByIndex[index]
 end
 
@@ -54,20 +57,19 @@ function AttachSelector:GetAttachWeldAt(index)
 	return slot:FindFirstChild(dir.Consts.ATTACH_WELD_NAME)
 end
 
--- (index)
 function AttachSelector:GetAttachPointDataAt(index)
 	local weld = self:GetAttachWeldAt(index)
-	if not weld or not weld.Part1 then
+	if not weld or not weld.Part1 or not weld.Part1.Parent then
 		validator.Warn("no weld or no part1")
 		return
 	end
-	local projectile = weld.Part1.Parent
-	local config = dir.ProjRegistry:GetProjectile(projectile.Name)
+	local projectileInstance = weld.Part1.Parent
+	local config = ProjectileRegistry:GetProjectile(projectileInstance.Name)
 	if not config then
-		validator.Warn("no projectile found for name " .. projectile.Name)
+		validator.Warn("no projectile found for name " .. projectileInstance.Name)
 		return
 	end
-	return projectile, config, weld
+	return projectileInstance, config, weld
 end
 
 -- (wantsOccupiedSlot)
@@ -108,6 +110,10 @@ end
 function AttachSelector:FindNextFull()
 	local index, slot = self:Iterate(true)
 	return index, slot
+end
+
+function AttachSelector:GetSlots()
+	return self.attachPoints
 end
 
 function AttachSelector:Destroy()

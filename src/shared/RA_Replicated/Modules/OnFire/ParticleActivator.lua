@@ -22,7 +22,7 @@ function ParticleActivator.new(args, callback)
 	return self
 end
 
-local function _execute(self, main)
+function ParticleActivator:Execute(main, _)
 	for _, v in pairs(main.Parent:GetChildren()) do
 		if v.Name == self.config:Get("lookFor") then
 			for _, b in pairs(v:GetChildren()) do
@@ -33,16 +33,6 @@ local function _execute(self, main)
 			end
 		end
 	end
-end
-
--- (main, _)
-function ParticleActivator:ExecuteServer(main, _)
-	_execute(self, main)
-end
-
--- (main, _)
-function ParticleActivator:ExecuteClient(main, _)
-	_execute(self, main)
 end
 
 -- ()

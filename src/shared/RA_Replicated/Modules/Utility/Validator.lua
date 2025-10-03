@@ -57,6 +57,11 @@ function Validator:ValueIsOfClass(obj, class)
 end
 
 -- (msg)
+function Validator:Log(msg)
+    print("(" .. (self.caller or "unspecified") .. ") " .. msg)
+end
+
+-- (msg)
 function Validator:Warn(msg)
     warn(self:FailHead() .. msg)
 end

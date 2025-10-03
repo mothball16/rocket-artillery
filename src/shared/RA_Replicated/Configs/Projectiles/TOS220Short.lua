@@ -41,6 +41,6 @@ local TOS220Short = {
 		GoBoom.ServerExecute
 	};
 }
-dir.Helpers:TableCombine(RocketAttachableBase)
+dir.Helpers:TableCombine(TOS220Short, RocketAttachableBase)
 
 return TOS220Short

@@ -7,8 +7,8 @@ local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local HTTP = game:GetService("HttpService")
 local CS = game:GetService("CollectionService")
 
-local OnInitialize = dir.Net:RemoteEvent(dir.Events.OnInitialize)
-local OnDestroy = dir.Net:RemoteEvent(dir.Events.OnDestroy)
+local OnInitialize = dir.Net:RemoteEvent(dir.Events.Reliable.OnInitialize)
+local OnDestroy = dir.Net:RemoteEvent(dir.Events.Reliable.OnDestroy)
 local ServerSignals = dir.ServerSignals
 
 local function Initialize(player, required)
@@ -69,8 +69,10 @@ local function AddSeatInitListener(required)
     end)
 end
 
-for _, v in pairs(CS:GetTagged(dir.Consts.SEATED_INIT_TAG_NAME)) do
-    AddSeatInitListener(v)
-end
+return function()
+    for _, v in pairs(CS:GetTagged(dir.Consts.SEATED_INIT_TAG_NAME)) do
+        AddSeatInitListener(v)
+    end
 
-CS:GetInstanceAddedSignal(dir.Consts.SEATED_INIT_TAG_NAME):Connect(AddSeatInitListener)
+    CS:GetInstanceAddedSignal(dir.Consts.SEATED_INIT_TAG_NAME):Connect(AddSeatInitListener)    
+end
