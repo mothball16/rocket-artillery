@@ -17,11 +17,16 @@ local function _checkSetup(required)
     
 end
 
-local function SetupSlot(attacher, slot)
+local function SetupSlot(attacher, slot, initLoaded)
     local prox = Instance.new("ProximityPrompt")
     prox.Parent = slot
     prox.ActionText = "Slot (" .. slot:GetAttribute("SlotType") .. ")"
     prox.RequiresLineOfSight = false
+
+    if initLoaded then
+        validator:Warn("TODO: un-hardcode the projectile selection")
+        local result = attacher:AttachAt(tonumber(slot.Name), "TOS220Short")
+    end
 
     maid:GiveTask(prox.Triggered:Connect(function(plr)
         validator:Warn("TODO: un-hardcode the projectile selection")
@@ -36,7 +41,7 @@ function TurretServerController.new(args, required)
     self.AttachServerController = AttachServerController.new(args.AttachServerController, required)
 
     for _, slot in pairs(self.AttachSelector:GetSlots():GetChildren()) do
-        SetupSlot(self.AttachServerController, slot)
+        SetupSlot(self.AttachServerController, slot, true)
     end
     return self
 end
