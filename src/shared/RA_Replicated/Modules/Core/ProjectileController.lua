@@ -21,7 +21,7 @@ function ProjectileController.Fire(firePart, ammoName, filterInstances)
     projectile.Parent = game.Workspace
     projectile:SetPrimaryPartCFrame(firePart.CFrame)
     rayParams.FilterDescendantsInstances = filterInstances
-    dir.NetUtils:ExecuteClient(onFire, projectile.PrimaryPart, rayParams)
+    dir.NetUtils:ExecuteOnClient(onFire, projectile.PrimaryPart, rayParams)
 end
 
 return ProjectileController

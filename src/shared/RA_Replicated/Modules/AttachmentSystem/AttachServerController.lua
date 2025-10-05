@@ -25,7 +25,7 @@ function AttachServerController.new(args, required)
 end
 
 -- (index, attachType)
-function AttachServerController:AttachAt(index, attachType)
+function AttachServerController:AttachAt(actor, index, attachType)
     local slot = validator:Exists(self.selector:SlotAt(index),"slot at index " .. index)
     if self.selector:SlotOccupied(slot) then
         return false
@@ -39,34 +39,42 @@ function AttachServerController:AttachAt(index, attachType)
     local instance = projectile.AttachModel:Clone()
     instance.Parent = slot
     instance:SetPrimaryPartCFrame(slot.CFrame)
-    dir.NetUtils:ExecuteServer(projectile.Config.ServerModelOnAttach, projectile.PrimaryPart, self.required)
+
+    slot:SetAttribute("Occupied", true)
+    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnAttach"], projectile.PrimaryPart, self.required)
     dir.Helpers:Weld(slot, instance:FindFirstChild("Attachment")).Name = dir.Consts.ATTACH_WELD_NAME
     return true
 end
 
 -- (index)
-function AttachServerController:UseAt(index)
-    local instance, config, weld = self.selector:GetAttachPointDataAt(index)
-    if not (instance and config and weld) then
+function AttachServerController:UseAt(actor, index)
+    local instance, projectile, weld = self.selector:GetAttachPointDataAt(index)
+    if not (instance and projectile and weld) then
         validator:Warn("missing attach, config, or weld on attachpoint " .. index)
         return false
     end
-    dir.NetUtils:ExecuteServer(config.Config["ServerModelOnUse"], instance.PrimaryPart, self.required)
+    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnUse"], instance.PrimaryPart, self.required)
     return true
 end
 
 -- (index)
-function AttachServerController:DetachAt(index)
-    local instance, config, weld = self.selector:GetAttachPointDataAt(index)
-        if not (instance and config and weld) then
+function AttachServerController:DetachAt(actor, index)
+    local slot = self.selector:SlotAt(index)
+    local instance, projectile, weld = self.selector:GetAttachPointDataAt(index)
+    if not (instance and projectile and weld) then
         validator:Warn("missing attach, config, or weld on attachpoint " .. index)
         return false
     end
-    if not self.selector:SlotOccupied(self.selector:SlotAt(index)) then
+    if not self.selector:SlotOccupied(slot) then
         return false
     end
-    dir.NetUtils:ExecuteServer(config.Config["ServerModelOnDetach"], instance.PrimaryPart, self.required)
-    if instance then instance:Destroy() end
+    weld:Destroy()
+    slot:SetAttribute("Occupied", false)
+    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnDetach"], instance.PrimaryPart, self.required)
+    if instance then
+        instance.Parent = game.ReplicatedStorage
+        game.Debris:AddItem(instance, 20)
+        end
     return true
 end
 

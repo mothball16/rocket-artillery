@@ -1,26 +1,38 @@
+--[[
+provides an easier way to interact across client/server
+]]
+
 local NetUtils = {}
 local modules = game.ReplicatedStorage.Shared.RA_Replicated.Modules
 local Constants = require(modules.Constants)
-local ObjectRegistry = require(modules.Core.ObjectRegistry)
+local ObjectRegistry = require(modules.ObjectManagement.ObjectRegistry)
 local validator = require(modules.Utility.Validator).new(script.Name)
 
-function NetUtils:ExecuteClient(tbl, main, required)
-    print(tbl, main, required)
+--[[ (do this later)
+local net = require(modules.Utility.Net)
+local events = require(modules.Parent.Events)
+local remotes = {}
+
+for _, v in pairs(require(modules.Parent.Events)) do
+    
+end]]
+
+function NetUtils:ExecuteOnClient(tbl, ...)
     for _, v in pairs(tbl) do
-        if v["ExecuteClient"] then
-            v:ExecuteClient(main, required)
+        if v["ExecuteOnClient"] then
+            v:ExecuteOnClient(...)
         else
-            v:Execute(main, required)
+            v:Execute(...)
         end
     end
 end
 
-function NetUtils:ExecuteServer(tbl, main, required)
+function NetUtils:ExecuteOnServer(plr, tbl, ...)
     for _, v in pairs(tbl) do
-        if v["ExecuteServer"] then
-            v:ExecuteServer(main, required)
+        if v["ExecuteOnServer"] then
+            v:ExecuteOnServer(plr, ...)
         else
-            v:Execute(main, required)
+            v:Execute(...)
         end
     end
 end
@@ -30,11 +42,21 @@ function NetUtils:GetId(required)
 end
 
 function NetUtils:GetObject(id)
-        local object = ObjectRegistry:Get(id)
-        if not object then
-            validator:Warn("object of id " .. id .. "doesn't exist on the server.")
-            return nil
-        end
-        return object
+    local object = ObjectRegistry:Get(id)
+    if not object then
+        validator:Warn("object of id " .. id .. "doesn't exist on the server.")
+        return nil
+    end
+    return object
 end
+
+function NetUtils:FireOtherClients(plr, event, ...)
+    validator:Exists(event["FireClient"], "FireClient function of event")
+    for _, v in pairs(game.Players:GetChildren()) do
+        if v == plr then continue end
+        print(event, ...)
+        event:FireClient(v, ...)
+    end
+end
+
 return NetUtils

@@ -6,21 +6,39 @@ conf.__index = conf
 -- (args, fallbacks)
 function conf.new(args, fallbacks)
     local self = {}
-
+    self.table = {}
     for k,v in pairs(fallbacks) do
-        self[k] = v
+        self.table[k] = v
     end
     for k,v in pairs(args) do
-        self[k] = v
+        self.table[k] = v
     end
+    self.fallbacks = fallbacks
     
     setmetatable(self, conf)
     return self
 end
 
--- (key)
-function conf:Get(key)
-    return self[key]
+function conf:Rewrite(args)
+    self.table = {}
+    for k,v in pairs(self.fallbacks) do
+        self.table[k] = v
+    end
+    for k,v in pairs(args) do
+        self.table[k] = v
+    end
 end
 
+function conf:Overwrite(args)
+    self.table = args
+end
+
+-- (key)
+function conf:Get(key)
+    return self.table[key]
+end
+
+function conf:ToRaw()
+    return self.table
+end
 return conf

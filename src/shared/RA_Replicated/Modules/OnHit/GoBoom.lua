@@ -13,16 +13,16 @@ local fallbacks = {
 function GoBoom.new(args)
 	local self = {}
 	self.config = conf.new(args, fallbacks)
-	self.blastRadius = self.config.Get("blastRadius")
+	self.blastRadius = self.config:Get("blastRadius")
 	setmetatable(self, GoBoom)
 	return self
 end
 
-function GoBoom:ExecuteClient(pos)
+function GoBoom:ExecuteOnClient(pos)
 	
 end
 
-function GoBoom:ExecuteServer(pos)
+function GoBoom:ExecuteOnServer(pos)
 	local exp = Instance.new("Explosion", game.Workspace)
 	exp.Position = pos
 	exp.BlastRadius = self.config.blastRadius
@@ -38,7 +38,7 @@ function GoBoom:ExecuteServer(pos)
 		if part.Name == "Head" and part.Parent:FindFirstChild("Humanoid") then
 			local mag = (exp.Position - part.Position).Magnitude
 			local damagePercent = 1 - mag/exp.BlastRadius
-			local damageFinal = self.config.Get("maxDamage") * damagePercent
+			local damageFinal = self.config:Get("maxDamage") * damagePercent
 			part.Parent:FindFirstChild("Humanoid"):TakeDamage(damageFinal)
 		end
 	end)

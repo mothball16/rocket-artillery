@@ -29,7 +29,9 @@ function DetachAndRemove:Execute(main, required)
 			v.Transparency = 1
 			v.CanCollide = false
 			v.Massless = true
+			v.CanQuery = false
 		end
+		v.Parent = game.Workspace
 	end
 end
 

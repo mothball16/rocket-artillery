@@ -39,12 +39,11 @@ end
 
 -- (attach)
 function AttachSelector:SlotOccupied(attach)
-	return attach:FindFirstChild(dir.Consts.ATTACH_WELD_NAME) ~= nil
+	return attach:GetAttribute("Occupied") == true
 end
 
 -- (index)
 function AttachSelector:SlotAt(index)
-	print(self.slotsByIndex)
 	return self.slotsByIndex[index]
 end
 
@@ -60,14 +59,17 @@ end
 function AttachSelector:GetAttachPointDataAt(index)
 	local weld = self:GetAttachWeldAt(index)
 	if not weld or not weld.Part1 or not weld.Part1.Parent then
-		validator.Warn("no weld or no part1")
+		validator:Warn("no weld or no part1")
 		return
 	end
 	local projectileInstance = weld.Part1.Parent
 	local config = ProjectileRegistry:GetProjectile(projectileInstance.Name)
 	if not config then
-		validator.Warn("no projectile found for name " .. projectileInstance.Name)
+		validator:Warn("no projectile found for name " .. projectileInstance.Name)
 		return
+	end
+	if not projectileInstance then
+		validator:Warn("weld part1 of rocket link is not connected? at slot " .. tostring(index))
 	end
 	return projectileInstance, config, weld
 end

@@ -2,7 +2,7 @@
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
 local RocketAttachableBase = require(script.Parent.RocketAttachableBase)
 local UnguidedArc = require(dir.Modules.OnFire.UnguidedArc)
-local ParticleActivator = require(dir.Modules.OnFire.ParticleActivator)
+local ParticleActivator = require(dir.Modules.FX.ParticleActivator)
 local GoBoom = require(dir.Modules.OnHit.GoBoom).new({
 	["blastRadius"] = 60,
 	["blastPressure"] = 1000,
@@ -19,7 +19,6 @@ local TOS220Short = {
 	slot = { "TOSSeries" };
 
 	-- projectile config
-
 	GoBoom = {
 		["blastRadius"] = 60,
 		["blastPressure"] = 1000,
@@ -33,12 +32,13 @@ local TOS220Short = {
 			["burnIn"] = 0; ["burnOut"] = 1;
 			["arc"] = 10; ["initInacc"] = 1.5; ["flyInacc"] = 0.1;
 			["despawn"] = 10;
-			["onHit"] = GoBoom.ClientExecute;
+			["onHit"] = GoBoom.ExecuteOnClient;
 		}),
 		ParticleActivator.new({})
 	};
+	
 	OnHit = {
-		GoBoom.ServerExecute
+		GoBoom.ExecuteOnServer
 	};
 }
 dir.Helpers:TableCombine(TOS220Short, RocketAttachableBase)

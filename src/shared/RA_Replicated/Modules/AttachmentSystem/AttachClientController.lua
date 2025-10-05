@@ -48,7 +48,7 @@ function AttachClientController:UseAt(index)
         validator:Warn("missing attach, config, or weld on attachpoint " .. index)
         return false
     end
-    dir.NetUtils:ExecuteClient(config.Config["ClientModelOnUse"], instance.PrimaryPart, self.required)
+    dir.NetUtils:ExecuteOnClient(config.Config["ClientModelOnUse"], instance.PrimaryPart, self.required)
     RequestAttachmentUse:FireServer(self.id, index)
     return true
 end
@@ -60,7 +60,11 @@ function AttachClientController:DetachAt(index)
         validator:Warn("missing attach, config, or weld on attachpoint " .. index)
         return false
     end
-    dir.NetUtils:ExecuteClient(config.Config["ClientModelOnDetach"], instance.PrimaryPart, self.required)
+    -- client should invalidate an attempt to fire off the same slot immediately rather
+    -- than waiting on the server to update
+    self.AttachSelector:SlotAt(index):SetAttribute("Occupied", false)
+    -- go execute the client effects and tell the servercontroller to upd.
+    dir.NetUtils:ExecuteOnClient(config.Config["ClientModelOnDetach"], instance.PrimaryPart, self.required)
     RequestAttachmentDetach:FireServer(self.id, index)
     return true
 end
