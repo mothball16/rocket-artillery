@@ -27,14 +27,14 @@ local TOS220Short = {
 	};
 
 	OnFire = {
-		UnguidedArc.new({
+		UnguidedArc = {
 			["initSpeed"] = 30; ["maxSpeed"] = 600; ["accel"] = 800;
 			["burnIn"] = 0; ["burnOut"] = 1;
 			["arc"] = 10; ["initInacc"] = 1.5; ["flyInacc"] = 0.1;
 			["despawn"] = 10;
 			["onHit"] = GoBoom.ExecuteOnClient;
-		}),
-		ParticleActivator.new({})
+		},
+		ParticleActivator = {}
 	};
 	
 	OnHit = {

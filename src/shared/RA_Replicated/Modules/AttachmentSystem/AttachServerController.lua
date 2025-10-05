@@ -72,8 +72,9 @@ function AttachServerController:DetachAt(actor, index)
     slot:SetAttribute("Occupied", false)
     dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnDetach"], instance.PrimaryPart, self.required)
     if instance then
+        -- let client side replication grab the particles if needed
         instance.Parent = game.ReplicatedStorage
-        game.Debris:AddItem(instance, 20)
+        game.Debris:AddItem(instance, 8)
         end
     return true
 end

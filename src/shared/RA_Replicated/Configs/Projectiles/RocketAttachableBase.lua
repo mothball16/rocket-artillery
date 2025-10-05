@@ -4,28 +4,29 @@ defines what the attachmodel behavior of a rocket should be
 ]]
 
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local ParticleActivator = require(dir.Modules.FX.ParticleActivator).new({
+local DetachAndRemove = require(dir.Modules.OnFire.DetachAndRemove)
+local ParticleActivator, ParticleActivatorConfig = require(dir.Modules.FX.ParticleActivator),
+{
 	["lookFor"] = "Particles",
 	["playFor"] = 0.15,
 	["avoidDestruction"] = true
-})
-local DetachAndRemove = require(dir.Modules.OnFire.DetachAndRemove).new({})
+}
 
 local RocketAttachableBase = {
 	ClientModelOnUse = {
-		ParticleActivator
+		ParticleActivator = ParticleActivatorConfig;
 	};
 	ClientModelOnAttach = {};
 	ClientModelOnDetach = {
-		DetachAndRemove
+		DetachAndRemove = {}
 	};
 
 	ServerModelOnUse = {
-		ParticleActivator
+		ParticleActivator = ParticleActivatorConfig;
 	};
 	ServerModelOnAttach = {};
 	ServerModelOnDetach = {
-		DetachAndRemove
+		DetachAndRemove = {}
 	};
 }
 
