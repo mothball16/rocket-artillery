@@ -1,8 +1,7 @@
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
 local WeldsUpdated = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.OnTurretWeldsUpdated)
 
-local RuS = game:GetService("RunService")
 local camera = game.Workspace.CurrentCamera
 local mouse = game.Players.LocalPlayer:GetMouse()
 
@@ -41,6 +40,7 @@ function TwoAxisRotator.new(args, required)
         state = state,
         rotMotor = rotMotor,
         pitchMotor = pitchMotor,
+        dir = Vector2.new(0,0),
         enabled = true,
         tick = 0,
         curX = state:GetAttribute("X"),
@@ -48,10 +48,6 @@ function TwoAxisRotator.new(args, required)
         targetX = state:GetAttribute("X"),
         targetY = state:GetAttribute("Y"),
     }, TwoAxisRotator)
-
-    self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
-        self:Update(dt)
-    end))
 
     self:UpdateWelds(self.curX, self.curY)
     return self
@@ -71,19 +67,15 @@ function TwoAxisRotator:Update(dt)
     self.tick += dt
     local adjustForDt = dt * 60
     if self.enabled then
-        local res = camera.ViewportSize - Vector2.new(0,36)
-        local xRatio = math.clamp(3 * (mouse.X/res.X) - 1.5, -1, 1)
-        local yRatio = math.clamp(3 * (mouse.Y/res.Y) - 1.5, -1, 1)
-
         local rotSpeed = math.rad(self.config:Get("rotSpeed"))
         local rotLimited = self.config:Get("rotLimited")
-        self.curX += xRatio * rotSpeed * adjustForDt
+        self.curX += self.dir.X * rotSpeed * adjustForDt
         if rotLimited then
             self.curX = math.clamp(self.curX, self.config:Get("rotMin"), self.config:Get("rotMax"))
         end
 
         local pitchSpeed = math.rad(self.config:Get("pitchSpeed"))
-        self.curY = math.clamp(self.curY - (yRatio * pitchSpeed * adjustForDt), self.config:Get("pitchMin"), self.config:Get("pitchMax"))
+        self.curY = math.clamp(self.curY - (self.dir.Y * pitchSpeed * adjustForDt), self.config:Get("pitchMin"), self.config:Get("pitchMax"))
         
         self:UpdateWelds(self.curX, self.curY)
     end
@@ -94,6 +86,11 @@ function TwoAxisRotator:SetEnable(on)
     self.enabled = on
 end
 
+function TwoAxisRotator:SetIntent(newDir)
+    self.dir = newDir
+end
+
+--[[
 -- (x, y)
 function TwoAxisRotator:SetTarget(x, y)
     self.targetX = x;
@@ -104,7 +101,7 @@ end
 function TwoAxisRotator:SetTargetRelative(x, y)
     self.targetX = self.curX + x;
     self.targetY = self.curY + y;
-end
+end]]
 
 -- ()
 function TwoAxisRotator:Destroy()

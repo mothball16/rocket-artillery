@@ -1,5 +1,5 @@
 --#region required
-local modules = game.ReplicatedStorage.Shared.RA_Replicated.Modules
+local modules = game.ReplicatedStorage.Shared.mAS_Replicated.Modules
 local validator = require(modules.Utility.Validator)
     .new(script.Name)
 local consts = require(modules.Constants)

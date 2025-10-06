@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local conf = require(dir.Utility.FallbackConfig)
 local GoBoom = {}
 GoBoom.__index = GoBoom

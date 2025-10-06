@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 
 local function InitEvents()
 	for _, v in pairs(dir.Events.Reliable) do

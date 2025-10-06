@@ -1,5 +1,5 @@
 --#region requires
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local RocketAttachableBase = require(script.Parent.RocketAttachableBase)
 local UnguidedArc = require(dir.Modules.OnFire.UnguidedArc)
 local ParticleActivator = require(dir.Modules.FX.ParticleActivator)
@@ -31,7 +31,7 @@ local TOS220Short = {
 		}},
 		{func = ParticleActivator}
 	};
-	
+
 	OnHit = {
 		--GoBoom.ExecuteOnServer
 	};

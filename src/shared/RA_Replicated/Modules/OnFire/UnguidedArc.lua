@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local RuS = game:GetService("RunService")
 local UnguidedArc = {}
 UnguidedArc.__index = UnguidedArc

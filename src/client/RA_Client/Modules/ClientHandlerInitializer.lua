@@ -1,5 +1,5 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 --#endregion required
 --[[
 this initializes all singleton event handlers (scripts named ...ClientHandler)

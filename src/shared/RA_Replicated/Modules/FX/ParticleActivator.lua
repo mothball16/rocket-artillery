@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local OnParticlePlayed = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.OnParticlePlayed)
 
 local ParticleActivator = {}

@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
 local rayParams = RaycastParams.new()
 local registry = require(dir.Modules.Core.ProjectileRegistry)

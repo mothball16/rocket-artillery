@@ -1,5 +1,5 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
 local AttachSelector = require(dir.Modules.AttachmentSystem.AttachSelector)
 local AttachServerController = require(dir.Modules.AttachmentSystem.AttachServerController)

@@ -3,7 +3,7 @@ a little config table to avoid duplicating this in every single rocket config
 defines what the attachmodel behavior of a rocket should be
 ]]
 
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local DetachAndRemove = require(dir.Modules.OnFire.DetachAndRemove)
 local ParticleActivator, ParticleActivatorConfig = require(dir.Modules.FX.ParticleActivator),
 {

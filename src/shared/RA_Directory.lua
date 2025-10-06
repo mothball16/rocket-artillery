@@ -5,7 +5,7 @@ introduce any significant overhead
 local repl = game
         :WaitForChild("ReplicatedStorage")
         :WaitForChild("Shared")
-        :WaitForChild("RA_Replicated")
+        :WaitForChild("mAS_Replicated")
 local modules =         repl:WaitForChild("Modules")
 local assets =          repl:WaitForChild("Assets")
 local configs =         repl:WaitForChild("Configs")

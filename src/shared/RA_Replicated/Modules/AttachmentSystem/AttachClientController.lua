@@ -1,5 +1,5 @@
 --#region requires
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local AttachSelector = require(script.Parent.AttachSelector)
 -- local RequestAttachmentAttach = dir.Net:RemoteEvent(dir.Events.Reliable.RequestAttachmentAttach)
 local RequestAttachmentUse = dir.Net:RemoteEvent(dir.Events.Reliable.RequestAttachmentUse)

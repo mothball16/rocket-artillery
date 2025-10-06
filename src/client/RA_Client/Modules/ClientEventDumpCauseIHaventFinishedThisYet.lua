@@ -2,7 +2,7 @@
 this script is used to boot up objects
 ]]
 
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local ProjectileController = require(dir.Modules.Core.ProjectileController)
 local objectInitializer = require(dir.Modules.ObjectManagement.ObjectInitializer).new("LocalController")
 local owned = {}

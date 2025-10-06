@@ -1,5 +1,5 @@
 -- lazy-loads projectile configs for easy retrieval
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = require(dir.Utility.Validator)
 local configs = dir.Configs.Projectiles
 local models = dir.Assets.Projectiles

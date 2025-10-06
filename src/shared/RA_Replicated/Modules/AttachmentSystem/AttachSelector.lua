@@ -6,7 +6,7 @@ The selector now handles sequential indices based on numeric part names (1, 2, 3
 ]]
 
 
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
 local validator = dir.Validator.new(script.Name)
 local AttachSelector = {}

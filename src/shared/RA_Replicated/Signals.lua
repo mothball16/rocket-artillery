@@ -1,4 +1,4 @@
-local Signal = require(game.ReplicatedStorage.Shared.RA_Replicated.Modules.Utility.Signal)
+local Signal = require(game.ReplicatedStorage.Shared.mAS_Replicated.Modules.Utility.Signal)
 return {
     FireProjectile = Signal.new()
 }

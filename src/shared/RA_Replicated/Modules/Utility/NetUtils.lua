@@ -3,7 +3,7 @@ provides an easier way to interact across client/server
 ]]
 
 local NetUtils = {}
-local modules = game.ReplicatedStorage.Shared.RA_Replicated.Modules
+local modules = game.ReplicatedStorage.Shared.mAS_Replicated.Modules
 local Constants = require(modules.Constants)
 local ObjectRegistry = require(modules.ObjectManagement.ObjectRegistry)
 local validator = require(modules.Utility.Validator).new(script.Name)

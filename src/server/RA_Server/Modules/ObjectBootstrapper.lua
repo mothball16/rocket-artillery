@@ -3,7 +3,7 @@
     when initialization conditions meet.
 ]]
 
-local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local HTTP = game:GetService("HttpService")
 local CS = game:GetService("CollectionService")
 
