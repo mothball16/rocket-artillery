@@ -1,7 +1,7 @@
 --[=[
 this codebase used to be 400 lines long...
 
-mothball rocket arty system - how to set up everything
+mothball artillery system - how to set up everything
 msg me on cord @ mothball16 for help
 
 PHYSICAL TURRET SETUP

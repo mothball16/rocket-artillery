@@ -74,7 +74,7 @@ function UnguidedArc:SetupRaycastLoop(config, main, bv, rayParams)
 		local result = game.Workspace:Raycast(lastPos,direction * mag, rayParams)
 		if result and result.Instance.Transparency < 1 then
 			connection:Disconnect()
-			config.onHit(result.Position)
+			config:Get("onHit")(result.Position)
 		end
 		lastPos = main.Position
 	end)

@@ -1,4 +1,4 @@
-local SPEED_MULT = 2
+local SPEED_MULT = 4
 
 return {
     Turret = {
@@ -16,4 +16,8 @@ return {
     AttachServerController = {
 
     };
+
+    UIHandler = {
+
+    }
 }

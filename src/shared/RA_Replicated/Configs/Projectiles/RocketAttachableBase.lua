@@ -14,19 +14,19 @@ local ParticleActivator, ParticleActivatorConfig = require(dir.Modules.FX.Partic
 
 local RocketAttachableBase = {
 	ClientModelOnUse = {
-		ParticleActivator = ParticleActivatorConfig;
+		{func = ParticleActivator, data = ParticleActivatorConfig};
 	};
 	ClientModelOnAttach = {};
 	ClientModelOnDetach = {
-		DetachAndRemove = {}
+		{func = DetachAndRemove}
 	};
 
 	ServerModelOnUse = {
-		ParticleActivator = ParticleActivatorConfig;
+		{func = ParticleActivator, data = ParticleActivatorConfig};
 	};
 	ServerModelOnAttach = {};
 	ServerModelOnDetach = {
-		DetachAndRemove = {}
+		{func = DetachAndRemove}
 	};
 }
 

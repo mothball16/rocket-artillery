@@ -18,21 +18,21 @@ for _, v in pairs(require(modules.Parent.Events)) do
 end]]
 
 function NetUtils:ExecuteOnClient(tbl, ...)
-    for func, config in pairs(tbl) do
-        if func["ExecuteOnClient"] then
-            func:ExecuteOnClient(config, ...)
+    for _, command in pairs(tbl) do
+        if command.func["ExecuteOnClient"] then
+            command.func:ExecuteOnClient(command.data or {}, ...)
         else
-            func:Execute(config, ...)
+            command.func:Execute(command.data or {}, ...)
         end
     end
 end
 
 function NetUtils:ExecuteOnServer(plr, tbl, ...)
-    for func, config in pairs(tbl) do
-        if func["ExecuteOnServer"] then
-            func:ExecuteOnServer(plr, config, ...)
+    for _, command in pairs(tbl) do
+        if command.func["ExecuteOnServer"] then
+            command.func:ExecuteOnServer(plr, command.data or {}, ...)
         else
-            func:Execute(config, ...)
+            command.func:Execute(command.data or {}, ...)
         end
     end
 end

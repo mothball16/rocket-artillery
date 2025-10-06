@@ -43,20 +43,20 @@ end
 
 -- (index)
 function AttachClientController:UseAt(index)
-    local instance, config, weld = self.AttachSelector:GetAttachPointDataAt(index)
-    if not (instance and config and weld) then
+    local instance, projectile, weld = self.AttachSelector:GetAttachPointDataAt(index)
+    if not (instance and projectile and weld) then
         validator:Warn("missing attach, config, or weld on attachpoint " .. index)
         return false
     end
-    dir.NetUtils:ExecuteOnClient(config.Config["ClientModelOnUse"], instance.PrimaryPart, self.required)
+    dir.NetUtils:ExecuteOnClient(projectile.Config["ClientModelOnUse"], instance.PrimaryPart, self.required)
     RequestAttachmentUse:FireServer(self.id, index)
     return true
 end
 
 -- (index)
 function AttachClientController:DetachAt(index)
-    local instance, config, weld = self.AttachSelector:GetAttachPointDataAt(index)
-    if not (instance and config and weld) then
+    local instance, projectile, weld = self.AttachSelector:GetAttachPointDataAt(index)
+    if not (instance and projectile and weld) then
         validator:Warn("missing attach, config, or weld on attachpoint " .. index)
         return false
     end
@@ -64,7 +64,7 @@ function AttachClientController:DetachAt(index)
     -- than waiting on the server to update
     self.AttachSelector:SlotAt(index):SetAttribute("Occupied", false)
     -- go execute the client effects and tell the servercontroller to upd.
-    dir.NetUtils:ExecuteOnClient(config.Config["ClientModelOnDetach"], instance.PrimaryPart, self.required)
+    dir.NetUtils:ExecuteOnClient(projectile.Config["ClientModelOnDetach"], instance.PrimaryPart, self.required)
     RequestAttachmentDetach:FireServer(self.id, index)
     return true
 end

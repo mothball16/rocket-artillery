@@ -3,7 +3,7 @@
 -- scripts so i mean i guess this works lol
 
 local dir = require(game.ReplicatedStorage.Shared.RA_Directory)
-local ParticleActivator = require(script.Parent.ParticleActivator).new({})
+local ParticleActivator = require(script.Parent.ParticleActivator)
 
 return function()
     dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnParticlePlayed,
