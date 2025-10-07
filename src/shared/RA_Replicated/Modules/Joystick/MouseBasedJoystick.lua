@@ -3,7 +3,7 @@ local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
 --#endregion required
 --[[
-tracks ur mouse on-screen and maps it between -1, 1 on both axes.
+tracks ur mouse on-screen and maps it between -1, 1 on both axes
 all joysticks should implement GetInput(), will be asserted on validation
 ]]
 local plr = game.Players.LocalPlayer

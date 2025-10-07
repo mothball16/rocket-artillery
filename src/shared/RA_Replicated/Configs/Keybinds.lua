@@ -5,4 +5,5 @@ return {
     SwapSalvo = Enum.KeyCode.V;
     SwapInterval = Enum.KeyCode.B;
     RangeFinder = Enum.KeyCode.K;
+    ToggleFCU = Enum.KeyCode.L;
 }

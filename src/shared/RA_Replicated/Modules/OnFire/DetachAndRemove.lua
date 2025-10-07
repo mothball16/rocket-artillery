@@ -16,11 +16,11 @@ function DetachAndRemove:Execute(config, main, required)
 		if v:IsA("BasePart") or v:IsA("UnionOperation") or v:IsA("MeshPart") then
 			v.Transparency = 1
 			v.CanCollide = false
-			v.Massless = true
 			v.CanQuery = false
 		end
-		v.Parent = game.Workspace
 	end
+	main.Parent.Parent = game.Workspace
+
 end
 
 

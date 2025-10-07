@@ -73,7 +73,7 @@ function TwoAxisRotator:Update(dt)
         if rotLimited then
             self.curX = math.clamp(self.curX, self.config:Get("rotMin"), self.config:Get("rotMax"))
         end
-
+        self.curX %= 360
         local pitchSpeed = math.rad(self.config:Get("pitchSpeed"))
         self.curY = math.clamp(self.curY - (self.dir.Y * pitchSpeed * adjustForDt), self.config:Get("pitchMin"), self.config:Get("pitchMax"))
         
@@ -88,6 +88,10 @@ end
 
 function TwoAxisRotator:SetIntent(newDir)
     self.dir = newDir
+end
+
+function TwoAxisRotator:GetRot()
+    return Vector2.new(self.curX, self.curY)
 end
 
 --[[

@@ -49,9 +49,7 @@ camera.CameraType = Enum.CameraType.Scriptable
 camera.CameraSubject = required:WaitForChild("Camera")
 
 -- (num, numDecimalPlaces)
-function roundNumber(num, numDecimalPlaces)
-	return tonumber(string.format("%." .. (numDecimalPlaces or 0) .. "f", num))
-end
+
 
 -- ()
 function calculateAmmo()

@@ -1,6 +1,13 @@
 local SPEED_MULT = 4
 
 return {
+    TurretController = {
+        turretName = "TOS-1A Solntsepyok";
+        salvoIntervals = {1, 2};
+        timeIntervals = {0.5, 1, 2};
+        FCUAttached = false;
+    };
+
     Turret = {
         rotLimited = false,
         rotSpeed = 6 * SPEED_MULT,
@@ -9,15 +16,13 @@ return {
         pitchSpeed = 2.2 * SPEED_MULT,
     };
 
-    AttachSelector = {
-        
+    Joystick = {
+        sens = 1.5;
     };
 
-    AttachServerController = {
-
-    };
-
-    UIHandler = {
-
-    }
+    -- empty configs, just for clarity
+    AttachSelector = {};
+    AttachServerController = {};
+    UIHandler = {};
+    OrientationReader = {};
 }
