@@ -31,4 +31,8 @@ function OrientationReader:GetAltitude()
     return self.main.Position.Y
 end
 
+function OrientationReader:GetForwardPos(forward)
+    return (self.main.CFrame * CFrame.new(0,0,-forward)).Position
+end
+
 return OrientationReader

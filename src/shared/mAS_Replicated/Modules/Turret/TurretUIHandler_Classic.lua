@@ -16,10 +16,12 @@ local function _setupComponents(args, required)
     local statsPanel = canvas:FindFirstChild("Stats")
     local orientPanel = canvas:FindFirstChild("Orient")
     local combatPanel = canvas:FindFirstChild("Combat")
+    local aimPoint = canvas:FindFirstChild("AimPoint")
     local components = {
         stats = statsPanel,
         orient = orientPanel,
         combat = combatPanel,
+        crosshair = aimPoint;
         joystick = statsPanel.Aiming.Stick;
         zoom = statsPanel:FindFirstChild("Zoom");
     }
@@ -111,6 +113,10 @@ function UI:SetupConnections(signals)
     end))
 end
 
+function UI:GetRequired()
+    return self.canvas:FindFirstChild("RARequired")
+end
+
 function UI:Update(dt, state)
     local lerpFac = math.min(JOYSTICK_LERP_RATE * dt * 60, 1)
     self.joystickPos = Vector2.new((1 + state.stickPos.X)/2, (1 + state.stickPos.Y)/2)
@@ -125,6 +131,10 @@ function UI:Update(dt, state)
         "ELV: (".. math.round(state.orient.pitch) .. "°G) " .. math.round(state.rot.Y) .. "° L"
 	self.components["stats"].Altitude.Text =
         "ALT: " .. math.round(state.height) .. " ft"
+    local crosshairPos = game.Workspace.CurrentCamera:WorldToScreenPoint(state.crosshair)
+
+	self.components["crosshair"].Position = UDim2.new(0,crosshairPos.X,0,crosshairPos.Y)
+	
 end
 
 return UI

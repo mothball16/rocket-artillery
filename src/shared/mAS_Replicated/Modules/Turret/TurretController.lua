@@ -12,7 +12,10 @@ this bridges all of the relevant turret systems together
 responsibilities so far:
 - input for firing
 - input for turning
+- input for fire control
 ]]
+local CROSSHAIR_DIST = 200
+
 local RuS = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
@@ -69,7 +72,7 @@ function TurretController.new(args, required)
     self.OrientationReader = OrientationReader.new(args.OrientationReader, required)
 
     self.uiHandler = uiHandler.new(args.UIHandler, required)
-    self.joystick = joystick.new(args.Joystick, required)
+    self.joystick = joystick.new(args.Joystick, self.uiHandler:GetRequired())
     -- give GC tasks
     self.maid:GiveTask(self.TwoAxisRotator)
     self.maid:GiveTask(self.AttachClientController)
@@ -94,10 +97,12 @@ function TurretController:SetupConnections()
             rot = self.TwoAxisRotator:GetRot(),
             orient = self.OrientationReader:GetDirection(),
             height = self.OrientationReader:GetAltitude(),
+            crosshair = self.OrientationReader:GetForwardPos(CROSSHAIR_DIST),
         })
     end))
 
     self.maid:GiveTask(UIS.InputBegan:Connect(function(input, chatting)
+        if chatting then return end
         if input.KeyCode == dir.Keybinds.MountedFire then
             self:Fire()
         elseif input.KeyCode == dir.Keybinds.SwapSalvo then
@@ -108,6 +113,15 @@ function TurretController:SetupConnections()
             --self.localSignals.OnRangeFinderToggled:Fire()
         elseif input.KeyCode == dir.Keybinds.ToggleFCU then
             
+        elseif input.UserInputType == Enum.UserInputType.MouseButton1 and self.joystick:CanEnable() then
+            self.joystick:Enable()
+        end
+    end))
+
+    self.maid:GiveTask(UIS.InputEnded:Connect(function(input, chatting)
+        if chatting then return end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            self.joystick:Disable()
         end
     end))
 

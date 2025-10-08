@@ -12,12 +12,12 @@ return {
         rotLimited = false,
         rotSpeed = 6 * SPEED_MULT,
         pitchMax = 48,
-        pitchMin = -3,
+        pitchMin = 0,
         pitchSpeed = 2.2 * SPEED_MULT,
     };
 
     Joystick = {
-        sens = 1.5;
+        sens = 0.75;
     };
 
     -- empty configs, just for clarity
