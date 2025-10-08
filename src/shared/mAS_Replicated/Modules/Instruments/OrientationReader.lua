@@ -27,8 +27,8 @@ function OrientationReader:GetDirection()
     }
 end
 
-function OrientationReader:GetAltitude()
-    return self.main.Position.Y
+function OrientationReader:GetPos()
+    return self.main.Position
 end
 
 function OrientationReader:GetForwardPos(forward)

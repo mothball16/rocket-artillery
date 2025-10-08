@@ -130,11 +130,11 @@ function UI:Update(dt, state)
 	self.components["stats"].Elevation.Text = 
         "ELV: (".. math.round(state.orient.pitch) .. "°G) " .. math.round(state.rot.Y) .. "° L"
 	self.components["stats"].Altitude.Text =
-        "ALT: " .. math.round(state.height) .. " ft"
-    local crosshairPos = game.Workspace.CurrentCamera:WorldToScreenPoint(state.crosshair)
-
-	self.components["crosshair"].Position = UDim2.new(0,crosshairPos.X,0,crosshairPos.Y)
-	
+        "ALT: " .. math.round(state.pos.Y) .. " ft"
+    self.components["stats"].Coords.Text = "COORDS: [" .. math.round(state.pos.X) .. "," .. math.round(state.pos.Z) .. "]"
+    local crosshairPos, onScreen = game.Workspace.CurrentCamera:WorldToScreenPoint(state.crosshair)
+    self.components["crosshair"].Position = UDim2.new(0,crosshairPos.X,0,crosshairPos.Y)
+    self.components["crosshair"].Visible = onScreen
 end
 
 return UI

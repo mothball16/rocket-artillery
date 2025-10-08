@@ -18,6 +18,7 @@ return {
 
     Joystick = {
         sens = 0.75;
+        enabled = false;
     };
 
     -- empty configs, just for clarity

@@ -38,6 +38,7 @@ local function _checkSetup(required)
     validator:Exists(ui.SetupStatic, "static label initializer of UI handler")
     local joystick = require(validator:ValueIsOfClass(required:FindFirstChild("Joystick"), "ModuleScript"))
     validator:Exists(joystick.GetInput, "GetInput function of joystick")
+    validator:Exists(joystick.CanEnable, "CanEnable function of joystick")
     return ui, joystick
 end
 
@@ -96,7 +97,7 @@ function TurretController:SetupConnections()
             stickPos = joystickInput,
             rot = self.TwoAxisRotator:GetRot(),
             orient = self.OrientationReader:GetDirection(),
-            height = self.OrientationReader:GetAltitude(),
+            pos = self.OrientationReader:GetPos(),
             crosshair = self.OrientationReader:GetForwardPos(CROSSHAIR_DIST),
         })
     end))
