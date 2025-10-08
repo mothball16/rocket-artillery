@@ -27,6 +27,7 @@ function ObjectInitializer:Execute(required)
         required:FindFirstChild("InitRoot"), "InitRoot of seat activator")
 
     local controllerRef = entryPoint:FindFirstChild(self.controller)
+
     if controllerRef and controllerRef.Value then
         local controller = require(controllerRef.Value)
         local prefab = require(validator:Exists(
@@ -43,6 +44,8 @@ function ObjectInitializer:Execute(required)
             object = ObjectRegistry:Register(obj, required),
             destroy = DestroyObj,
         }
+    else
+       warn("object attempted to be initialized, but initroot was incomplete/missing") 
     end
     return nil
 end

@@ -2,7 +2,7 @@ local SPEED_MULT = 4
 
 return {
     TurretController = {
-        turretName = "TOS-1A Solntsepyok";
+        turretName = "TOS-1A 'Solntsepyok'";
         salvoIntervals = {1, 2};
         timeIntervals = {0.5, 1, 2};
         FCUAttached = false;

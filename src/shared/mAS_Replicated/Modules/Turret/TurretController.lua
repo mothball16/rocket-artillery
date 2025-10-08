@@ -39,6 +39,7 @@ local function _checkSetup(required)
 end
 
 function TurretController.new(args, required)
+    print("my boy")
     local uiHandler, joystick = _checkSetup(required)
     local self = setmetatable({}, TurretController)
     self.id = dir.NetUtils:GetId(required)
@@ -78,6 +79,7 @@ function TurretController.new(args, required)
     self.uiHandler:SetupStatic({
         title = args.TurretController.turretName
     })
+
     return self
 end
 
@@ -108,6 +110,10 @@ function TurretController:SetupConnections()
             
         end
     end))
+
+    -- fire off signals for UI on first update
+    self.localSignals.OnSalvoIntervalModified:Fire(self:GetSalvo())
+    self.localSignals.OnTimedIntervalModified:Fire(self:GetInterval())
 end
 
 
@@ -122,6 +128,7 @@ function TurretController:Fire()
     return true
 end
 
+--#region salvo/interval control
 function TurretController:SwapSalvo()
     self.state.salvoIndex = (self.state.salvoIndex % #self.config:Get("salvoIntervals")) + 1
     return self:GetSalvo()
@@ -139,7 +146,7 @@ end
 function TurretController:GetInterval()
     return self.config:Get("timeIntervals")[self.state.timeIndex]
 end
-
+--#endregion
 
 function TurretController:Destroy()
     self.maid:DoCleaning()

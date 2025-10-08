@@ -9,7 +9,9 @@ local owned = {}
 
 return function()
     dir.Net:Connect(dir.Events.Reliable.OnInitialize, function(required)
+        print("yo?")
         if owned[required] then return end
+        print("yo?2")
         owned[required] = objectInitializer:Execute(required)
     end)
 

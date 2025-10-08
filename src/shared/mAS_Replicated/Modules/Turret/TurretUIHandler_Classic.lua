@@ -5,7 +5,7 @@ local validator = dir.Validator.new(script.Name)
 --[[
 the original UI from the 2022 version of this system
 ]]
-local template = script.Canvas.Value
+local template = dir.Assets.UI.TurretUI_Classic
 local player = game.Players.LocalPlayer
 local JOYSTICK_LERP_RATE = 0.5
 local UI = {}
@@ -119,9 +119,12 @@ function UI:Update(dt, state)
         Lerp(self.components.joystick.Position.Y.Scale, self.joystickPos.Y, lerpFac)
     )
 
-    self.components["stats"].Deflection.Text = "DFL: (" .. math.round((180 - state.orient.yaw) % 360) .. "°G) " .. math.round(state.rot.X) .. "° L"
-	self.components["stats"].Elevation.Text = "ELV: (".. math.round(state.orient.pitch) .. "°G) " .. math.round(state.rot.Y) .. "° L"
-	self.components["stats"].Altitude.Text = "ALT: " .. math.round(state.height) .. " ft"
+    self.components["stats"].Deflection.Text =
+        "DFL: (" .. math.round((180 - state.orient.yaw) % 360) .. "°G) " .. math.round(state.rot.X) .. "° L"
+	self.components["stats"].Elevation.Text = 
+        "ELV: (".. math.round(state.orient.pitch) .. "°G) " .. math.round(state.rot.Y) .. "° L"
+	self.components["stats"].Altitude.Text =
+        "ALT: " .. math.round(state.height) .. " ft"
 end
 
 return UI
