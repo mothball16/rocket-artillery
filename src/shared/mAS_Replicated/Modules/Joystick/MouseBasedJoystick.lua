@@ -55,7 +55,6 @@ function MouseBasedJoystick:GetInput()
 end
 
 function MouseBasedJoystick:CanEnable()
-    print("yo")
     local offset = self.frame.AbsolutePosition
     local scale = self.frame.AbsoluteSize
     return mouse.X >= offset.X and mouse.X <= offset.X + scale.X

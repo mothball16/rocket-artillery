@@ -8,8 +8,6 @@ local ParticleActivator = require(script.Parent.ParticleActivator)
 return function()
     dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnParticlePlayed,
     function(config, ...)
-        print(config, ...)
-        ParticleActivator.config:Overwrite(config)
-        ParticleActivator:ExecuteOnClient(...)
+        ParticleActivator:ExecuteOnClient(config, ...)
     end)
 end

@@ -22,12 +22,12 @@ local TwoAxisRotator = {}
 TwoAxisRotator.__index = TwoAxisRotator
 
 local function _checkSetup(required)
-    local rotMotor = validator:ValueIsOfClass(
-        required:FindFirstChild("RotMotor"), "ManualWeld")
-    local pitchMotor = validator:ValueIsOfClass(
-        required:FindFirstChild("PitchMotor"), "ManualWeld")
     local state = validator:IsOfClass(
         required:FindFirstChild("TwoAxisRotatorState"), "Folder")
+    local rotMotor = validator:ValueIsOfClass(
+        state:FindFirstChild("RotMotor"), "ManualWeld")
+    local pitchMotor = validator:ValueIsOfClass(
+        state:FindFirstChild("PitchMotor"), "ManualWeld")
     return rotMotor, pitchMotor, state
 end
 
@@ -45,24 +45,22 @@ function TwoAxisRotator.new(args, required)
         tick = 0,
         curX = state:GetAttribute("X"),
         curY = state:GetAttribute("Y"),
-        targetX = state:GetAttribute("X"),
-        targetY = state:GetAttribute("Y"),
     }, TwoAxisRotator)
 
-    self:UpdateWelds(self.curX, self.curY)
+    self:UpdateWelds(self.curX, self.curY, true)
     return self
 end
 
 -- (x, y)
-function TwoAxisRotator:UpdateWelds(x, y)
+function TwoAxisRotator:UpdateWelds(x, y, replicate)
     self.rotMotor.C1 = CFrame.Angles(0,math.rad(x),0)
     self.pitchMotor.C1 = CFrame.Angles(0,0,-math.rad(y))
-    if self.tick > WELD_UPDATE_THROTTLE then
+    if replicate and self.tick > WELD_UPDATE_THROTTLE then
         WeldsUpdated:FireServer(self.state, x, y)
         self.tick = 0
     end
 end
--- TODO: logic for input should be moved out!!! this module should really only be rotating stuff - how we decide to rotate it should be decided elsewhere
+
 function TwoAxisRotator:Update(dt)
     self.tick += dt
     local adjustForDt = dt * 60
@@ -77,7 +75,7 @@ function TwoAxisRotator:Update(dt)
         local pitchSpeed = math.rad(self.config:Get("pitchSpeed"))
         self.curY = math.clamp(self.curY - (self.dir.Y * pitchSpeed * adjustForDt), self.config:Get("pitchMin"), self.config:Get("pitchMax"))
         
-        self:UpdateWelds(self.curX, self.curY)
+        self:UpdateWelds(self.curX, self.curY, true)
     end
 end
 

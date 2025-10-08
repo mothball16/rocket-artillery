@@ -51,10 +51,9 @@ function NetUtils:GetObject(id)
 end
 
 function NetUtils:FireOtherClients(plr, event, ...)
-    validator:Exists(event["FireClient"], "FireClient function of event")
+    validator:Exists(event["FireClient"], "FireClient function of event: ".. tostring(event))
     for _, v in pairs(game.Players:GetChildren()) do
-        if v == plr then continue end
-        print(event, ...)
+       -- if v == plr then continue end
         event:FireClient(v, ...)
     end
 end

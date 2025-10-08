@@ -9,14 +9,16 @@ local function InitEvents()
 	end
 end
 
-
+local OnTurretWeldsUpdated = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.OnTurretWeldsUpdated)
 return function()
+	InitEvents()
+
 	dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnTurretWeldsUpdated, function(player, state, x, y)
 		state:SetAttribute("X", x)
 		state:SetAttribute("Y", y)
+		dir.NetUtils:FireOtherClients(player, OnTurretWeldsUpdated, state)
 	end)
 
-	InitEvents()
 end
 
 

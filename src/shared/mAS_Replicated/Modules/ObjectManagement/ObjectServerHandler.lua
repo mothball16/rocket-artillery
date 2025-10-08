@@ -16,5 +16,5 @@ return function()
         end
         objects[required].destroy()
         objects[required] = nil
-    end)    
+    end)
 end
