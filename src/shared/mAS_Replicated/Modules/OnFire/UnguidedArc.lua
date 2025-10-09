@@ -1,5 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local RuS = game:GetService("RunService")
+local ProjectileController = require(dir.Modules.Core.ProjectileController)
 local UnguidedArc = {}
 UnguidedArc.__index = UnguidedArc
 
@@ -63,7 +64,7 @@ function UnguidedArc:SetupRaycastLoop(config, main, bv, rayParams)
 		end
 		timepasu += dt
 		if timepasu > dir.Consts.REPLICATION_THROTTLE then
-			
+			ProjectileController.Replicate(main.Parent)
 		end
 
 		bv.Velocity = (main.CFrame).LookVector * main:GetAttribute("Speed")
@@ -74,14 +75,19 @@ function UnguidedArc:SetupRaycastLoop(config, main, bv, rayParams)
 		local result = game.Workspace:Raycast(lastPos,direction * mag, rayParams)
 		if result and result.Instance.Transparency < 1 then
 			connection:Disconnect()
+			ProjectileController.Destroy(main.Parent)
 			config:Get("onHit")(result.Position)
 		end
 		lastPos = main.Position
 	end)
+	-- ensure this is removed
+	task.delay(dir.Consts.MAX_PROJECTILE_LIFETIME, function()
+		if connection then connection:Disconnect() end
+	end)
 end
 
 -- (main, rayParams)
-function UnguidedArc:ExecuteClient(config, main, rayParams)
+function UnguidedArc:ExecuteOnClient(config, main, rayParams)
 	config = dir.FallbackConfig.new(config, fallbacks)
 	assert(main:IsA("BasePart"), "UnguidedArc fire fail: main should be a BasePart")
 	local bv, _ = UnguidedArc:SetupBodyMovers(config, main)

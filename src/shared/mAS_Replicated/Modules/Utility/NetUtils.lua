@@ -53,7 +53,7 @@ end
 function NetUtils:FireOtherClients(plr, event, ...)
     validator:Exists(event["FireClient"], "FireClient function of event: ".. tostring(event))
     for _, v in pairs(game.Players:GetChildren()) do
-        if v == plr then continue end
+       -- if v == plr then continue end
         event:FireClient(v, ...)
     end
 end

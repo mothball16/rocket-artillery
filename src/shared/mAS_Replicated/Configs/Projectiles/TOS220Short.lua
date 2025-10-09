@@ -29,7 +29,7 @@ local TOS220Short = {
 			["despawn"] = 10;
 			["onHit"] = GoBoom.ExecuteOnClient;
 		}},
-		{func = ParticleActivator}
+		{func = ParticleActivator, replicate = true}
 	};
 
 	OnHit = {

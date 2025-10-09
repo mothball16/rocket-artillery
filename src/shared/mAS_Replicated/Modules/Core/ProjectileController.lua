@@ -1,8 +1,11 @@
+local HttpService = game:GetService("HttpService")
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
 local rayParams = RaycastParams.new()
 local registry = require(dir.Modules.Core.ProjectileRegistry)
-local RequestProjectileSpawn = dir.Net:RemoteEvent(dir.Events.Reliable.RequestProjectileSpawn)
+local RequestProjectileCreate = dir.Net:RemoteEvent(dir.Events.Reliable.RequestProjectileCreate)
+local RequestProjectileUpdate = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.RequestProjectileUpdate)
+local RequestProjectileDestroy = dir.Net:RemoteEvent(dir.Events.Reliable.RequestProjectileDestroy)
 local ProjectileController = {}
 -- ()
 function ProjectileController:Init()
@@ -15,14 +18,48 @@ end
 ---@param filterInstances table the instances to ignore when casting rays
 function ProjectileController.Fire(firePart, ammoName, filterInstances)
     rayParams.FilterDescendantsInstances = filterInstances
-    
+
+    -- find our projectile and make the physical copy
     local data = registry:GetProjectile(ammoName)
     local onFire = validator:Exists(data.Config["OnFire"], "OnFire prop. of config of projectile " .. ammoName)
     local projectile = data.Model:Clone()
     projectile.Parent = game.Workspace
     projectile:SetPrimaryPartCFrame(firePart.CFrame)
-    RequestProjectileSpawn:FireServer(firePart.CFrame)
+
+    -- setup replication data, send to server
+    local id = HttpService:GenerateGUID()
+    projectile:SetAttribute(dir.Consts.REPL_ID, id)
+    RequestProjectileCreate:FireServer(
+        id,
+        {
+            ["cf"] = projectile.PrimaryPart.CFrame,
+            ["handler"] = "ReplicateOrientation",
+            ["projectile"] = ammoName
+        })
     dir.NetUtils:ExecuteOnClient(onFire, projectile.PrimaryPart, rayParams)
+end
+
+function ProjectileController.Replicate(object)
+    local id = object:GetAttribute(dir.Consts.REPL_ID)
+    if not id then
+        warn("no ID registered on projectile, not updating")
+        return
+    end
+    RequestProjectileUpdate:FireServer(
+        id,
+        {
+            ["cf"] = object.PrimaryPart.CFrame,
+        })
+end
+
+function ProjectileController.Destroy(object)
+    local id = object:GetAttribute(dir.Consts.REPL_ID)
+    if not id then
+        warn("no ID registered on projectile, not destroying")
+        return
+    end
+    RequestProjectileDestroy:FireServer(id)
+    object:Destroy()
 end
 
 return ProjectileController

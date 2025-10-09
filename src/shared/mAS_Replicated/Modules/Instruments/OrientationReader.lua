@@ -35,4 +35,8 @@ function OrientationReader:GetForwardPos(forward)
     return (self.main.CFrame * CFrame.new(0,0,-forward)).Position
 end
 
+function OrientationReader:Destroy()
+    
+end
+
 return OrientationReader

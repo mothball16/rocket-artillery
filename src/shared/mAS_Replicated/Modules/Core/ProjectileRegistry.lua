@@ -20,7 +20,7 @@ function ProjectileRegistry:GetProjectile(name)
             AttachModel = attachModels:FindFirstChild(name)
         }
     end
-return cache[name]
+    return cache[name]
 end
 
 return ProjectileRegistry

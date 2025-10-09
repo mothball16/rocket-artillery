@@ -20,7 +20,7 @@ function DetachAndRemove:Execute(config, main, required)
 		end
 	end
 	main.Parent.Parent = game.Workspace
-
+	
 end
 
 
