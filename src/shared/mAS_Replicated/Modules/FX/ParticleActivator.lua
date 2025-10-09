@@ -15,7 +15,7 @@ local function FireParticles(config, holder, disableEffect)
 	-- then eject particles from the model so that they arent destroyed : o
 	if config:Get("avoidDestruction") then
 		holder = holder:Clone()
-		holder.Parent = game.Workspace
+		holder.Parent = game.Workspace.IgnoreList
 		holder.Anchored = true
 		holder.CanCollide = false
 		holder.CanQuery = false

@@ -43,7 +43,6 @@ local function _checkSetup(required)
 end
 
 function TurretController.new(args, required)
-    print("my boy")
     local uiHandler, joystick = _checkSetup(required)
     local self = setmetatable({}, TurretController)
     self.id = dir.NetUtils:GetId(required)
@@ -162,7 +161,6 @@ function TurretController:GetInterval()
     return self.config:Get("timeIntervals")[self.state.timeIndex]
 end
 --#endregion
-
 function TurretController:Destroy()
     self.maid:DoCleaning()
 end

@@ -2,9 +2,8 @@ local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
 local rayParams = RaycastParams.new()
 local registry = require(dir.Modules.Core.ProjectileRegistry)
-
+local RequestProjectileSpawn = dir.Net:RemoteEvent(dir.Events.Reliable.RequestProjectileSpawn)
 local ProjectileController = {}
-
 -- ()
 function ProjectileController:Init()
     rayParams.FilterType = Enum.RaycastFilterType.Exclude
@@ -15,12 +14,14 @@ end
 ---@param ammoName string the name corresponding to the projectile type registered in ProjectileRegistry
 ---@param filterInstances table the instances to ignore when casting rays
 function ProjectileController.Fire(firePart, ammoName, filterInstances)
+    rayParams.FilterDescendantsInstances = filterInstances
+    
     local data = registry:GetProjectile(ammoName)
     local onFire = validator:Exists(data.Config["OnFire"], "OnFire prop. of config of projectile " .. ammoName)
     local projectile = data.Model:Clone()
     projectile.Parent = game.Workspace
     projectile:SetPrimaryPartCFrame(firePart.CFrame)
-    rayParams.FilterDescendantsInstances = filterInstances
+    RequestProjectileSpawn:FireServer(firePart.CFrame)
     dir.NetUtils:ExecuteOnClient(onFire, projectile.PrimaryPart, rayParams)
 end
 

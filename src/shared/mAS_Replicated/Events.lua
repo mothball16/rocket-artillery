@@ -4,17 +4,28 @@ client -> server: Request<...>
 server -> client: On<...>
 ]]
 
--- a collection of enums for the network so not everything is stringly typed
 return {
     Reliable = {
         OnInitialize = "OnInitialize",
         OnDestroy = "OnDestroy",
+
+        OnProjectileDestroyed = "OnProjectileDestroyed",
+        RequestProjectileDestroy = "RequestProjectileDestroy",
+
+        OnProjectileCreated = "OnProjectileCreated",
+        RequestProjectileCreate = "RequestProjectileCreate",
+
         RequestAttachmentDetach = "RequestAttachmentDetach",
         RequestAttachmentUse = "RequestAttachmentUse",
         RequestAttachmentAttach = "RequestAttachmentAttach",
+
     };
     Unreliable = {
         OnTurretWeldsUpdated = "OnTurretWeldsUpdated",
         OnParticlePlayed = "OnParticlePlayed",
+
+        OnProjectileUpdated = "OnProjectileUpdated",
+        RequestProjectileUpdate = "RequestProjectileUpdate",
+
     }
 }

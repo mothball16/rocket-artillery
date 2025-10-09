@@ -81,7 +81,7 @@ function UnguidedArc:SetupRaycastLoop(config, main, bv, rayParams)
 end
 
 -- (main, rayParams)
-function UnguidedArc:Execute(config, main, rayParams)
+function UnguidedArc:ExecuteClient(config, main, rayParams)
 	config = dir.FallbackConfig.new(config, fallbacks)
 	assert(main:IsA("BasePart"), "UnguidedArc fire fail: main should be a BasePart")
 	local bv, _ = UnguidedArc:SetupBodyMovers(config, main)
@@ -93,6 +93,10 @@ function UnguidedArc:Execute(config, main, rayParams)
 		UnguidedArc:SetupSpeedLoop(config, main)
 	end))
 	UnguidedArc:SetupRaycastLoop(config, main, bv, rayParams)
+end
+
+function UnguidedArc:ExecuteServer(config, main, rayParams)
+	
 end
 
 -- ()
