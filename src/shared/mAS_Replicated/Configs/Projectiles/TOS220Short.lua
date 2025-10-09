@@ -2,7 +2,7 @@
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local RocketAttachableBase = require(script.Parent.RocketAttachableBase)
 local UnguidedArc = require(dir.Modules.OnFire.UnguidedArc)
-local ParticleActivator = require(dir.Modules.FX.ParticleActivator)
+local FXActivator = require(dir.Modules.FX.FXActivator)
 local GoBoom = require(dir.Modules.OnHit.GoBoom)
 --#endregion
 
@@ -29,7 +29,7 @@ local TOS220Short = {
 			["despawn"] = 10;
 			["onHit"] = GoBoom.ExecuteOnClient;
 		}},
-		{func = ParticleActivator, replicate = true}
+		{func = FXActivator, replicate = true}
 	};
 
 	OnHit = {

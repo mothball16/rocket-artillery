@@ -2,8 +2,9 @@
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local TwoAxisRotator = require(dir.Modules.Turret.TwoAxisRotator)
 local AttachClientController = require(dir.Modules.AttachmentSystem.AttachClientController)
-local MouseBasedJoystick = require(dir.Modules.Joystick.MouseBasedJoystick)
 local OrientationReader = require(dir.Modules.Instruments.OrientationReader)
+local ForwardCamera = require(dir.Modules.Instruments.ForwardCamera)
+local Shake = require(dir.Utility.Shake)
 local validator = dir.Validator.new(script.Name)
 local Signal = require(dir.Utility.Signal)
 --#endregion
@@ -20,6 +21,7 @@ local RuS = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
+local camera = game.Workspace.CurrentCamera
 local TurretController = {}
 TurretController.__index = TurretController
 
@@ -70,7 +72,6 @@ function TurretController.new(args, required)
     self.TwoAxisRotator = TwoAxisRotator.new(args.Turret, required)
     self.AttachClientController = AttachClientController.new({}, required)
     self.OrientationReader = OrientationReader.new(args.OrientationReader, required)
-
     self.uiHandler = uiHandler.new(args.UIHandler, required)
     self.joystick = joystick.new(args.Joystick, self.uiHandler:GetRequired())
     -- give GC tasks
@@ -78,6 +79,12 @@ function TurretController.new(args, required)
     self.maid:GiveTask(self.AttachClientController)
     self.maid:GiveTask(self.uiHandler)
     self.maid:GiveTask(self.OrientationReader)
+
+    if args.ForwardCamera then
+        self.ForwardCamera = ForwardCamera.new(args.ForwardCamera, required)
+        self.maid:GiveTask(self.ForwardCamera)
+    end
+
     self:SetupConnections()
     self.uiHandler:SetupStatic({
         title = args.TurretController.turretName
@@ -86,7 +93,7 @@ function TurretController.new(args, required)
     return self
 end
 
-
+-- TODO: bind this to the new renderstepped, this overrides shake rn
 function TurretController:SetupConnections()
     self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
         local joystickInput = self.joystick:GetInput()
@@ -98,11 +105,16 @@ function TurretController:SetupConnections()
             orient = self.OrientationReader:GetDirection(),
             pos = self.OrientationReader:GetPos(),
             crosshair = self.OrientationReader:GetForwardPos(CROSSHAIR_DIST),
+            inCamera = self.ForwardCamera and self.ForwardCamera.enabled or false,
         })
+        if self.ForwardCamera and self.ForwardCamera.enabled then
+            self.ForwardCamera:Update()
+        end
     end))
 
     self.maid:GiveTask(UIS.InputBegan:Connect(function(input, chatting)
         if chatting then return end
+        local inCam = self.ForwardCamera and self.ForwardCamera.enabled
         if input.KeyCode == dir.Keybinds.MountedFire then
             self:Fire()
         elseif input.KeyCode == dir.Keybinds.SwapSalvo then
@@ -112,7 +124,17 @@ function TurretController:SetupConnections()
         elseif input.KeyCode == dir.Keybinds.RangeFinder then
             --self.localSignals.OnRangeFinderToggled:Fire()
         elseif input.KeyCode == dir.Keybinds.ToggleFCU then
-            
+        
+        elseif self.ForwardCamera and input.KeyCode == dir.Keybinds.ToggleCamera then
+            if inCam then
+               self.ForwardCamera:Disable()
+            else
+                self.ForwardCamera:Enable()
+            end
+        elseif inCam and input.KeyCode == dir.Keybinds.ZoomIn then
+
+        elseif inCam and input.KeyCode == dir.Keybinds.ZoomOut then
+        
         elseif input.UserInputType == Enum.UserInputType.MouseButton1 and self.joystick:CanEnable() then
             self.joystick:Enable()
         end
@@ -130,6 +152,21 @@ function TurretController:SetupConnections()
     self.localSignals.OnTimedIntervalModified:Fire(self:GetInterval())
 end
 
+local function _shakeCam()
+    local priority = Enum.RenderPriority.Last.Value
+
+	local shake = Shake.new()
+	shake.FadeInTime = 0
+	shake.Frequency = 0.1
+	shake.Amplitude = 1
+    shake.PositionInfluence = Vector3.new(0,0,0)
+	shake.RotationInfluence = Vector3.new(0.01, 0.01, 0.01)
+
+	shake:Start()
+	shake:BindToRenderStep(Shake.NextRenderName(), priority, function(pos, rot, isDone)
+		camera.CFrame *= CFrame.new(pos) * CFrame.Angles(rot.X, rot.Y, rot.Z)
+	end)
+end
 
 function TurretController:Fire()
     local success, slot = self.AttachClientController:FireOff(self.selectedProjectileType)
@@ -137,6 +174,7 @@ function TurretController:Fire()
        --validator:Error("Didn't launch successfully from AttachClientController.")
         return
     end
+    _shakeCam()
     dir.Signals.FireProjectile:Fire(slot, self.selectedProjectileType, {self.vehicle, player.Character})
     self.localSignals.OnFire:Fire()
     return true

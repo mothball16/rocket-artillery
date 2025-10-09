@@ -1,4 +1,5 @@
 return {
+    ToggleCamera = Enum.KeyCode.X;
     ZoomIn = Enum.KeyCode.E;
     ZoomOut = Enum.KeyCode.Q;
     MountedFire = Enum.KeyCode.F;

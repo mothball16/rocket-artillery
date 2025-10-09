@@ -1,5 +1,10 @@
 return {
     --[[
+    what FOV the player returns to upon unscripting the camera
+    ]]
+    FOV_DEFAULT = 70;
+
+    --[[
     how long the projectile replicator waits before falling back to destroy the projectile,
     regardless of its current state (in case of sloppy netcode causing a leak)
     ]]

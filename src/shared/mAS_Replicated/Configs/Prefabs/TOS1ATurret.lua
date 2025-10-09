@@ -21,6 +21,11 @@ return {
         enabled = false;
     };
 
+    ForwardCamera = {
+        minFOV = 30;
+        maxFOV = 60;
+    };
+
     -- empty configs, just for clarity
     AttachSelector = {};
     AttachServerController = {};

@@ -6,6 +6,9 @@ for _, module in pairs(moduleFolder:GetDescendants()) do
 end
 local beginTime = os.clock()
 warn("(ServerBootstrapper) beginning mAS server load...")
+
+modules["MakeIgnoreListIfNotExisting"]()        
+
 -- immediately load, essential to other thingys
 modules["EventRegistry"]()
 
@@ -19,4 +22,4 @@ modules["ServerHandlerInitializer"]()
 modules["ProjectileReplManager"]()
 
 local endTime = os.clock()
-warn("(ServerBootstrapper) mAS server fully loaded with no issues in ".. (endTime - beginTime) .. "sec.")
+warn("(ServerBootstrapper) mAS server fully loaded with no issues in ".. (endTime - beginTime) .. "sec.")       

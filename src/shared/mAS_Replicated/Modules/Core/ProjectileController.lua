@@ -41,15 +41,11 @@ end
 
 function ProjectileController.Replicate(object)
     local id = object:GetAttribute(dir.Consts.REPL_ID)
-    if not id then
+    if id == nil then
         warn("no ID registered on projectile, not updating")
         return
     end
-    RequestProjectileUpdate:FireServer(
-        id,
-        {
-            ["cf"] = object.PrimaryPart.CFrame,
-        })
+    RequestProjectileUpdate:FireServer(id, {["cf"] = object.PrimaryPart.CFrame})
 end
 
 function ProjectileController.Destroy(object)
@@ -58,6 +54,8 @@ function ProjectileController.Destroy(object)
         warn("no ID registered on projectile, not destroying")
         return
     end
+    -- prevent new updates and tell the server to drop the id
+    object:SetAttribute(dir.Consts.REPL_ID, nil)
     RequestProjectileDestroy:FireServer(id)
     object:Destroy()
 end

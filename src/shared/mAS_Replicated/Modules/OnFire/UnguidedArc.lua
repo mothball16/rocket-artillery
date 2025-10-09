@@ -82,7 +82,7 @@ function UnguidedArc:SetupRaycastLoop(config, main, bv, rayParams)
 	end)
 	-- ensure this is removed
 	task.delay(dir.Consts.MAX_PROJECTILE_LIFETIME, function()
-		if connection then connection:Disconnect() end
+		if connection then ProjectileController.Destroy(main.Parent) end
 	end)
 end
 

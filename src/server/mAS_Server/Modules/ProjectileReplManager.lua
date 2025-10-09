@@ -40,7 +40,7 @@ function ProjectileReplManager:Update(player, id, args)
     end
     local updateTime = tick()
     if state[dir.Consts.LAST_UPDATE_FIELD] and updateTime - state[dir.Consts.LAST_UPDATE_FIELD] < dir.Consts.REPLICATION_THROTTLE * 0.5 then
-        warn("remove this warn later - intended behavior")
+        --warn("remove this warn later - intended behavior")
         return
     end
     args[dir.Consts.LAST_UPDATE_FIELD] = updateTime

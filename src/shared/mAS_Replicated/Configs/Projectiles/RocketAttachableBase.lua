@@ -5,7 +5,7 @@ defines what the attachmodel behavior of a rocket should be
 
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local DetachAndRemove = require(dir.Modules.OnFire.DetachAndRemove)
-local ParticleActivator, ParticleActivatorConfig = require(dir.Modules.FX.ParticleActivator),
+local FXActivator, FXActivatorConfig = require(dir.Modules.FX.FXActivator),
 {
 	["lookFor"] = "Particles",
 	["playFor"] = 0.15,
@@ -14,7 +14,7 @@ local ParticleActivator, ParticleActivatorConfig = require(dir.Modules.FX.Partic
 
 local RocketAttachableBase = {
 	ClientModelOnUse = {
-		{func = ParticleActivator, data = ParticleActivatorConfig};
+		{func = FXActivator, data = FXActivatorConfig};
 	};
 	ClientModelOnAttach = {};
 	ClientModelOnDetach = {
@@ -22,7 +22,7 @@ local RocketAttachableBase = {
 	};
 
 	ServerModelOnUse = {
-		{func = ParticleActivator, data = ParticleActivatorConfig};
+		{func = FXActivator, data = FXActivatorConfig};
 	};
 	ServerModelOnAttach = {};
 	ServerModelOnDetach = {

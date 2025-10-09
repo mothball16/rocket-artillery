@@ -1,13 +1,13 @@
--- replicates effects with a single particleactivator that swaps configs on call
--- the whole OOP thing with effects is just to package the particleactivator across
+-- replicates effects with a single FXActivator that swaps configs on call
+-- the whole OOP thing with effects is just to package the FXActivator across
 -- scripts so i mean i guess this works lol
 
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
-local ParticleActivator = require(script.Parent.ParticleActivator)
+local FXActivator = require(script.Parent.FXActivator)
 
 return function()
     dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnParticlePlayed,
     function(config, ...)
-        ParticleActivator:ExecuteOnClient(config, ...)
+        FXActivator:ExecuteOnClient(config, ...)
     end)
 end
