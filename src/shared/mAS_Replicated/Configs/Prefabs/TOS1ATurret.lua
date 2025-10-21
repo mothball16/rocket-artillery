@@ -26,6 +26,9 @@ return {
         maxFOV = 60;
     };
 
+    RangeSheets = {
+        "TOS220Short",
+    };
     -- empty configs, just for clarity
     AttachSelector = {};
     AttachServerController = {};

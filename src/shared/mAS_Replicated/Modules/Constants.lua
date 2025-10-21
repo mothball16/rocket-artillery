@@ -15,12 +15,12 @@ return {
     ]]
     REPLICATION_THROTTLE = 0.2;
 
-
     --[[
     DONT TOUCH THIS!! unless you for some reason have an attribute or object exactly named
     like any of these (why would you do that)
     ]]
     REPL_ID = "mAS_replId";
+    AMMO_TYPE = "mAS_ammoType";
     ATTACH_WELD_NAME = "mAS_AttachPointWeld";
     OBJECT_IDENT_ATTR = "mAS_ObjectIdentifier";
     SEATED_INIT_TAG_NAME = "mAS_RunOnSeated";

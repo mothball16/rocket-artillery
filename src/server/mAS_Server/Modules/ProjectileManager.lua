@@ -1,10 +1,11 @@
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
-local ProjectileReplManager = {}
+local ProjectileManager = {}
 local registry = {}
 local OnProjectileCreated = dir.Net:RemoteEvent(dir.Events.Reliable.OnProjectileCreated)
 local OnProjectileUpdated = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.OnProjectileUpdated)
 local OnProjectileDestroyed = dir.Net:RemoteEvent(dir.Events.Reliable.OnProjectileDestroyed)
+local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
 
 local function _getContext(player)
     local localReg = registry[player.UserId]
@@ -14,26 +15,28 @@ local function _getContext(player)
     return localReg
 end
 
-function ProjectileReplManager:Register(player, id, args)
+function ProjectileManager:Register(player, id, args)
     validator:Exists(args.handler, "client handler method of projectile")
-    local reg = _getContext(player)
-    if reg[id] then
+    local playerRegistry = _getContext(player)
+    if playerRegistry[id] then
         warn("projectile was attempted to be created, but already exists (" .. id .. ")")
         return
     end
 
-    reg[id] = args
+    playerRegistry[id] = args
     task.delay(dir.Consts.MAX_PROJECTILE_LIFETIME, function()
-        if player and player.Parent and reg[id] then
+        if player and player.Parent and playerRegistry[id] then
             self:Destroy(player, id)
         end
     end)
     dir.NetUtils:FireOtherClients(player, OnProjectileCreated, id, args)
 end
 
-function ProjectileReplManager:Update(player, id, args)
-    local reg = _getContext(player)
-    local state = reg[id]
+
+-- updates projectile and state + last state, then fires upd. back to the other clients
+function ProjectileManager:Update(player, id, args)
+    local playerRegistry = _getContext(player)
+    local state = playerRegistry[id]
     if not state then
         warn("projectile was attempted to be updated, but doesn't exist (" .. id .. ")")
         return
@@ -57,19 +60,31 @@ function ProjectileReplManager:Update(player, id, args)
     dir.NetUtils:FireOtherClients(player, OnProjectileUpdated, id, args)
 end
 
-function ProjectileReplManager:Destroy(player, id)
-    local reg = _getContext(player)
-    local state = reg[id]
-    if not state then
+-- calls the OnHit method if exists and then calls to destroy
+function ProjectileManager:Hit(player, id, args)
+    local playerRegistry = _getContext(player)
+    local state = playerRegistry[id]
+    if not state or not state.projectile then warn("no state/no projectile type in state") return end
+    local onHit = validator:Exists(ProjectileRegistry:GetProjectile(state.projectile).Config.OnHit)
+    dir.NetUtils:ExecuteOnServer(player, onHit, args)
+    self:Destroy(player, id)
+end
 
+
+
+-- "destroys" the object on the server. the object is really just a data container so no phys. cleanup necessary
+function ProjectileManager:Destroy(player, id)
+    local playerRegistry = _getContext(player)
+    local state = playerRegistry[id]
+    if not state then
         warn("projectile was attempted to be destroyed, but doesn't exist (" .. id .. ")")
         return
     end
-    reg[id] = nil
+    playerRegistry[id] = nil
     dir.NetUtils:FireOtherClients(player, OnProjectileDestroyed, id)
 end
 
-function ProjectileReplManager:SetupConnections()
+function ProjectileManager:SetupConnections()
     game.Players.PlayerAdded:Connect(function(player)
         registry[player.UserId] = {}
     end)
@@ -86,9 +101,13 @@ function ProjectileReplManager:SetupConnections()
         self:Destroy(player, id)
     end)
 
+    dir.Net:Connect(dir.Events.Reliable.RequestProjectileHit, function(player, id, args)
+        self:Hit(player, id, args)
+    end)
+
     dir.Net:ConnectUnreliable(dir.Events.Unreliable.RequestProjectileUpdate, function(player, id, args)
         self:Update(player, id, args)
     end)
 end
 
-return function() ProjectileReplManager:SetupConnections() end
+return function() ProjectileManager:SetupConnections() end

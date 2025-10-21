@@ -1,7 +1,6 @@
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local conf = require(dir.Utility.FallbackConfig)
 local GoBoom = {}
-GoBoom.__index = GoBoom
 
 local fallbacks = {
 	["blastRadius"] = 16,
@@ -18,19 +17,20 @@ function GoBoom.new(args)
 	return self
 end
 
-function GoBoom:ExecuteOnClient(args, pos)
+function GoBoom:ExecuteOnClient(config, args)
 	
 end
 
-function GoBoom:ExecuteOnServer(args, pos)
+function GoBoom:ExecuteOnServer(plr, config, args)
+	config = dir.FallbackConfig.new(config, fallbacks)
 	local exp = Instance.new("Explosion", game.Workspace)
-	exp.Position = pos
-	exp.BlastRadius = self.config.blastRadius
-	exp.BlastPressure = self.config.blastPressure
+	exp.Position = args.pos
+	exp.BlastRadius = config:Get("blastRadius")
+	exp.BlastPressure = config:Get("blastPressure")
 	exp.DestroyJointRadiusPercent = 0
 	exp.ExplosionType = Enum.ExplosionType.NoCraters
 	exp.Hit:Connect(function(part)
-		if self.config.breakJoints == true then
+		if config.breakJoints == true then
 			if part.Anchored == false then
 				part:BreakJoints()
 			end
@@ -38,7 +38,7 @@ function GoBoom:ExecuteOnServer(args, pos)
 		if part.Name == "Head" and part.Parent:FindFirstChild("Humanoid") then
 			local mag = (exp.Position - part.Position).Magnitude
 			local damagePercent = 1 - mag/exp.BlastRadius
-			local damageFinal = self.config:Get("maxDamage") * damagePercent
+			local damageFinal = config:Get("maxDamage") * damagePercent
 			part.Parent:FindFirstChild("Humanoid"):TakeDamage(damageFinal)
 		end
 	end)

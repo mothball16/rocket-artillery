@@ -19,7 +19,7 @@ modules["ObjectBootstrapper"]()
 modules["ServerHandlerInitializer"]()
 
 -- irrelevant to other modules
-modules["ProjectileReplManager"]()
+modules["ProjectileManager"]()
 
 local endTime = os.clock()
 warn("(ServerBootstrapper) mAS server fully loaded with no issues in ".. (endTime - beginTime) .. "sec.")       

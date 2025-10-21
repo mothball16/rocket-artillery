@@ -4,6 +4,7 @@ local TwoAxisRotator = require(dir.Modules.Turret.TwoAxisRotator)
 local AttachClientController = require(dir.Modules.AttachmentSystem.AttachClientController)
 local OrientationReader = require(dir.Modules.Instruments.OrientationReader)
 local ForwardCamera = require(dir.Modules.Instruments.ForwardCamera)
+local RangeSheet = require(dir.Modules.Instruments.RangeSheet)
 local Shake = require(dir.Utility.Shake)
 local validator = dir.Validator.new(script.Name)
 local Signal = require(dir.Utility.Signal)
@@ -16,7 +17,7 @@ responsibilities so far:
 - input for fire control
 ]]
 local CROSSHAIR_DIST = 200
-
+local TURRET_UPD_FUNC = "TurretUpdate"
 local RuS = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
@@ -72,6 +73,10 @@ function TurretController.new(args, required)
     self.TwoAxisRotator = TwoAxisRotator.new(args.Turret, required)
     self.AttachClientController = AttachClientController.new({}, required)
     self.OrientationReader = OrientationReader.new(args.OrientationReader, required)
+    self.RangeSheet = RangeSheet.new({
+        controller = require(dir.Modules.OnFire.RocketController),
+        projectile = self.selectedProjectileType
+    })
     self.uiHandler = uiHandler.new(args.UIHandler, required)
     self.joystick = joystick.new(args.Joystick, self.uiHandler:GetRequired())
     -- give GC tasks
@@ -90,12 +95,13 @@ function TurretController.new(args, required)
         title = args.TurretController.turretName
     })
 
+
     return self
 end
 
 -- TODO: bind this to the new renderstepped, this overrides shake rn
 function TurretController:SetupConnections()
-    self.maid:GiveTask(RuS.RenderStepped:Connect(function(dt)
+    RuS:BindToRenderStep(TURRET_UPD_FUNC,Enum.RenderPriority.Camera.Value - 10,function(dt)
         local joystickInput = self.joystick:GetInput()
         self.TwoAxisRotator:SetIntent(joystickInput)
         self.TwoAxisRotator:Update(dt)
@@ -110,7 +116,11 @@ function TurretController:SetupConnections()
         if self.ForwardCamera and self.ForwardCamera.enabled then
             self.ForwardCamera:Update()
         end
-    end))
+    end)
+
+    self.maid:GiveTask(function()
+        RuS:UnbindFromRenderStep(TURRET_UPD_FUNC)
+    end)
 
     self.maid:GiveTask(UIS.InputBegan:Connect(function(input, chatting)
         if chatting then return end
@@ -122,9 +132,9 @@ function TurretController:SetupConnections()
         elseif input.KeyCode == dir.Keybinds.SwapInterval then
             self.localSignals.OnTimedIntervalModified:Fire(self:SwapInterval())
         elseif input.KeyCode == dir.Keybinds.RangeFinder then
-            --self.localSignals.OnRangeFinderToggled:Fire()
+            self.RangeSheet:Toggle()
         elseif input.KeyCode == dir.Keybinds.ToggleFCU then
-        
+            
         elseif self.ForwardCamera and input.KeyCode == dir.Keybinds.ToggleCamera then
             if inCam then
                self.ForwardCamera:Disable()

@@ -17,6 +17,8 @@ for _, v in pairs(require(modules.Parent.Events)) do
     
 end]]
 
+-- used for the function bundles. calls everything in a table with ... being the args
+-- (all funcs in a bundle should have the same args)
 function NetUtils:ExecuteOnClient(tbl, ...)
     for _, command in pairs(tbl) do
         if command.func["ExecuteOnClient"] then
