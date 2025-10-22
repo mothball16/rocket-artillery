@@ -25,11 +25,14 @@ return {
         RequestAttachmentUse = "RequestAttachmentUse",
         RequestAttachmentAttach = "RequestAttachmentAttach",
 
+        -- fx
+        OnParticlePlayed = "OnParticlePlayed",
+        OnParticleCreated = "OnParticleCreated",
     };
     Unreliable = {
         -- turret weld stuff
         OnTurretWeldsUpdated = "OnTurretWeldsUpdated",
-        OnParticlePlayed = "OnParticlePlayed",
+
 
         -- projectile replication
         OnProjectileUpdated = "OnProjectileUpdated",

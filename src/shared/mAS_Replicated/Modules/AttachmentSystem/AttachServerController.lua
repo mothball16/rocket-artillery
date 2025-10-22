@@ -41,7 +41,10 @@ function AttachServerController:AttachAt(actor, index, attachType)
     instance:SetPrimaryPartCFrame(slot.CFrame)
 
     slot:SetAttribute("Occupied", true)
-    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnAttach"], projectile.PrimaryPart, self.required)
+    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnAttach"], {
+        ["object"] = instance,
+        ["required"] = self.required
+    })
     dir.Helpers:Weld(slot, instance:FindFirstChild("Attachment")).Name = dir.Consts.ATTACH_WELD_NAME
     return true
 end
@@ -53,7 +56,10 @@ function AttachServerController:UseAt(actor, index)
         validator:Warn("missing attach, config, or weld on attachpoint " .. index)
         return false
     end
-    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnUse"], instance.PrimaryPart, self.required)
+    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnUse"], {
+        ["object"] = instance,
+        ["required"] = self.required
+    })
     return true
 end
 
@@ -70,7 +76,10 @@ function AttachServerController:DetachAt(actor, index)
     end
     weld:Destroy()
     slot:SetAttribute("Occupied", false)
-    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnDetach"], instance.PrimaryPart, self.required)
+    dir.NetUtils:ExecuteOnServer(actor, projectile.Config["ServerModelOnDetach"], {
+        ["object"] = instance,
+        ["required"] = self.required
+    })
     if instance then
         -- let client side replication grab the particles if needed
         instance.Parent = game.ReplicatedStorage

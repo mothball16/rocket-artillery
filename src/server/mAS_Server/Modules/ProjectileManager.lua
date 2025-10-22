@@ -2,9 +2,6 @@ local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local validator = dir.Validator.new(script.Name)
 local ProjectileManager = {}
 local registry = {}
-local OnProjectileCreated = dir.Net:RemoteEvent(dir.Events.Reliable.OnProjectileCreated)
-local OnProjectileUpdated = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.OnProjectileUpdated)
-local OnProjectileDestroyed = dir.Net:RemoteEvent(dir.Events.Reliable.OnProjectileDestroyed)
 local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
 
 local function _getContext(player)
@@ -29,7 +26,7 @@ function ProjectileManager:Register(player, id, args)
             self:Destroy(player, id)
         end
     end)
-    dir.NetUtils:FireOtherClients(player, OnProjectileCreated, id, args)
+    dir.NetUtils:FireOtherClients(player, dir.Events.Reliable.OnProjectileCreated, id, args)
 end
 
 
@@ -57,7 +54,7 @@ function ProjectileManager:Update(player, id, args)
 
     state[dir.Consts.LAST_UPDATE_FIELD] = updateTime
     dir.Helpers:TableCombine(args, lastArgs)
-    dir.NetUtils:FireOtherClients(player, OnProjectileUpdated, id, args)
+    dir.NetUtils:FireOtherClients(player, dir.Events.Unreliable.OnProjectileUpdated, id, args)
 end
 
 -- calls the OnHit method if exists and then calls to destroy
@@ -67,7 +64,6 @@ function ProjectileManager:Hit(player, id, args)
     if not state or not state.projectile then warn("no state/no projectile type in state") return end
     local onHit = validator:Exists(ProjectileRegistry:GetProjectile(state.projectile).Config.OnHit)
     dir.NetUtils:ExecuteOnServer(player, onHit, args)
-    self:Destroy(player, id)
 end
 
 
@@ -81,7 +77,7 @@ function ProjectileManager:Destroy(player, id)
         return
     end
     playerRegistry[id] = nil
-    dir.NetUtils:FireOtherClients(player, OnProjectileDestroyed, id)
+    dir.NetUtils:FireOtherClients(player, dir.Events.Reliable.OnProjectileDestroyed, id)
 end
 
 function ProjectileManager:SetupConnections()

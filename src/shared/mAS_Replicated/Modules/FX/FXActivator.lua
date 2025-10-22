@@ -1,5 +1,11 @@
+--#region required
 local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
-local OnParticlePlayed = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.OnParticlePlayed)
+--#endregion required
+--[[
+activates particles on an ALREADY EXISTING object on the server
+if the object isn't on the server, use FXCreator instead
+]]
+
 
 local FXActivator = {}
 
@@ -46,9 +52,9 @@ local function FireFX(config, FXHolder, disableEffect)
 	end
 end
 
-function FXActivator:ExecuteOnClient(config, main)
+function FXActivator:ExecuteOnClient(config, args)
 	config = dir.FallbackConfig.new(config, fallbacks)
-	for _, holder in pairs(main.Parent:GetChildren()) do
+	for _, holder in pairs(args.object:GetChildren()) do
 		if holder.Name == config:Get("lookFor") then
 			FireFX(config, holder, false)
 		end
@@ -58,14 +64,18 @@ end
 -- particles should not be played on the server (Bad!!)
 -- this just ticks the avoidDestruction so particles aren't prematurely deleted
 -- and also tells other clients to replicate
-function FXActivator:ExecuteOnServer(plr, config, main)
+function FXActivator:ExecuteOnServer(plr, config, args)
 	config = dir.FallbackConfig.new(config, fallbacks)
-	for _, holder in pairs(main.Parent:GetChildren()) do
+
+	-- accessible from the server, just run it on that
+	for _, holder in pairs(args.object:GetChildren()) do
 		if holder.Name == config:Get("lookFor") then
 			FireFX(config, holder, true)
 		end
 	end
-	dir.NetUtils:FireOtherClients(plr, OnParticlePlayed, config:ToRaw(), main, _)
+
+	dir.NetUtils:FireOtherClients(plr, dir.Events.Reliable.OnParticlePlayed, config:ToRaw(), args)
+
 end
 
 

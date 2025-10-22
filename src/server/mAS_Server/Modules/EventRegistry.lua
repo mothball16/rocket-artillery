@@ -16,7 +16,7 @@ return function()
 	dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnTurretWeldsUpdated, function(player, state, x, y)
 		state:SetAttribute("X", x)
 		state:SetAttribute("Y", y)
-		dir.NetUtils:FireOtherClients(player, OnTurretWeldsUpdated, state)
+		dir.NetUtils:FireOtherClients(player, dir.Events.Unreliable.OnTurretWeldsUpdated, state)
 	end)
 
 end

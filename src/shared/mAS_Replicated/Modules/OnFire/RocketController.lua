@@ -38,20 +38,25 @@ function RocketController:StepDrop(arc, speed, dt)
 	return arc * speed * dt
 end
 
-function RocketController:ExecuteOnClient(args, main, rayParams)
-	assert(main:IsA("BasePart"), "RocketController fire fail: main should be a BasePart")
-	local config = dir.FallbackConfig.new(args, fallbacks)
+function RocketController:ExecuteOnClient(config, args)
+	local config = dir.FallbackConfig.new(config, fallbacks)
 	local maid = dir.Maid.new()
-	local initLook = main.CFrame.LookVector
+	print(config, args)
+
+	local main = args.object.PrimaryPart
+	local initLook = (main.CFrame * dir.Helpers:GenInaccuracy(config:Get("initInacc"))).LookVector
 	local dropFactor, lifetime, timepasu = 0, 0, 0
 	local lastPos = main.Position
 	local origPos = main.Position
+	local active = true
 
 	main:SetAttribute("Speed", config:Get("initSpeed"))
-	local mag,life = self:Simulate(args, initLook)
+	local mag,life = self:Simulate(config, initLook)
 	print(mag,life, initLook)
 	-- handle cleanup/gc
 	local function Destroy()
+		if not active then return end
+		active = false
 		ProjectileController.Destroy(main.Parent)
 		maid:Destroy()
 	end
@@ -84,10 +89,12 @@ function RocketController:ExecuteOnClient(args, main, rayParams)
 		
     	main.CFrame = CFrame.new(main.Position, main.Position + main.AssemblyLinearVelocity.Unit)
 
-		local result = game.Workspace:Raycast(lastPos,direction * mag, rayParams)
+		local result = game.Workspace:Raycast(lastPos,direction * mag, args.rayParams)
 		if result and result.Instance.Transparency < 1 then
 			warn("rocket hit stats", lifetime, (main.Position - origPos).Magnitude)
-			ProjectileController.Hit(main.Parent, result.Position)
+			ProjectileController.Hit(main.Parent, {
+				["pos"] = result.Position,
+			})
 			Destroy()
 		end
 

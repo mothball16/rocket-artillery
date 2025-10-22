@@ -3,6 +3,7 @@ local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local RocketAttachableBase = require(script.Parent.RocketAttachableBase)
 local RocketController = require(dir.Modules.OnFire.RocketController)
 local FXActivator = require(dir.Modules.FX.FXActivator)
+local FXCreator = require(dir.Modules.FX.FXCreator)
 local GoBoom = require(dir.Modules.OnHit.GoBoom)
 --#endregion
 
@@ -17,19 +18,24 @@ TOS220Short.OnFire = {
 	{func = RocketController, data = {
 		["initSpeed"] = 30; ["maxSpeed"] = 600;
 		["burnIn"] = 0; ["burnOut"] = 1;
-		["arc"] = 0.4; ["initInacc"] = 1.5; ["flyInacc"] = 0.1;
+		["arc"] = 0.4; ["initInacc"] = 1.5;
 		["despawn"] = 10;
 	}},
 	{func = FXActivator, replicate = true}
 };
 
 TOS220Short.OnHit = {
+	--{func = FXActivator, replicate = true},
 	{func = GoBoom, data = {
 		["blastRadius"] = 60,
 		["blastPressure"] = 1000,
+		["maxDamage"] = 150,
 		["breakJoints"] = false,
-		["maxDamage"] = 150
+		["showExplosion"] = false,
 	}},
+	{func = FXCreator, data = {
+		["useFX"] = "RocketMediumExplosion",
+	}}
 };
 
 -- for rangefinder/FCU

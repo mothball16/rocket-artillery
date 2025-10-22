@@ -5,8 +5,9 @@ local GoBoom = {}
 local fallbacks = {
 	["blastRadius"] = 16,
 	["blastPressure"] = 10000,
-	["breakJoints"] = false,
+	["breakJoints"] = "IfJointDestroyable", -- "None", "IfDestroyable", "All (not recommended)"
 	["maxDamage"] = 200,
+	["showExplosion"] = false,
 }
 
 function GoBoom.new(args)
@@ -23,34 +24,50 @@ end
 
 function GoBoom:ExecuteOnServer(plr, config, args)
 	config = dir.FallbackConfig.new(config, fallbacks)
+
+
 	local exp = Instance.new("Explosion", game.Workspace)
 	exp.Position = args.pos
 	exp.BlastRadius = config:Get("blastRadius")
 	exp.BlastPressure = config:Get("blastPressure")
 	exp.DestroyJointRadiusPercent = 0
 	exp.ExplosionType = Enum.ExplosionType.NoCraters
+	exp.Visible = config:Get("showExplosion")
+
+	local function CalcDamage(pos)
+		local mag = (exp.Position - pos).Magnitude
+		local damagePercent = 1 - mag/exp.BlastRadius
+		return config:Get("maxDamage") * damagePercent
+	end
+
 	exp.Hit:Connect(function(part)
-		if config.breakJoints == true then
-			if part.Anchored == false then
-				part:BreakJoints()
+		dir.Helpers:Switch (config:Get("breakJoints")) {
+			["IfJointDestroyable"] = function()
+				for _, v in pairs(part:GetJoints()) do
+					local partHealth = v:GetAttribute(dir.Consts.DESTROYABLE_JOINT_ATTR)
+					if not partHealth then continue end
+					local finalHealth = partHealth - CalcDamage(part.Position)
+					v:SetAttribute(dir.Consts.DESTROYABLE_JOINT_ATTR, finalHealth)
+					if finalHealth <= 0 then
+						v:Destroy()
+					end
+				end
+			end,
+			
+			["All"] = function()
+				for _, v in pairs(part:GetJoints()) do
+					v:Destroy()
+				end
+			end,
+
+			default = function()
+				print("yo")
 			end
-		end
+		}
+
 		if part.Name == "Head" and part.Parent:FindFirstChild("Humanoid") then
-			local mag = (exp.Position - part.Position).Magnitude
-			local damagePercent = 1 - mag/exp.BlastRadius
-			local damageFinal = config:Get("maxDamage") * damagePercent
-			part.Parent:FindFirstChild("Humanoid"):TakeDamage(damageFinal)
+			part.Parent:FindFirstChild("Humanoid"):TakeDamage(CalcDamage(part.Position))
 		end
 	end)
-	--[[
-	local effects = dir.Shared:WaitForChild("Resources"):WaitForChild("Explosion"):Clone()
-	effects.Parent = game.Workspace
-	effects.Position = pos
-	for i,v in pairs(effects:GetChildren()) do
-		delay(0.15,function()
-			v.Enabled = false
-		end)
-	end
-	game.Debris:AddItem(effects,4)]]
 end
 return GoBoom

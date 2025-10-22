@@ -1,5 +1,10 @@
 return {
     --[[
+    whether projectiles can damage your own team
+    ]]
+    FRIENDLY_FIRE = true;
+
+    --[[
     what FOV the player returns to upon unscripting the camera
     ]]
     FOV_DEFAULT = 70;
@@ -16,11 +21,13 @@ return {
     REPLICATION_THROTTLE = 0.2;
 
     --[[
-    DONT TOUCH THIS!! unless you for some reason have an attribute or object exactly named
-    like any of these (why would you do that)
+    DONT TOUCH THIS!! this is for internal purposes
+    unless you for some reason have an attribute or object exactly named like any of these
+    (why would you do that...)
     ]]
-    REPL_ID = "mAS_replId";
-    AMMO_TYPE = "mAS_ammoType";
+    DESTROYABLE_JOINT_ATTR = "mAS_Destroyable";
+    REPL_ID = "mAS_ReplId";
+    AMMO_TYPE = "mAS_AmmoType";
     ATTACH_WELD_NAME = "mAS_AttachPointWeld";
     OBJECT_IDENT_ATTR = "mAS_ObjectIdentifier";
     SEATED_INIT_TAG_NAME = "mAS_RunOnSeated";

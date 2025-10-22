@@ -1,6 +1,5 @@
 local Helpers = {}
 
--- (tbl1, ...)
 function Helpers:TableCombine(tbl1, ...)
     for _, t in pairs({...}) do
         for k, v in pairs(t) do
@@ -9,7 +8,6 @@ function Helpers:TableCombine(tbl1, ...)
     end
 end
 
--- (p1: BasePart, p2: BasePart)
 function Helpers:Weld(p1: BasePart, p2: BasePart): WeldConstraint
 	local weld = Instance.new("WeldConstraint")
 	weld.Name = p1.Name .. "Weld"
@@ -26,6 +24,20 @@ function Helpers:ToConfigTable(folder)
         cfg[v.Name] = v.Value
     end
     return cfg
+end
+
+function Helpers:Switch(value)
+    return function(cases)
+        return (cases[value] or cases.default)(value)
+    end
+end
+
+function Helpers:GenInaccuracy(value)
+    value *= 100000
+    local inaccX = math.random(-value, value) / 100000
+    local inaccY = math.random(-value, value) / 100000
+    local inaccZ = math.random(-value, value) / 100000
+    return CFrame.Angles(math.rad(inaccX), math.rad(inaccY), math.rad(inaccZ))
 end
 
 return Helpers

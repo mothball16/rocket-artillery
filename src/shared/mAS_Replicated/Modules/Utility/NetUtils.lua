@@ -1,24 +1,31 @@
---[[
-provides an easier way to interact across client/server
-]]
 
 local NetUtils = {}
-local modules = game.ReplicatedStorage.Shared.mAS_Replicated.Modules
+local repl = game.ReplicatedStorage.Shared.mAS_Replicated
+local modules = repl.Modules
 local Constants = require(modules.Constants)
 local ObjectRegistry = require(modules.ObjectManagement.ObjectRegistry)
+local Net = require(modules.Utility.Net)
+local Events = require(repl.Events)
 local validator = require(modules.Utility.Validator).new(script.Name)
 
---[[ (do this later)
-local net = require(modules.Utility.Net)
-local events = require(modules.Parent.Events)
-local remotes = {}
+--[[
+provides an easier way to interact across client/server
+TODO: There are some things that shouldn't really be here that are here.
+Move out: GetId, GetObject
+]]
+local events = {}
 
-for _, v in pairs(require(modules.Parent.Events)) do
-    
-end]]
+for _, v in pairs(Events.Reliable) do
+    events[v] = Net:RemoteEvent(v)
+end
+for _, v in pairs(Events.Unreliable) do
+    if events[v] then
+        error("An unreliable and a reliable event shouldn't be connected to the same name!")
+    end
+    events[v] = Net:UnreliableRemoteEvent(v)
+end
 
--- used for the function bundles. calls everything in a table with ... being the args
--- (all funcs in a bundle should have the same args)
+
 function NetUtils:ExecuteOnClient(tbl, ...)
     for _, command in pairs(tbl) do
         if command.func["ExecuteOnClient"] then
@@ -52,8 +59,9 @@ function NetUtils:GetObject(id)
     return object
 end
 
-function NetUtils:FireOtherClients(plr, event, ...)
-    validator:Exists(event["FireClient"], "FireClient function of event: ".. tostring(event))
+function NetUtils:FireOtherClients(plr, eventName, ...)
+
+    local event = validator:Exists(events[eventName], "event: ".. tostring(eventName))
     for _, v in pairs(game.Players:GetChildren()) do
         if v == plr then continue end
         event:FireClient(v, ...)
