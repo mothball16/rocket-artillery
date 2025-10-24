@@ -1,3 +1,4 @@
+local Debris = game:GetService("Debris")
 
 local NetUtils = {}
 local repl = game.ReplicatedStorage.Shared.mAS_Replicated
@@ -7,7 +8,7 @@ local ObjectRegistry = require(modules.ObjectManagement.ObjectRegistry)
 local Net = require(modules.Utility.Net)
 local Events = require(repl.Events)
 local validator = require(modules.Utility.Validator).new(script.Name)
-
+local Consts = require(modules.Constants)
 --[[
 provides an easier way to interact across client/server
 TODO: There are some things that shouldn't really be here that are here.
@@ -63,7 +64,7 @@ function NetUtils:FireOtherClients(plr, eventName, ...)
 
     local event = validator:Exists(events[eventName], "event: ".. tostring(eventName))
     for _, v in pairs(game.Players:GetChildren()) do
-        if v == plr then continue end
+        if v == plr and not Consts.REPL_TO_ORIGINAL_CLIENT then continue end
         event:FireClient(v, ...)
     end
 end

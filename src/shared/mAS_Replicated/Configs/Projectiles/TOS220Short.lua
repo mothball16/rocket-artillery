@@ -4,6 +4,7 @@ local RocketAttachableBase = require(script.Parent.RocketAttachableBase)
 local RocketController = require(dir.Modules.OnFire.RocketController)
 local FXActivator = require(dir.Modules.FX.FXActivator)
 local FXCreator = require(dir.Modules.FX.FXCreator)
+local FXPreserve = require(dir.Modules.FX.FXPreserve)
 local GoBoom = require(dir.Modules.OnHit.GoBoom)
 --#endregion
 
@@ -21,7 +22,7 @@ TOS220Short.OnFire = {
 		["arc"] = 0.4; ["initInacc"] = 1.5;
 		["despawn"] = 10;
 	}},
-	{func = FXActivator, replicate = true}
+	{func = FXActivator, replicate = true},
 };
 
 TOS220Short.OnHit = {
@@ -35,7 +36,8 @@ TOS220Short.OnHit = {
 	}},
 	{func = FXCreator, data = {
 		["useFX"] = "RocketMediumExplosion",
-	}}
+	}},
+	{func = FXPreserve, replicate = true}
 };
 
 -- for rangefinder/FCU

@@ -21,10 +21,10 @@ return {
     REPLICATION_THROTTLE = 0.2;
 
     --[[
-    DONT TOUCH THIS!! this is for internal purposes
-    unless you for some reason have an attribute or object exactly named like any of these
-    (why would you do that...)
+    DONT TOUCH ANYTHING BELOW THIS!! this is for internal purposes
     ]]
+    REPL_TO_ORIGINAL_CLIENT = false;
+
     DESTROYABLE_JOINT_ATTR = "mAS_Destroyable";
     REPL_ID = "mAS_ReplId";
     AMMO_TYPE = "mAS_AmmoType";

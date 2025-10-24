@@ -17,6 +17,7 @@ local fallbacks = {
 
 
 function controller:ExecuteOnClient(config, args)
+    print(args)
     config = dir.FallbackConfig.new(config, fallbacks)
     local template = dir.Assets.Particles:FindFirstChild(config:Get("useFX"))
     if not template then

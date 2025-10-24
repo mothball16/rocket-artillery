@@ -25,7 +25,6 @@ end
 function GoBoom:ExecuteOnServer(plr, config, args)
 	config = dir.FallbackConfig.new(config, fallbacks)
 
-
 	local exp = Instance.new("Explosion", game.Workspace)
 	exp.Position = args.pos
 	exp.BlastRadius = config:Get("blastRadius")
