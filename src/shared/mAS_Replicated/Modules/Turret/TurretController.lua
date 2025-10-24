@@ -51,6 +51,8 @@ function TurretController.new(args, required)
     self.id = dir.NetUtils:GetId(required)
     self.maid = dir.Maid.new()
     self.vehicle = required.Parent
+
+    --TODO: this
     self.selectedProjectileType = "TOS220Short"
     
     -- (connect UI)
@@ -73,10 +75,12 @@ function TurretController.new(args, required)
     self.TwoAxisRotator = TwoAxisRotator.new(args.Turret, required)
     self.AttachClientController = AttachClientController.new({}, required)
     self.OrientationReader = OrientationReader.new(args.OrientationReader, required)
+
     self.RangeSheet = RangeSheet.new({
         controller = require(dir.Modules.OnFire.RocketController),
         projectile = self.selectedProjectileType
     })
+
     self.uiHandler = uiHandler.new(args.UIHandler, required)
     self.joystick = joystick.new(args.Joystick, self.uiHandler:GetRequired())
     -- give GC tasks
@@ -98,6 +102,72 @@ function TurretController.new(args, required)
 
     return self
 end
+
+function TurretController:Destroy()
+    self.maid:DoCleaning()
+end
+
+function TurretController:DoAction(keycode: Enum.KeyCode)
+    dir.Helpers:Switch (keycode) {
+        [dir.Keybinds.MountedFire] = function()
+            local numShots = self.config:Get("salvoIntervals")[self.state.salvoIndex]
+            for _ = 1, numShots do
+                self:Fire()
+            end
+        end;
+        [dir.Keybinds.SwapSalvo] = function()
+            self.localSignals.OnSalvoIntervalModified:Fire(self:SwapSalvo())
+        end;
+        [dir.Keybinds.SwapInterval] = function()
+            self.localSignals.OnTimedIntervalModified:Fire(self:SwapInterval())
+        end;
+        [dir.Keybinds.RangeFinder] = function()
+            self.RangeSheet:Toggle()
+        end;
+        [dir.Keybinds.ToggleCamera] = function()
+            local inCam = self.ForwardCamera and self.ForwardCamera.enabled
+            if inCam then
+            self.ForwardCamera:Disable()
+            else
+                self.ForwardCamera:Enable()
+            end
+        end;
+        [dir.Keybinds.ZoomIn] = function()
+
+        end;
+        [dir.Keybinds.ZoomOut] = function()
+
+        end;
+        default = function() end;
+    }
+end
+
+function TurretController:DoInput(input: Enum.UserInputType)
+    dir.Helpers:Switch (input) {
+        [dir.Keybinds.DoAction] = function()
+            if self.joystick:CanEnable() then
+                self.joystick:Enable()
+            end
+        end;
+        default = function() end;
+    }
+end
+
+function TurretController:EndAction(keycode: Enum.KeyCode)
+    dir.Helpers:Switch (keycode) {
+        default = function() end;
+    }
+end
+
+function TurretController:EndInput(input: Enum.UserInputType)
+    dir.Helpers:Switch (input) {
+        [dir.Keybinds.DoAction] = function()
+            self.joystick:Disable()
+        end;
+        default = function() end;
+    }
+end
+
 
 -- TODO: bind this to the new renderstepped, this overrides shake rn
 function TurretController:SetupConnections()
@@ -122,38 +192,24 @@ function TurretController:SetupConnections()
         RuS:UnbindFromRenderStep(TURRET_UPD_FUNC)
     end)
 
+    --TODO: remove dir dependencies. keybinds can be injected instead
     self.maid:GiveTask(UIS.InputBegan:Connect(function(input, chatting)
         if chatting then return end
-        local inCam = self.ForwardCamera and self.ForwardCamera.enabled
-        if input.KeyCode == dir.Keybinds.MountedFire then
-            self:Fire()
-        elseif input.KeyCode == dir.Keybinds.SwapSalvo then
-            self.localSignals.OnSalvoIntervalModified:Fire(self:SwapSalvo())
-        elseif input.KeyCode == dir.Keybinds.SwapInterval then
-            self.localSignals.OnTimedIntervalModified:Fire(self:SwapInterval())
-        elseif input.KeyCode == dir.Keybinds.RangeFinder then
-            self.RangeSheet:Toggle()
-        elseif input.KeyCode == dir.Keybinds.ToggleFCU then
-            
-        elseif self.ForwardCamera and input.KeyCode == dir.Keybinds.ToggleCamera then
-            if inCam then
-               self.ForwardCamera:Disable()
-            else
-                self.ForwardCamera:Enable()
-            end
-        elseif inCam and input.KeyCode == dir.Keybinds.ZoomIn then
-
-        elseif inCam and input.KeyCode == dir.Keybinds.ZoomOut then
-        
-        elseif input.UserInputType == Enum.UserInputType.MouseButton1 and self.joystick:CanEnable() then
-            self.joystick:Enable()
+        if input.KeyCode then
+            self:DoAction(input.KeyCode)
+        end
+        if input.UserInputType then
+            self:DoInput(input.UserInputType)
         end
     end))
 
     self.maid:GiveTask(UIS.InputEnded:Connect(function(input, chatting)
         if chatting then return end
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            self.joystick:Disable()
+        if input.KeyCode then
+            self:EndAction(input.KeyCode)
+        end
+        if input.UserInputType then
+            self:EndInput(input.UserInputType)
         end
     end))
 
@@ -162,6 +218,7 @@ function TurretController:SetupConnections()
     self.localSignals.OnTimedIntervalModified:Fire(self:GetInterval())
 end
 
+--TODO: check if this causes memory leaks
 local function _shakeCam()
     local priority = Enum.RenderPriority.Last.Value
 
@@ -209,9 +266,7 @@ function TurretController:GetInterval()
     return self.config:Get("timeIntervals")[self.state.timeIndex]
 end
 --#endregion
-function TurretController:Destroy()
-    self.maid:DoCleaning()
-end
+
 
 
 

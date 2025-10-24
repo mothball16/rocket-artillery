@@ -12,6 +12,19 @@ doesn't calculate for you, but gives you dists from theta 0 to 45.
 local dataByProjectileType = {}
 local RangeSheet = {}
 RangeSheet.__index = RangeSheet
+export type RangeSheet = {
+    rangeSheet: {
+        name: string,
+        ranges: { { Angle: number, Magnitude: number, Lifetime: number } },
+    },
+    maid: typeof(dir.Maid),
+    ui: ScreenGui,
+
+    Toggle: (self: RangeSheet) -> (),
+    Display: (self: RangeSheet) -> (),
+    Hide: (self: RangeSheet) -> (),
+    Destroy: (self: RangeSheet) -> (),
+}
 
 local function _checkArgs(args)
     local controller = validator:Exists(args.controller, "controller type")
@@ -46,7 +59,7 @@ local function _checkArgs(args)
 end
 
 function RangeSheet.new(args, required)
-    local self = setmetatable({}, RangeSheet)
+    local self = setmetatable({}, RangeSheet) :: RangeSheet
     self.rangeSheet = _checkArgs(args)
     self.maid = dir.Maid.new()
     self.open = false

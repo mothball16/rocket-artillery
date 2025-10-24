@@ -7,4 +7,6 @@ return {
     SwapInterval = Enum.KeyCode.B;
     RangeFinder = Enum.KeyCode.K;
     ToggleFCU = Enum.KeyCode.L;
+
+    DoAction = Enum.UserInputType.MouseButton1;
 }

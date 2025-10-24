@@ -60,9 +60,7 @@ function GoBoom:ExecuteOnServer(plr, config, args)
 				end
 			end,
 
-			default = function()
-				print("yo")
-			end
+			default = function() end
 		}
 
 		if part.Name == "Head" and part.Parent:FindFirstChild("Humanoid") then
