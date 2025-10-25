@@ -11,7 +11,7 @@ local DetachAndRemove = {}
 local fallbacks = {}
 
 function DetachAndRemove:Execute(config, args)
-	local config = dir.FallbackConfig.new(config, fallbacks)
+	local config = dir.Helpers:TableOverwrite(fallbacks, config)
 	for _, v in pairs(args.object:GetDescendants()) do
 		if v:IsA("BasePart") or v:IsA("UnionOperation") or v:IsA("MeshPart") then
 			v.Transparency = 1

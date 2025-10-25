@@ -8,6 +8,17 @@ function Helpers:TableCombine(tbl1, ...)
     end
 end
 
+function Helpers:TableOverwrite(orig, overwrite)
+    local tbl = {}
+    for k,v in pairs(orig) do
+        tbl[k] = v
+    end
+    for k,v in pairs(overwrite) do
+        tbl[k] = v
+    end
+    return tbl
+end
+
 function Helpers:Weld(p1: BasePart, p2: BasePart): WeldConstraint
 	local weld = Instance.new("WeldConstraint")
 	weld.Name = p1.Name .. "Weld"

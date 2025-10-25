@@ -36,7 +36,7 @@ function TwoAxisRotator.new(args, required)
     local rotMotor, pitchMotor, state = _checkSetup(required)
     local self = setmetatable({
         maid = dir.Maid.new(),
-        config = dir.FallbackConfig.new(args, fallbacks),
+        config = dir.Helpers:TableOverwrite(fallbacks, args),
         state = state,
         rotMotor = rotMotor,
         pitchMotor = pitchMotor,
@@ -65,15 +65,15 @@ function TwoAxisRotator:Update(dt)
     self.tick += dt
     local adjustForDt = dt * 60
     if self.enabled then
-        local rotSpeed = math.rad(self.config:Get("rotSpeed"))
-        local rotLimited = self.config:Get("rotLimited")
+        local rotSpeed = math.rad(self.config["rotSpeed"])
+        local rotLimited = self.config["rotLimited"]
         self.curX += self.dir.X * rotSpeed * adjustForDt
         if rotLimited then
-            self.curX = math.clamp(self.curX, self.config:Get("rotMin"), self.config:Get("rotMax"))
+            self.curX = math.clamp(self.curX, self.config["rotMin"], self.config["rotMax"])
         end
         self.curX %= 360
-        local pitchSpeed = math.rad(self.config:Get("pitchSpeed"))
-        self.curY = math.clamp(self.curY - (self.dir.Y * pitchSpeed * adjustForDt), self.config:Get("pitchMin"), self.config:Get("pitchMax"))
+        local pitchSpeed = math.rad(self.config["pitchSpeed"])
+        self.curY = math.clamp(self.curY - (self.dir.Y * pitchSpeed * adjustForDt), self.config["pitchMin"], self.config["pitchMax"])
         
         self:UpdateWelds(self.curX, self.curY, true)
     end

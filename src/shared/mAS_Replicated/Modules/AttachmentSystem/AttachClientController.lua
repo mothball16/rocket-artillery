@@ -22,7 +22,7 @@ local fallbacks = {}
 function AttachClientController.new(args, required)
     local self = setmetatable({}, AttachClientController)
     self.id = dir.NetUtils:GetId(required)
-    self.config = dir.FallbackConfig.new(args, fallbacks)
+    self.config = dir.Helpers:TableOverwrite(fallbacks, args)
     self.AttachSelector = AttachSelector.new(args, required)
     self.required = required
     return self

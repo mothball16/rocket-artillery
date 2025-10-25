@@ -19,7 +19,7 @@ local fallbacks = {
 local function FireFX(config, FXHolder, disableEffect)
 	-- if the thing being activated is about to be destroyed (onHit particles, bla bla)
 	-- then eject particles from the model so that they arent destroyed : o
-	if config:Get("avoidDestruction") then
+	if config["avoidDestruction"] then
 		FXHolder = FXHolder:Clone()
 		FXHolder.Parent = game.Workspace.IgnoreList
 		FXHolder.Anchored = true
@@ -30,7 +30,7 @@ local function FireFX(config, FXHolder, disableEffect)
 	local maxEmitLength = 0
 	for _, fx in pairs(FXHolder:GetChildren()) do
 		local isEmitter = fx:IsA("ParticleEmitter") or fx:IsA("Trail") or fx:IsA("Beam") or fx:IsA("Smoke")
-		local emitLength = fx:GetAttribute("PlayFor") or config:Get("playFor")
+		local emitLength = fx:GetAttribute("PlayFor") or config["playFor"]
 		maxEmitLength = math.max(maxEmitLength, emitLength)
 		if not disableEffect then
 			if isEmitter then
@@ -40,22 +40,21 @@ local function FireFX(config, FXHolder, disableEffect)
 					fx.Enabled = false
 				end)
 			elseif fx:IsA("Sound") then
-				print("ganggangs")
 				fx.TimePosition = 0
 				fx:Play()
 			end
 		end
 	end
 
-	if config:Get("avoidDestruction") then
+	if config["avoidDestruction"] then
 		game.Debris:AddItem(FXHolder, 30 + maxEmitLength)
 	end
 end
 
 function FXActivator:ExecuteOnClient(config, args)
-	config = dir.FallbackConfig.new(config, fallbacks)
+	config = dir.Helpers:TableOverwrite(fallbacks, config)
 	for _, holder in pairs(args.object:GetChildren()) do
-		if holder.Name == config:Get("lookFor") then
+		if holder.Name == config["lookFor"] then
 			FireFX(config, holder, false)
 		end
 	end
@@ -65,16 +64,16 @@ end
 -- this just ticks the avoidDestruction so particles aren't prematurely deleted
 -- and also tells other clients to replicate
 function FXActivator:ExecuteOnServer(plr, config, args)
-	config = dir.FallbackConfig.new(config, fallbacks)
+	config = dir.Helpers:TableOverwrite(fallbacks, config)
 
 	-- accessible from the server, just run it on that
 	for _, holder in pairs(args.object:GetChildren()) do
-		if holder.Name == config:Get("lookFor") then
+		if holder.Name == config["lookFor"] then
 			FireFX(config, holder, true)
 		end
 	end
 
-	dir.NetUtils:FireOtherClients(plr, dir.Events.Reliable.OnParticlePlayed, config:ToRaw(), args)
+	dir.NetUtils:FireOtherClients(plr, dir.Events.Reliable.OnParticlePlayed, config, args)
 
 end
 

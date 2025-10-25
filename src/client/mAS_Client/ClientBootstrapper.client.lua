@@ -7,7 +7,7 @@ end
 local beginTime = os.clock()
 warn("(ClientBootstrapper) beginning mAS client load...")
 
-modules["ClientEventDumpCauseIHaventFinishedThisYet"]()
+modules["ClientEventDump_ToRemove"]()
 
 -- should load at the end
 modules["ClientHandlerInitializer"]()

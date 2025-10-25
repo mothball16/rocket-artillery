@@ -7,7 +7,6 @@ local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
 local DetachAndRemove = require(dir.Modules.OnFire.DetachAndRemove)
 local FXActivator, FXActivatorConfig = require(dir.Modules.FX.FXActivator),
 {
-	["lookFor"] = "Particles",
 	["playFor"] = 0.15,
 	["avoidDestruction"] = true
 }

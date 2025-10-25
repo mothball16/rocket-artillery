@@ -24,7 +24,6 @@ return {
     ServerSignals =     require(repl.ServerSignals),
     Consts =            require(modules.Constants),
     Maid =              require(utility.Maid),
-    FallbackConfig =    require(utility.FallbackConfig),
     Validator =         require(utility.Validator),
     Helpers =           require(utility.Helpers),
     NetUtils =          require(utility.NetUtils),

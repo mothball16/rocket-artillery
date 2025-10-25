@@ -65,7 +65,7 @@ function TurretController.new(args, required)
     args.UIHandler["signals"] = self.localSignals
 
     -- core setup
-    self.config = dir.FallbackConfig.new(args.TurretController, fallbacks)
+    self.config = dir.Helpers:TableOverwrite(fallbacks, args.TurretController)
     self.state = {
         salvoIndex = 1,
         timeIndex = 1,
@@ -110,7 +110,7 @@ end
 function TurretController:DoAction(keycode: Enum.KeyCode)
     dir.Helpers:Switch (keycode) {
         [dir.Keybinds.MountedFire] = function()
-            local numShots = self.config:Get("salvoIntervals")[self.state.salvoIndex]
+            local numShots = self.config["salvoIntervals"][self.state.salvoIndex]
             for _ = 1, numShots do
                 self:Fire()
             end
@@ -249,21 +249,21 @@ end
 
 --#region salvo/interval control
 function TurretController:SwapSalvo()
-    self.state.salvoIndex = (self.state.salvoIndex % #self.config:Get("salvoIntervals")) + 1
+    self.state.salvoIndex = (self.state.salvoIndex % #self.config["salvoIntervals"]) + 1
     return self:GetSalvo()
 end
 
 function TurretController:GetSalvo()
-    return self.config:Get("salvoIntervals")[self.state.salvoIndex]
+    return self.config["salvoIntervals"][self.state.salvoIndex]
 end
 
 function TurretController:SwapInterval()
-    self.state.timeIndex = (self.state.timeIndex % #self.config:Get("timeIntervals")) + 1
+    self.state.timeIndex = (self.state.timeIndex % #self.config["timeIntervals"]) + 1
     return self:GetInterval()
 end
 
 function TurretController:GetInterval()
-    return self.config:Get("timeIntervals")[self.state.timeIndex]
+    return self.config["timeIntervals"][self.state.timeIndex]
 end
 --#endregion
 

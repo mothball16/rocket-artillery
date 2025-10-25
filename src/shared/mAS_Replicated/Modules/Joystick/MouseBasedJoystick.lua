@@ -23,7 +23,7 @@ local function _checkSetup(required)
 end
 function MouseBasedJoystick.new(args, required)
     local self = setmetatable({}, MouseBasedJoystick)
-    self.config = dir.FallbackConfig.new(args, fallbacks)
+    self.config = dir.Helpers:TableOverwrite(fallbacks, args)
     self.frame = _checkSetup(required)
     self.lockedX = args.lockedX
     self.lockedY = args.lockedY
@@ -35,8 +35,8 @@ function MouseBasedJoystick:GetInput()
     if not self.enabled then
         return Vector2.new()
     end
-    local sens = self.config:Get("sens")
-    local deadzone = self.config:Get("deadzone") * sens
+    local sens = self.config["sens"]
+    local deadzone = self.config["deadzone"] * sens
     local offset = self.frame.AbsolutePosition
     local scale = self.frame.AbsoluteSize
     local mousePropX = self.lockedX and 0 or (mouse.X - offset.X - scale.X / 2) / scale.X

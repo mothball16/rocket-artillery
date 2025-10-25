@@ -30,7 +30,7 @@ end
 function AttachSelector.new(args, required)
 	local attachPoints, slotsByIndex = _checkSetup(required)
 	local self = setmetatable({}, AttachSelector)
-	self.config = dir.FallbackConfig.new(args, fallbacks)
+	self.config = dir.Helpers:TableOverwrite(fallbacks, args)
 	self.attachPoints = attachPoints
 	self.slotsByIndex = slotsByIndex
 	self.currentIndex = 1

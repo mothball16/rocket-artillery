@@ -21,11 +21,11 @@ end
 function ForwardCamera.new(args, required)
     local cam = _checkSetup(required)
     local self = setmetatable({}, ForwardCamera)
-    self.config = dir.FallbackConfig.new(args, fallbacks)
+    self.config = dir.Helpers:TableOverwrite(fallbacks, args)
     self.cam = cam
     self.enabled = false
 
-    self.FOV = self.config:Get("maxFOV")
+    self.FOV = self.config["maxFOV"]
     return self
 end
 
@@ -47,7 +47,7 @@ function ForwardCamera:Disable()
 end
 
 function ForwardCamera:SetFOV(fov)
-    self.FOV = math.clamp(fov, self.config:Get("minFOV"), self.config:Get("maxFOV"))
+    self.FOV = math.clamp(fov, self.config["minFOV"], self.config["maxFOV"])
 end
 
 function ForwardCamera:Destroy()

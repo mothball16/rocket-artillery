@@ -23,10 +23,10 @@ local function _numLerp(a, b, t)
 end
 
 function RocketController:CalcSpeed(config, lifetime)
-	local burnTime = lifetime - config:Get("burnIn")
-	local burnDuration = math.max(config:Get("burnOut") - config:Get("burnIn"),0.01)
+	local burnTime = lifetime - config["burnIn"]
+	local burnDuration = math.max(config["burnOut"] - config["burnIn"],0.01)
 	local stage = math.clamp(burnTime / burnDuration, 0, 1)
-	local speed = _numLerp(config:Get("initSpeed"), config:Get("maxSpeed"), stage)
+	local speed = _numLerp(config["initSpeed"], config["maxSpeed"], stage)
 	return speed
 end
 function RocketController:CalcVelo(initLook, speed, drop)
@@ -39,18 +39,17 @@ function RocketController:StepDrop(arc, speed, dt)
 end
 
 function RocketController:ExecuteOnClient(config, args)
-	local config = dir.FallbackConfig.new(config, fallbacks)
+	config = dir.Helpers:TableOverwrite(fallbacks, config)
 	local maid = dir.Maid.new()
-	print(config, args)
 
 	local main = args.object.PrimaryPart
-	local initLook = (main.CFrame * dir.Helpers:GenInaccuracy(config:Get("initInacc"))).LookVector
+	local initLook = (main.CFrame * dir.Helpers:GenInaccuracy(config["initInacc"])).LookVector
 	local dropFactor, lifetime, timepasu = 0, 0, 0
 	local lastPos = main.Position
 	local origPos = main.Position
 	local active = true
 
-	main:SetAttribute("Speed", config:Get("initSpeed"))
+	main:SetAttribute("Speed", config["initSpeed"])
 	local mag,life = self:Simulate(config, initLook)
 	print(mag,life, initLook)
 	-- handle cleanup/gc
@@ -100,7 +99,7 @@ function RocketController:ExecuteOnClient(config, args)
 
 		-- (we didnt hit anything so just inc. variables here)
 		lastPos = main.Position
-		dropFactor += self:StepDrop(config:Get("arc"), speed, dt)
+		dropFactor += self:StepDrop(config["arc"], speed, dt)
 
 		lifetime += dt
 		timepasu += dt
@@ -111,18 +110,15 @@ end
 
 function RocketController:Simulate(args, initLook)
 	local lifetime = 0
-	-- check if we passed the args or the fallbackConfig (as retrieved from ProjectileController)
-	local config = args
-	if not config.Get then
-		config = dir.FallbackConfig.new(args, fallbacks)
-	end
+	local config = dir.Helpers:TableOverwrite(fallbacks, args)
+
 	local dt = 0.03
 	local dropFactor = 0
 	local pos = Vector3.new()
 	while pos.Y >= 0 do
 		local speed = self:CalcSpeed(config, lifetime)
 		local velo = self:CalcVelo(initLook, speed, dropFactor)
-		dropFactor += self:StepDrop(config:Get("arc"), speed, dt)
+		dropFactor += self:StepDrop(config["arc"], speed, dt)
 		pos += velo * dt
 		lifetime += dt
 	end

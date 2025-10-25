@@ -18,7 +18,7 @@ local fallbacks = {}
 -- (args, required)
 function AttachServerController.new(args, required)
     local self = setmetatable({}, AttachServerController)
-    self.config = dir.FallbackConfig.new(args, fallbacks)
+    self.config = dir.Helpers:TableOverwrite(fallbacks, args)
     self.selector = AttachSelector.new(args, required)
     self.required = required
     return self

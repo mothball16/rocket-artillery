@@ -17,7 +17,7 @@ local fallbacks = {
 local function SetupFXPreserve(config, emitterPart: BasePart)
     local debrisTime = 0
     for _, fx in pairs(emitterPart:GetChildren()) do
-		local emitLength = fx:GetAttribute("PlayFor") or config:Get("playFor")
+		local emitLength = fx:GetAttribute("PlayFor") or config["playFor"]
 		debrisTime = math.max(debrisTime, emitLength)
         dir.Helpers:Switch (fx.ClassName) {
             ["ParticleEmitter"] = function()
@@ -46,10 +46,9 @@ local function SetupFXPreserve(config, emitterPart: BasePart)
 end
 
 function controller:ExecuteOnClient(config, args)
-    print("yo", args)
-    config = dir.FallbackConfig.new(config, fallbacks)
+    config = dir.Helpers:TableOverwrite(fallbacks, config)
 	for _, holder in pairs(args.object:GetChildren()) do
-		if holder.Name == config:Get("lookFor") then
+		if holder.Name == config["lookFor"] then
 			SetupFXPreserve(config, holder)
 		end
 	end

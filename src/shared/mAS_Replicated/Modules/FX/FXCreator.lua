@@ -17,10 +17,10 @@ local fallbacks = {
 
 
 function controller:ExecuteOnClient(config, args)
-    config = dir.FallbackConfig.new(config, fallbacks)
-    local template = dir.Assets.Particles:FindFirstChild(config:Get("useFX"))
+    config = dir.Helpers:TableOverwrite(fallbacks, config)
+    local template = dir.Assets.Particles:FindFirstChild(config["useFX"])
     if not template then
-        warn("(FXCreator) no FX found for fx arg " .. config:Get("useFX"))
+        warn("(FXCreator) no FX found for fx arg " .. config["useFX"])
         return
     end
     local fxClone = template:Clone()
@@ -34,7 +34,7 @@ function controller:ExecuteOnClient(config, args)
     local maxEmitLength = 0
     for _, fx in pairs(fxClone:GetChildren()) do
 		local isEmitter = fx:IsA("ParticleEmitter") or fx:IsA("Trail") or fx:IsA("Beam") or fx:IsA("Smoke")
-		local emitLength = fx:GetAttribute("PlayFor") or config:Get("playFor")
+		local emitLength = fx:GetAttribute("PlayFor") or config["playFor"]
 		maxEmitLength = math.max(maxEmitLength, emitLength)
         if isEmitter then
             fx.Enabled = true
@@ -51,8 +51,8 @@ function controller:ExecuteOnClient(config, args)
 end
 
 function controller:ExecuteOnServer(plr, config, args)
-    config = dir.FallbackConfig.new(config, fallbacks)
-    dir.NetUtils:FireOtherClients(plr, dir.Events.Reliable.OnParticleCreated, config:ToRaw(), args)
+    config = dir.Helpers:TableOverwrite(fallbacks, config)
+    dir.NetUtils:FireOtherClients(plr, dir.Events.Reliable.OnParticleCreated, config, args)
 end
 
 return controller
