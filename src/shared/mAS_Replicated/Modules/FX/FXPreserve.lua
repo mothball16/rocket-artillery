@@ -21,29 +21,28 @@ local function SetupFXPreserve(config, emitterPart: BasePart)
 		debrisTime = math.max(debrisTime, emitLength)
         dir.Helpers:Switch (fx.ClassName) {
             ["ParticleEmitter"] = function()
-                debrisTime = math.max(debrisTime, emitLength + (fx :: ParticleEmitter).Lifetime.Max)
+                fx = fx :: ParticleEmitter
+                debrisTime = math.max(debrisTime, emitLength + fx.Lifetime.Max)
+                fx.Enabled = false
             end;
             ["Trail"] = function()
-                debrisTime = math.max(debrisTime, emitLength + (fx :: Trail).Lifetime)
+                fx = fx :: Trail
+                debrisTime = math.max(debrisTime, emitLength + fx.Lifetime)
+                fx.Enabled = false
             end;
             default = function() 
                 debrisTime = math.max(debrisTime, emitLength)
-
+                if fx.Enabled then fx.Enabled = false end
             end
         }
 	end
-    print("setup")
-    --emitterPart.AncestryChanged:Connect(function(_, parent)
-        print("yo", debrisTime)
-       -- if parent == nil then
-            emitterPart.Parent = game.Workspace.IgnoreList
-            emitterPart.CanCollide = false
-            emitterPart.CanQuery = false
-            emitterPart.Transparency = 1
-            emitterPart.Anchored = true
-            game.Debris:AddItem(emitterPart, debrisTime)
-      --  end
-    --end)
+
+    emitterPart.Parent = game.Workspace.IgnoreList
+    emitterPart.CanCollide = false
+    emitterPart.CanQuery = false
+    emitterPart.Transparency = 1
+    emitterPart.Anchored = true
+    game.Debris:AddItem(emitterPart, debrisTime)
 end
 
 function controller:ExecuteOnClient(config, args)
