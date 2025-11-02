@@ -3,12 +3,10 @@
     when initialization conditions meet.
 ]]
 
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mOS_Replicated.Directory)
 local HTTP = game:GetService("HttpService")
 local CS = game:GetService("CollectionService")
 
-local OnInitialize = dir.Net:RemoteEvent(dir.Events.Reliable.OnInitialize)
-local OnDestroy = dir.Net:RemoteEvent(dir.Events.Reliable.OnDestroy)
 local ServerSignals = dir.ServerSignals
 
 local function Initialize(player, required)
@@ -26,7 +24,7 @@ local function Initialize(player, required)
 
         client object will be initialized below
     ]]
-    OnInitialize:FireClient(player, required)
+    dir.NetUtils:FireClient(player, dir.Events.Reliable.OnInitialize, required)
     ServerSignals.InitObject:Fire(required)
 end
 
@@ -40,7 +38,7 @@ local function Destroy(player, required)
 
         client object will be de-initialized below
     ]]
-    OnDestroy:FireClient(player, required)
+    dir.NetUtils:FireClient(player, dir.Events.Reliable.OnDestroy, required)
 end
 
 local function AddSeatInitListener(required)

@@ -6,10 +6,6 @@ server -> client: On<...>
 
 return {
     Reliable = {
-        -- object management
-        OnInitialize = "OnInitialize",
-        OnDestroy = "OnDestroy",
-
         -- projecitle replication
         OnProjectileDestroyed = "OnProjectileDestroyed",
         RequestProjectileDestroy = "RequestProjectileDestroy",
@@ -37,6 +33,5 @@ return {
         -- projectile replication
         OnProjectileUpdated = "OnProjectileUpdated",
         RequestProjectileUpdate = "RequestProjectileUpdate",
-
     }
 }

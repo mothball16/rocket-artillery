@@ -20,11 +20,6 @@ return {
     ]]
     REPLICATION_THROTTLE = 0.2;
 
-    --[[
-    DONT TOUCH ANYTHING BELOW THIS!! this is for internal purposes
-    ]]
-    REPL_TO_ORIGINAL_CLIENT = false;
-
     DESTROYABLE_JOINT_ATTR = "mAS_Destroyable";
     REPL_ID = "mAS_ReplId";
     AMMO_TYPE = "mAS_AmmoType";

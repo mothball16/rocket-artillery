@@ -1,8 +1,7 @@
 --#region required
-local modules = game.ReplicatedStorage.Shared.mAS_Replicated.Modules
-local validator = require(modules.Utility.Validator)
-    .new(script.Name)
-local consts = require(modules.Constants)
+local repl = script.Parent.Parent.Parent
+local validator = require(repl.Parent.mOS_Utility.Validator).new(script.Name)
+local consts = require(repl.Configs.Constants)
 --#endregion required
 --[[
 stores all created objects for lookup/communication

@@ -3,31 +3,28 @@ loads every dependency at the start for ease of access, roblox caches this so it
 introduce any significant overhead
 ]]
 
--- hacky thing to deal with scripts loading before the entire hierarchy is implemented
-game:WaitForChild("ReplicatedStorage")
-    :WaitForChild("Shared")
-    :WaitForChild("mAS_Replicated")
-    :WaitForChild("Modules")
-local repl = game.ReplicatedStorage.Shared.mAS_Replicated
-local modules =         repl.Modules
-local utility =         modules.Utility
-local assets =          repl.Assets
-local configs =         repl.Configs
+local share =           game.ReplicatedStorage.Shared
+local root =            script.Parent
+local modules =         root.Modules
+local utility =         share.mOS_Utility
+local assets =          root.Assets
+local configs =         root.Configs
 
 return {
-    Shared =            repl,
+    Shared =            share,
+    Root =              root,
     Configs =           configs,
     Modules =           modules,
     Assets =            assets,
     Utility =           utility,
-    Signals =           require(repl.Signals),
-    ServerSignals =     require(repl.ServerSignals),
+    Signals =           require(root.Signals),
+    ServerSignals =     require(root.ServerSignals),
     Consts =            require(modules.Constants),
     Maid =              require(utility.Maid),
     Validator =         require(utility.Validator),
     Helpers =           require(utility.Helpers),
     NetUtils =          require(utility.NetUtils),
     Net =               require(utility.Net),
-    Events =            require(repl.Events),
+    Events =            require(root.Events),
     Keybinds =          require(configs.Keybinds),
 }

@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
 local validator = dir.Validator.new(script.Name)
 local ProjectileManager = {}
 local registry = {}

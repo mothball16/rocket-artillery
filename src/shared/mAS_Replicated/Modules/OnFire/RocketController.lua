@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local RuS = game:GetService("RunService")
 local ProjectileController = require(dir.Modules.Core.ProjectileController)
 local RocketController = {}

@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local validator = dir.Validator.new(script.Name)
 return function()
     dir.Net:Connect(dir.Events.Reliable.RequestAttachmentDetach, function(plr, id, index)

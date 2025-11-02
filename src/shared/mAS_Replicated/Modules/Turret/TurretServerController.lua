@@ -1,5 +1,5 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local validator = dir.Validator.new(script.Name)
 local AttachSelector = require(dir.Modules.AttachmentSystem.AttachSelector)
 local AttachServerController = require(dir.Modules.AttachmentSystem.AttachServerController)
@@ -39,7 +39,6 @@ function TurretServerController.new(args, required)
     local self = setmetatable({}, TurretServerController)
     self.AttachSelector = AttachSelector.new(args.AttachSelector, required)
     self.AttachServerController = AttachServerController.new(args.AttachServerController, required)
-
     for _, slot in pairs(self.AttachSelector:GetSlots():GetChildren()) do
         SetupSlot(self.AttachServerController, slot, true)
     end

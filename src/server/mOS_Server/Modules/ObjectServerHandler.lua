@@ -1,4 +1,4 @@
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(game.ReplicatedStorage.Shared.mOS_Replicated.Directory)
 local objectInitializer = require(dir.Modules.ObjectManagement.ObjectInitializer).new("ServerController")
 
 local objects = {}
@@ -7,7 +7,7 @@ local objects = {}
 return function()
     dir.ServerSignals.InitObject:Connect(function(required)
         objects[required] = objectInitializer:Execute(required)
-        print("shimureishon")
+        warn("shimureishon")
     end)
 
     dir.ServerSignals.DestroyObject:Connect(function(required)

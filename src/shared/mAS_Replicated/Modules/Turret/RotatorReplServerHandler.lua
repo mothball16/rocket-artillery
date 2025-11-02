@@ -1,5 +1,5 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 --#endregion required
 --[[
 This is the purpose of this script.

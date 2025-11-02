@@ -1,7 +1,7 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local validator = dir.Validator.new(script.Name)
-local ObjectRegistry = require(dir.Modules.ObjectManagement.ObjectRegistry)
+local ObjectRegistry = require(script.Parent.ObjectRegistry)
 --#endregion required
 --[[
 This runs the initialization process and returns the object + relevant connections.

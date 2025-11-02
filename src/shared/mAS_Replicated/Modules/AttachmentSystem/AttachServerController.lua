@@ -1,5 +1,5 @@
 --#region requires
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local AttachSelector = require(script.Parent.AttachSelector)
 local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
 --#endregion

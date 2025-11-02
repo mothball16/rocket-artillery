@@ -1,8 +1,11 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
 local validator = dir.Validator.new(script.Name)
+local SS = game:GetService("SoundService")
+
 local template = dir.Assets.UI.RangeSheet_Looseleaf
+local sheetFlip = dir.Assets.Sounds.PaperRustle
 --#endregion required
 --[[
 doesn't calculate for you, but gives you dists from theta 0 to 45.
@@ -72,6 +75,7 @@ function RangeSheet:Toggle()
     else
         self:Display()
     end
+    SS:PlayLocalSound(sheetFlip)
 end
 
 function RangeSheet:Display()

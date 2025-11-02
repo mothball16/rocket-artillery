@@ -1,31 +1,21 @@
 local Debris = game:GetService("Debris")
 
 local NetUtils = {}
-local repl = game.ReplicatedStorage.Shared.mAS_Replicated
-local modules = repl.Modules
-local Constants = require(modules.Constants)
-local ObjectRegistry = require(modules.ObjectManagement.ObjectRegistry)
-local Net = require(modules.Utility.Net)
-local Events = require(repl.Events)
-local validator = require(modules.Utility.Validator).new(script.Name)
-local Consts = require(modules.Constants)
+local utils = script.Parent
+local core = utils.Parent.mOS_Replicated
+
+local Consts = require(core.Configs.Constants)
+local ObjectRegistry = require(core.Modules.ObjectManagement.ObjectRegistry)
+
+local Net = require(utils.Net)
+local validator = require(utils.Validator).new(script.Name)
+
 --[[
 provides an easier way to interact across client/server
 TODO: There are some things that shouldn't really be here that are here.
 Move out: GetId, GetObject
 ]]
 local events = {}
-
-for _, v in pairs(Events.Reliable) do
-    events[v] = Net:RemoteEvent(v)
-end
-for _, v in pairs(Events.Unreliable) do
-    if events[v] then
-        error("An unreliable and a reliable event shouldn't be connected to the same name!")
-    end
-    events[v] = Net:UnreliableRemoteEvent(v)
-end
-
 
 function NetUtils:ExecuteOnClient(tbl, ...)
     for _, command in pairs(tbl) do
@@ -48,7 +38,7 @@ function NetUtils:ExecuteOnServer(plr, tbl, ...)
 end
 
 function NetUtils:GetId(required)
-    return required:GetAttribute(Constants.OBJECT_IDENT_ATTR)
+    return required:GetAttribute(Consts.OBJECT_IDENT_ATTR)
 end
 
 function NetUtils:GetObject(id)
@@ -62,11 +52,30 @@ end
 
 function NetUtils:FireOtherClients(plr, eventName, ...)
 
-    local event = validator:Exists(events[eventName], "event: ".. tostring(eventName))
+    local event = validator:Exists(self:GetEvent(eventName), "event: ".. tostring(eventName))
     for _, v in pairs(game.Players:GetChildren()) do
         if v == plr and not Consts.REPL_TO_ORIGINAL_CLIENT then continue end
         event:FireClient(v, ...)
     end
+end
+
+function NetUtils:FireClient(plr, eventName, ...)
+    local event = validator:Exists(self:GetEvent(eventName), "event: ".. tostring(eventName))
+    event:FireClient(plr, ...)
+end
+
+function NetUtils:GetEvent(name)
+    if not events[name] then
+        for _, v in pairs(Net:GetEvents()) do
+            local evt = string.match(v.Name, "/(.*)")
+            if v:IsA("UnreliableRemoteEvent") then
+                events[evt] = Net:UnreliableRemoteEvent(evt)
+            elseif v:IsA("RemoteEvent") then
+                events[evt] = Net:RemoteEvent(evt)
+            end
+        end
+    end
+    return events[name]
 end
 
 return NetUtils

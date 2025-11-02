@@ -1,5 +1,5 @@
 local HttpService = game:GetService("HttpService")
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local validator = dir.Validator.new(script.Name)
 local rayParams = RaycastParams.new()
 local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)

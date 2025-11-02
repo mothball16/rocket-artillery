@@ -184,6 +184,11 @@ function Net:Invoke(name: string, ...: any): ...any
 	return self:RemoteFunction(name):InvokeServer(...)
 end
 
+
+function Net:GetEvents()
+	return script:GetChildren()
+end
+
 --[=[
 	@server
 	Destroys all RemoteEvents and RemoteFunctions. This

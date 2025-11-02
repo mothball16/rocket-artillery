@@ -1,5 +1,5 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 --#endregion required
 --[[
 activates particles on an ALREADY EXISTING object on the server

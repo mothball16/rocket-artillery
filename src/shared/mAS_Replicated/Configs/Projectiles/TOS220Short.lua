@@ -1,5 +1,5 @@
 --#region requires
-local dir = require(game.ReplicatedStorage.Shared.mAS_Directory)
+local dir = require(script.Parent.Parent.Parent.Directory)
 local RocketAttachableBase = require(script.Parent.RocketAttachableBase)
 local RocketController = require(dir.Modules.OnFire.RocketController)
 local FXActivator = require(dir.Modules.FX.FXActivator)
@@ -26,7 +26,6 @@ TOS220Short.OnFire = {
 };
 
 TOS220Short.OnHit = {
-	--{func = FXActivator, replicate = true},
 	{func = GoBoom, data = {
 		["blastRadius"] = 60,
 		["blastPressure"] = 1000,

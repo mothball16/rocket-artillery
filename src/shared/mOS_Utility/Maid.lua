@@ -13,9 +13,11 @@ export type promise = {}
 export type Maid = {
 	isMaid : (any)->boolean,
 	GiveTask : (Maid, any)->nil,
+	GiveTasks : (Maid, ...any)-> nil,
 	GivePromise : (Maid, promise)->nil,
 	DoCleaning : (Maid)->nil,
 	Destroy : (Maid)->nil,
+
 }
 
 --- Returns a new Maid object
@@ -93,6 +95,12 @@ function Maid:GiveTask(task)
 	end
 
 	return taskId
+end
+
+function Maid:GiveTasks(...)
+	for _, v in {...} do
+		self:GiveTask(v)
+	end
 end
 
 -- (promise)
