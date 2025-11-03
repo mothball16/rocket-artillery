@@ -1,11 +1,11 @@
 --#region requires
 local dir = require(script.Parent.Parent.Parent.Directory)
+local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
 local TwoAxisRotator = require(dir.Modules.Turret.TwoAxisRotator)
 local AttachClientController = require(dir.Modules.AttachmentSystem.AttachClientController)
 local OrientationReader = require(dir.Modules.Instruments.OrientationReader)
 local ForwardCamera = require(dir.Modules.Instruments.ForwardCamera)
 local RangeSheet = require(dir.Modules.Instruments.RangeSheet)
-local Shake = require(dir.Utility.Shake)
 local Signal = require(dir.Utility.Signal)
 local validator = dir.Validator.new(script.Name)
 --#endregion
@@ -70,7 +70,6 @@ export type TurretController = {
 	EndAction: (self: TurretController, keycode: Enum.KeyCode) -> (),
 	EndInput: (self: TurretController, input: Enum.UserInputType) -> (),
 	SetupConnections: (self: TurretController) -> (),
-	ShakeCam: (self: TurretController) -> (),
 	Fire: (self: TurretController) -> boolean?,
 	SwapSalvo: (self: TurretController) -> number,
 	GetSalvo: (self: TurretController) -> number,
@@ -269,31 +268,13 @@ function TurretController.EndInput(self: TurretController, input: Enum.UserInput
 end
 --#endregion
 
---TODO: check if this causes memory leaks
-function TurretController.ShakeCam(self: TurretController)
-	local priority = Enum.RenderPriority.Last.Value
 
-	local shake = Shake.new()
-	shake.FadeInTime = 0
-	shake.Frequency = 0.1
-	shake.Amplitude = 1
-	shake.PositionInfluence = Vector3.new(0, 0, 0)
-
-	shake.RotationInfluence = Vector3.new(0.01, 0.01, 0.01)
-
-	shake:Start()
-	shake:BindToRenderStep(Shake.NextRenderName(), priority, function(pos, rot, isDone)
-		camera.CFrame *= CFrame.new(pos) * CFrame.Angles(rot.X, rot.Y, rot.Z)
-	end)
-end
 
 function TurretController.Fire(self: TurretController)
-	local success, slot = self.AttachClientController:FireOff(self.selectedProjectileType)
-	if not success then
-		--validator:Error("Didn't launch successfully from AttachClientController.")
-		return
-	end
-	self:ShakeCam()
+	-- attempt fire, no fire? return
+	local success, slot = self.AttachClientController:FireAt(self.selectedProjectileType)
+	if not success then return end
+
 	dir.Signals.FireProjectile:Fire(slot, self.selectedProjectileType, { self.vehicle, player.Character })
 	self.localSignals.OnFire:Fire()
 	return true

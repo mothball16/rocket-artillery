@@ -24,6 +24,9 @@ return {
         -- fx
         OnParticlePlayed = "OnParticlePlayed",
         OnParticleCreated = "OnParticleCreated",
+
+        -- shake
+        OnShake = "OnShake",
     };
     Unreliable = {
         -- turret weld stuff

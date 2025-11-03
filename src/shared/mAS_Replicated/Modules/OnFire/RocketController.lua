@@ -13,10 +13,12 @@ local fallbacks = {
 	["burnOut"] = 1;
 
 	["arc"] = 10;
+	["speedArcRel"] = 0.5;
 	["initInacc"] = 1.5;
 	["flyInacc"] = 0.1;
 
 	["despawn"] = 10;
+	["shakeIntensity"] = 1;
 }
 local function _numLerp(a, b, t)
 	return a + (b - a) * t
@@ -50,8 +52,7 @@ function RocketController:ExecuteOnClient(config, args)
 	local active = true
 
 	main:SetAttribute("Speed", config["initSpeed"])
-	local mag,life = self:Simulate(config, initLook)
-	print(mag,life, initLook)
+
 	-- handle cleanup/gc
 	local function Destroy()
 		if not active then return end
@@ -99,7 +100,7 @@ function RocketController:ExecuteOnClient(config, args)
 
 		-- (we didnt hit anything so just inc. variables here)
 		lastPos = main.Position
-		dropFactor += self:StepDrop(config["arc"], speed, dt)
+		dropFactor += self:StepDrop(config["arc"], speed * config["speedArcRel"], dt)
 
 		lifetime += dt
 		timepasu += dt
@@ -118,7 +119,7 @@ function RocketController:Simulate(args, initLook)
 	while pos.Y >= 0 do
 		local speed = self:CalcSpeed(config, lifetime)
 		local velo = self:CalcVelo(initLook, speed, dropFactor)
-		dropFactor += self:StepDrop(config["arc"], speed, dt)
+		dropFactor += self:StepDrop(config["arc"], speed * config["speedArcRel"], dt)
 		pos += velo * dt
 		lifetime += dt
 	end

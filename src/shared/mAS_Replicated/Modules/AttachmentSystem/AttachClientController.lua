@@ -29,7 +29,7 @@ function AttachClientController.new(args, required)
 end
 
 -- (index, attachType)
-function AttachClientController:FireOff(attachType)
+function AttachClientController:FireAt(attachType)
     -- finds out what our next slot will be
     local nextFilledSlot = self.AttachSelector:FindNextFull(attachType)
     if not (nextFilledSlot and self.AttachSelector:SlotOccupied(nextFilledSlot)) then
