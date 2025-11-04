@@ -15,7 +15,6 @@ local TOS220Short = {
 	name = "220mm MO.1.01.04 Thermobaric";
 }
 
-
 -- for funcs
 TOS220Short.OnFire = {
 	{func = RocketController, data = {
@@ -25,7 +24,7 @@ TOS220Short.OnFire = {
 		["despawn"] = 10;
 		["shakeIntensity"] = 1.5;
 	}},
-	{func = FX.Activate, replicate = true},
+	{func = FX.Activate, replicateAcrossClients = true},
 	{func = DoShake, data = {["amplitude"] = 1.5}},
 };
 
@@ -44,7 +43,7 @@ TOS220Short.OnHit = {
 	{func = FX.Create, data = {
 		["useFX"] = "RocketMediumExplosion",
 	}},
-	{func = FX.Preserve, replicate = true}
+	{func = FX.Preserve, replicateAcrossClients = true}
 };
 
 -- for rangefinder/FCU

@@ -78,9 +78,4 @@ function FXActivator:ExecuteOnServer(plr, config, args)
 end
 
 
-
--- required for validator check, nothing to destroy tho really
-function FXActivator:Destroy()
-end
-
 return FXActivator

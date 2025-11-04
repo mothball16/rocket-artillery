@@ -26,7 +26,7 @@ function ProjectileReplHandler:HandleRegister(id, args)
     registry[id] = args
     registry[id].object = obj
     for _, v in pairs(data.Config.OnFire) do
-        if v.replicate then
+        if v.replicateAcrossClients then
             dir.NetUtils:ExecuteOnClient({v}, args)
         end
     end
