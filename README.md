@@ -1,4 +1,10 @@
-# rocket-artlilery
-Repo for the codebase of a cool artillery system I'm working on. Will not work w/o models and setup.
+# Roblox Wargame Systems
+A bunch of old wargame projects from 2023-2024, undergoing thorough refactoring to account for modern scripting practices.<br>
+Test place: https://www.roblox.com/games/73509557461870/wargame-systems 
 
-Link to demo: (TBA)
+## Roadmap
+🟢 - complete  |  🟡 - in progress  |  🔴 - have not started
+- turrets, artillery, projectiles 🟢
+- capturable points & objectives 🟡
+- modded & optimized ACS 1.7.5 🟡
+- locker system 🔴
