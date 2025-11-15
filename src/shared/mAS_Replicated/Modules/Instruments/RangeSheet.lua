@@ -69,7 +69,7 @@ function RangeSheet.new(args, required)
     return self
 end
 
-function RangeSheet:Toggle()
+function RangeSheet:ToggleDisplay()
     if self.open then
        self:Hide()
     else

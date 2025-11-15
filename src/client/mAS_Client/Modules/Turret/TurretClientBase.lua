@@ -76,7 +76,6 @@ local function _checkSetup(required)
 end
 
 function TurretClientBase.new(args, required)
-	local joystick = _checkSetup(required)
 	local self = setmetatable({}, TurretClientBase)
 	self.id = dir.NetUtils:GetId(required)
 	self.maid = dir.Maid.new()
@@ -114,7 +113,7 @@ function TurretClientBase.new(args, required)
 	-- give GC tasks
 	self.maid:GiveTasks(
         self.TwoAxisRotator, self.AttachClientController, self.OrientationReader, 
-		self.RangeSheet, self.joystick)
+		self.RangeSheet)
 
 	if args.ForwardCamera then
 		self.ForwardCamera = ForwardCamera.new(args.ForwardCamera, required)
