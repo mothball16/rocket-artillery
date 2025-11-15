@@ -18,21 +18,21 @@ local fallbacks = {
 local MouseBasedJoystick = {}
 MouseBasedJoystick.__index = MouseBasedJoystick
 
-local function _checkSetup(required)
-    return validator:ValueIsOfClass(required:FindFirstChild("JoystickFrame"), "Frame")
-end
 function MouseBasedJoystick.new(args, required)
     local self = setmetatable({}, MouseBasedJoystick)
     self.config = dir.Helpers:TableOverwrite(fallbacks, args)
-    self.frame = _checkSetup(required)
     self.lockedX = args.lockedX
     self.lockedY = args.lockedY
     self.enabled = args.enabled
     return self
 end
 
+function MouseBasedJoystick:SetFrame(frame)
+    self.frame = frame
+end
+
 function MouseBasedJoystick:GetInput()
-    if not self.enabled then
+    if not self.enabled or not self.frame then
         return Vector2.new()
     end
     local sens = self.config["sens"]
@@ -55,6 +55,7 @@ function MouseBasedJoystick:GetInput()
 end
 
 function MouseBasedJoystick:CanEnable()
+    if not self.frame then return false end
     local offset = self.frame.AbsolutePosition
     local scale = self.frame.AbsoluteSize
     return mouse.X >= offset.X and mouse.X <= offset.X + scale.X

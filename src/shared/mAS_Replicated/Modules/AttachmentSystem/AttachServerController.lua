@@ -1,7 +1,7 @@
 --#region requires
 local dir = require(script.Parent.Parent.Parent.Directory)
 local AttachSelector = require(script.Parent.AttachSelector)
-local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
+local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 --#endregion
 
 --[[

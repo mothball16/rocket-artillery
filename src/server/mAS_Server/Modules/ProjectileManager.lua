@@ -2,7 +2,7 @@ local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
 local validator = dir.Validator.new(script.Name)
 local ProjectileManager = {}
 local registry = {}
-local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
+local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 
 local function _getContext(player)
     local localReg = registry[player.UserId]

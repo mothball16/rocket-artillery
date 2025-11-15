@@ -1,7 +1,7 @@
 local SPEED_MULT = 4
 
 return {
-    TurretController = {
+    TurretBase = {
         turretName = "TOS-1A 'Solntsepyok'";
         salvoIntervals = {1, 2};
         timeIntervals = {0.5, 1, 2};
@@ -29,9 +29,10 @@ return {
     RangeSheets = {
         "TOS220Short",
     };
-    -- empty configs, just for clarity
+    -- empty configs, just for clarity (dev)
     AttachSelector = {};
     AttachServerController = {};
     UIHandler = {};
     OrientationReader = {};
+    TurretPlayerControls = {};
 }

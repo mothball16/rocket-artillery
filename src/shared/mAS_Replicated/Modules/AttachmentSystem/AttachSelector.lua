@@ -7,7 +7,7 @@ The selector now handles sequential indices based on numeric part names (1, 2, 3
 
 
 local dir = require(script.Parent.Parent.Parent.Directory)
-local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
+local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 local validator = dir.Validator.new(script.Name)
 local AttachSelector = {}
 AttachSelector.__index = AttachSelector

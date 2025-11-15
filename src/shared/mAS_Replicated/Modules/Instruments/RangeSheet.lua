@@ -1,6 +1,6 @@
 --#region required
 local dir = require(script.Parent.Parent.Parent.Directory)
-local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
+local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 local validator = dir.Validator.new(script.Name)
 local SS = game:GetService("SoundService")
 

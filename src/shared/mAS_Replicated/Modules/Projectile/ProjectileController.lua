@@ -1,14 +1,19 @@
 local HttpService = game:GetService("HttpService")
-local dir = require(script.Parent.Parent.Parent.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
 local validator = dir.Validator.new(script.Name)
 local rayParams = RaycastParams.new()
-local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
+local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 local RequestProjectileCreate = dir.Net:RemoteEvent(dir.Events.Reliable.RequestProjectileCreate)
 local RequestProjectileHit = dir.Net:RemoteEvent(dir.Events.Reliable.RequestProjectileHit)
 local RequestProjectileDestroy = dir.Net:RemoteEvent(dir.Events.Reliable.RequestProjectileDestroy)
 local RequestProjectileUpdate = dir.Net:UnreliableRemoteEvent(dir.Events.Unreliable.RequestProjectileUpdate)
 local ProjectileController = {}
--- ()
+
+--TODO: this script is lagging a bit behind the current architecture.
+-- replace event registration with netutils call
+-- switch to colon syntax
+
 function ProjectileController:Init()
     rayParams.FilterType = Enum.RaycastFilterType.Exclude
     rayParams.IgnoreWater = false

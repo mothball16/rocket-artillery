@@ -1,8 +1,8 @@
 local bootstrapper = {}
 local modules = script.Parent.Modules
 local GeneralReplHandler = require(modules.GeneralReplHandler)
-local ProjectileReplHandler = require(modules.ProjectileReplHandler)
-local ProjectileEventListener = require(modules.ProjectileEventListener)
+local ProjectileReplHandler = require(modules.Projectile.ProjectileReplHandler)
+local ProjectileEventListener = require(modules.Projectile.ProjectileEventListener)
 
 function bootstrapper:Init()
     GeneralReplHandler()

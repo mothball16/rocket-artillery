@@ -1,7 +1,7 @@
 --#region required
 local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
 local validator = dir.Validator.new(script.Name)
-local ProjectileRegistry = require(dir.Modules.Core.ProjectileRegistry)
+local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 --#endregion required
 --[[
 dispatches replication events to handlers and invalidates bad requests

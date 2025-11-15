@@ -1,6 +1,6 @@
 local dir = require(script.Parent.Parent.Parent.Directory)
 local RuS = game:GetService("RunService")
-local ProjectileController = require(dir.Modules.Core.ProjectileController)
+local ProjectileController = require(dir.Modules.Projectile.ProjectileController)
 local RocketController = {}
 
 --TODO: FIX MEMORY LEAKS!!!!!!!
