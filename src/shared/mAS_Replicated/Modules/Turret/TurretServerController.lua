@@ -18,20 +18,10 @@ local function _checkSetup(required)
 end
 
 local function SetupSlot(attacher, slot, initLoaded)
-    local prox = Instance.new("ProximityPrompt")
-    prox.Parent = slot
-    prox.ActionText = "Slot (" .. slot:GetAttribute("SlotType") .. ")"
-    prox.RequiresLineOfSight = false
-
     if initLoaded then
         validator:Warn("TODO: un-hardcode the projectile selection")
         local result = attacher:AttachAt(nil, tonumber(slot.Name), "TOS220Short")
     end
-
-    maid:GiveTask(prox.Triggered:Connect(function(plr)
-        validator:Warn("TODO: un-hardcode the projectile selection")
-        local result = attacher:AttachAt(plr, tonumber(slot.Name), "TOS220Short")
-    end))
 end
 
 -- TODO: we don't need attachselector initialized here

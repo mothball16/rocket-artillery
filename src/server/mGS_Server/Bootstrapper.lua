@@ -1,8 +1,8 @@
 local bootstrapper = {}
 local modules = script.Parent.Modules
-local ObjectHandler = require(modules.Core.ObjectHandler)
+local ObjectiveManager = require(modules.Core.ObjectiveManager)
 function bootstrapper:Init()
-    ObjectHandler()
+    ObjectiveManager()
 end
 
 return bootstrapper

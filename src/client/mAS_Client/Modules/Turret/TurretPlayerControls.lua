@@ -8,7 +8,7 @@ local RuS = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
 --#endregion required
 --[[
-handles actions for turrets & updates UI
+handles actions for turrets and initializes player-facing controls/components
 ]]
 
 local fallbacks = {
@@ -17,8 +17,8 @@ local fallbacks = {
 
 local TurretPlayerControls = {}
 TurretPlayerControls.__index = TurretPlayerControls
-local CROSSHAIR_DIST = 200
 
+local JOYSTICK_TOGGLE_THRESHOLD = 0.25
 export type TurretPlayerControls = {
 	controller: TurretClientBase.TurretClientBase,
 }
@@ -34,7 +34,7 @@ end
 function TurretPlayerControls.new(args: {
 	controller: TurretClientBase.TurretClientBase,
 	keybinds: any,
-	Joystick: any,
+	joystick: any,
 
 }, required)
     local self = setmetatable({}, TurretPlayerControls)
@@ -42,9 +42,10 @@ function TurretPlayerControls.new(args: {
 
 	self.config = dir.Helpers:TableOverwrite(fallbacks, args)
 	self.controller = args.controller
-	self.joystick = joystick.new(args.Joystick, nil)
-	self.keybinds = self.config.keybinds
 
+	self.joystick = joystick.new(args.joystick, nil)
+	self.keybinds = self.config.keybinds
+	self.timeHoldingJoystick = 0
 
 	-- set up input system
 	self.InputSystem = InputSystem.new({
@@ -62,15 +63,15 @@ function TurretPlayerControls.new(args: {
 			end,
 
 			[self.keybinds.RangeFinder] = function()
-				self.controller.RangeSheet:Toggle()
+				self.controller.RangeSheet:ToggleDisplay()
 			end,
 
 			[self.keybinds.ToggleCamera] = function()
-				local inCam = self.ForwardCamera and self.ForwardCamera.enabled
+				local inCam = self.Camera and self.Camera.enabled
 				if inCam then
-					self.controller.ForwardCamera:Disable()
+					self.controller.Camera:Disable()
 				else
-					self.controller.ForwardCamera:Enable()
+					self.controller.Camera:Enable()
 				end
 			end,
 
@@ -83,14 +84,29 @@ function TurretPlayerControls.new(args: {
 			end,
 
 			[self.keybinds.DoAction] = function()
-				if self.joystick:CanEnable() then
+				if (not self.joystick.enabled) and self.joystick:CanEnable() then
 					self.joystick:Enable()
+				else
+					self.joystick:Disable()
 				end
+			end,
+
+			[self.keybinds.ToggleHorizontalLock] = function()
+				self.joystick.lockedX = not self.joystick.lockedX
+				self.joystick.lockedY = false
+			end,
+			[self.keybinds.ToggleVerticalLock] = function()
+				self.joystick.lockedY = not self.joystick.lockedY
+				self.joystick.lockedX = false
 			end,
 		},
 
 		off = {
 			[self.keybinds.DoAction] = function()
+				-- short-press to toggle
+				if self.timeHoldingJoystick < JOYSTICK_TOGGLE_THRESHOLD then
+					return
+				end
 				self.joystick:Disable()
 			end
 		}
@@ -98,7 +114,6 @@ function TurretPlayerControls.new(args: {
 
 	self.maid = dir.Maid.new()
 	self.maid:GiveTasks(
-		self.uiHandler,
 		self.joystick,
 		self.InputSystem)
     return self
@@ -106,6 +121,7 @@ end
 
 function TurretPlayerControls.Update(self: TurretPlayerControls, dt: number)
 	self.controller.state.rotationIntent = self.joystick:GetInput()
+	self.timeHoldingJoystick = self.joystick.enabled and (self.timeHoldingJoystick + dt) or 0
 end
 
 function TurretPlayerControls:Destroy()

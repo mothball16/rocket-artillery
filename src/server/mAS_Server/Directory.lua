@@ -5,7 +5,7 @@ local repl =            share.mAS_Replicated
 local utility =         share.mOS_Utility
 
 local root =            script.Parent
-local mOS =             root.Parent.mOS_Client
+local mOS =             root.Parent.mOS_Server
 local modules =         repl.Modules
 local assets =          repl.Assets
 local configs =         repl.Configs

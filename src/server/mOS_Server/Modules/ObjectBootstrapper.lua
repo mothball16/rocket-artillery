@@ -1,6 +1,5 @@
 --[[
-    Sets up tagged objects and sends a request to build the object
-    when initialization conditions meet.
+    sets up tagged objects and sends a request to build the object when initialization conditions meet
 ]]
 
 local dir = require(game.ReplicatedStorage.Shared.mOS_Replicated.Directory)
@@ -67,10 +66,34 @@ local function AddSeatInitListener(required)
     end)
 end
 
+local function AddToolInitListener(required)
+    local tool = required.Parent
+    assert(tool:IsA("Tool"), "you cant add a tool init listener to a non-tool idiot")
+    local owner = nil
+    local toolId =  HTTP:GenerateGUID()
+    required:SetAttribute(dir.Consts.OBJECT_IDENT_ATTR, toolId)
+    tool.Equipped:Connect(function()
+        local char = tool.Parent
+        local player = game.Players:GetPlayerFromCharacter(char)
+        if player then
+            owner = player
+            Initialize(player, required)
+        end
+    end)
+    tool.Unequipped:Connect(function()
+        if not owner then return end
+        Destroy(owner, required)
+    end)
+end
+
 return function()
     for _, v in pairs(CS:GetTagged(dir.Consts.SEATED_INIT_TAG_NAME)) do
         AddSeatInitListener(v)
     end
+    for _, v in pairs(CS:GetTagged(dir.Consts.TOOL_INIT_TAG_NAME)) do
+        AddToolInitListener(v)
+    end
 
-    CS:GetInstanceAddedSignal(dir.Consts.SEATED_INIT_TAG_NAME):Connect(AddSeatInitListener)    
+    CS:GetInstanceAddedSignal(dir.Consts.SEATED_INIT_TAG_NAME):Connect(AddSeatInitListener)
+    CS:GetInstanceAddedSignal(dir.Consts.TOOL_INIT_TAG_NAME):Connect(AddToolInitListener)
 end

@@ -1,5 +1,5 @@
 --[[
-a wrapper module for listening to user input and triggering actions
+a wrapper around UIS for triggering actions
 ]]
 
 local dir = require(game.ReplicatedStorage.Shared.mOS_Replicated.Directory)

@@ -50,7 +50,7 @@ TOS220Short.OnHit = {
 TOS220Short.FlightPathArgs = TOS220Short.OnFire[1].data;
 
 -- for attachables
-TOS220Short.slot = { "TOSSeries" };
+TOS220Short.SlotTypes = { "TOSSeries" };
 dir.Helpers:TableCombine(TOS220Short, RocketAttachableBase)
 
 return TOS220Short

@@ -1,5 +1,5 @@
 --[=[
-this codebase used to be 400 lines long...
+this codebase used to be <400 lines long...
 
 mothball artillery system - how to set up everything
 msg me on cord @ mothball16 for help

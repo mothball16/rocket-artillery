@@ -1,3 +1,4 @@
+local CollectionService = game:GetService("CollectionService")
 --#region requires
 local dir = require(script.Parent.Parent.Parent.Directory)
 local AttachSelector = require(script.Parent.AttachSelector)
@@ -13,18 +14,50 @@ local attachModels = dir.Assets.AttachModels
 local AttachServerController = {}
 AttachServerController.__index = AttachServerController
 
-local fallbacks = {}
+local fallbacks = {
+    activationDistance = 10,
+    holdDuration = 0.5,
+}
 
--- (args, required)
+
+local function _checkSetup(required)
+    local attachInteractionPoint = validator:ValueIsOfClass(required:FindFirstChild("AttachInteractionPoint"), "BasePart")
+    return attachInteractionPoint
+end
+
+
+
 function AttachServerController.new(args, required)
     local self = setmetatable({}, AttachServerController)
     self.config = dir.Helpers:TableOverwrite(fallbacks, args)
     self.selector = AttachSelector.new(args, required)
     self.required = required
+    self.attachInteractionPoint = _checkSetup(required)
+    self.proxInUse = false
+    self:SetupAttachInteractionPoint(self.attachInteractionPoint)
     return self
 end
 
--- (index, attachType)
+
+function AttachServerController:SetupAttachInteractionPoint(part)
+    local prox = Instance.new("ProximityPrompt")
+    CollectionService:AddTag(part, dir.Consts.SELECTOR_INTERACT_ATTR)
+    prox.Parent = part
+    prox.Enabled = false -- clients will enable when they have the tool equipped
+    prox.ActionText = "Manage Attachments"
+    prox.RequiresLineOfSight = false
+    prox.HoldDuration = self.config.holdDuration
+    prox.MaxActivationDistance = self.config.activationDistance
+    prox.Triggered:Connect(function(player)
+        if self.proxInUse then
+            return
+        end
+        self.proxInUse = true
+        prox.ObjectText = "Slots (under use by " .. player.Name .. ")"
+    end)
+    return prox
+end
+
 function AttachServerController:AttachAt(actor, index, attachType)
     local slot = validator:Exists(self.selector:SlotAt(index),"slot at index " .. index)
     if self.selector:SlotOccupied(slot) then

@@ -1,8 +1,6 @@
 local dir = require(script.Parent.Parent.Parent.Directory)
 
 return function()
-
-
     dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnTurretWeldsUpdated,
         function(state)
         if not state then return end

@@ -4,7 +4,7 @@ this script is used to boot up objects
 
 local dir = require(script.Parent.Parent.Parent.Directory)
 
-local objectInitializer = require(script.Parent.ObjectInitializer).new("LocalController")
+local objectInitializer = require(game.ReplicatedStorage.Shared.mOS_Replicated.Modules.ObjectManagement.ObjectInitializer).new("LocalController")
 local owned = {}
 -- load order
 

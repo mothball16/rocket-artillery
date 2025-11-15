@@ -5,22 +5,45 @@ local configs = dir.Configs.Projectiles
 local models = dir.Assets.Projectiles
 local attachModels = dir.Assets.AttachModels
 local cache = {}
-
+local cacheBySlot = {}
 local ProjectileRegistry = {}
+local IGNORE_IN__CONFIG_FOLDER = "IgnorePreCache"
 
--- (name)
-function ProjectileRegistry:GetProjectile(name)
-    if not cache[name] then
-        local config = require(validator:Exists(
-            configs:FindFirstChild(name),"config for projectile " .. name))
+function ProjectileRegistry:Init()
+    -- pre-load all projectile configs
+    for _, module in ipairs(configs:GetChildren()) do
+        if module:GetAttribute(IGNORE_IN__CONFIG_FOLDER) then continue end
+        local config = require(module)
+        local name = module.Name
+        local slotTypes = validator:Exists(config.SlotTypes, "slot type for projectile " .. name)
         local model = validator:Exists(models:FindFirstChild(name), "model for projectile " .. name)
         cache[name] = {
             Config = config,
             Model = model,
             AttachModel = attachModels:FindFirstChild(name)
         }
+
+        for _, type in ipairs(slotTypes) do
+            cacheBySlot[type] = cacheBySlot[type] or {}
+            table.insert(cacheBySlot[type], name)
+        end
+    end
+end
+
+function ProjectileRegistry:GetProjectile(name)
+    if not cache[name] then
+        error("projectile config not found for " .. tostring(name))
     end
     return cache[name]
 end
+
+function ProjectileRegistry:GetProjectilesOfSlotType(slotType)
+    if not cacheBySlot[slotType] then
+        warn("no valid projectiles found for slot type " .. tostring(slotType))
+        return {}
+    end
+    return cacheBySlot[slotType]
+end
+
 
 return ProjectileRegistry

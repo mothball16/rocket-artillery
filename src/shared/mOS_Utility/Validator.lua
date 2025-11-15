@@ -22,7 +22,6 @@ end
 
 -- (obj, attrib)
 function Validator:HasAttr(obj, attrib)
-    print(obj)
     local val = self:Exists(obj, "obj searching for attribute " .. attrib):GetAttribute(attrib)
     if devMode then
         assert(val, self:FailHead() .. "attribute " .. attrib .. " doesn't exist on obj " .. obj.Name)
@@ -63,11 +62,11 @@ end
 
 -- (msg)
 function Validator:Warn(msg)
-    warn(self:FailHead() .. msg)
+    warn(self:FailHead() .. msg .. debug.traceback())
 end
 
 -- (msg)
 function Validator:Error(msg)
-    error(self:FailHead() .. msg)
+    error(self:FailHead() .. msg .. debug.traceback())
 end
 return Validator

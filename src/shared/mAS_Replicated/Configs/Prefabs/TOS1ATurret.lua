@@ -17,7 +17,7 @@ return {
     };
 
     Joystick = {
-        sens = 0.75;
+        sens = 1.5;
         enabled = false;
     };
 

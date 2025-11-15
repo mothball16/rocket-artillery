@@ -20,11 +20,14 @@ return {
     ]]
     REPLICATION_THROTTLE = 0.2;
 
-    DESTROYABLE_JOINT_ATTR = "mAS_Destroyable";
+
+
     REPL_ID = "mAS_ReplId";
+    DESTROYABLE_JOINT_ATTR = "mAS_Destroyable";
+
+    SELECTOR_INTERACT_ATTR = "mAS_SelectorInteractionPoint";
     AMMO_TYPE = "mAS_AmmoType";
     ATTACH_WELD_NAME = "mAS_AttachPointWeld";
     OBJECT_IDENT_ATTR = "mAS_ObjectIdentifier";
-    SEATED_INIT_TAG_NAME = "mAS_RunOnSeated";
     LAST_UPDATE_FIELD = "mAS_LastUpdate";
 }

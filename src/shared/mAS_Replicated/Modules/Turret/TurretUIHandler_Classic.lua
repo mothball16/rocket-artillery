@@ -4,25 +4,21 @@ local validator = dir.Validator.new(script.Name)
 --#endregion required
 --[[
 the original UI from the 2022 version of this system
+quarantine zone for spaghetti with meatballs code
 ]]
 local template = dir.Assets.UI.TurretUI_Classic
 local player = game.Players.LocalPlayer
 local JOYSTICK_LERP_RATE = 0.5
+local FOCUS_AXIS_COLOR = Color3.fromRGB(255, 50, 50)
+local FREE_AXIS_COLOR = Color3.fromRGB(255,255,255)
+local START_AIMING_COLOR = Color3.fromRGB(255, 255, 100)
+local ENABLED_AIMING_COLOR = Color3.fromRGB(200,255,100)
+local DISABLED_AIMING_COLOR = Color3.fromRGB(255,255,255)
 local UI = {}
 UI.__index = UI
 
 
 
---[[
-	self.uiHandler:Update(dt, {
-		stickPos = self.controller.joystick:GetInput(),
-		rot = self.controller.TwoAxisRotator:GetRot(),
-		orient = self.OrientationReader:GetDirection(),
-		pos = self.OrientationReader:GetPos(),
-		crosshair = self.controller.OrientationReader:GetForwardPos(CROSSHAIR_DIST),
-		inCamera = self.controller.ForwardCamera and self.ForwardCamera.enabled or false
-	})
-]]
 
 local function _setupComponents(args, required)
     local canvas = template:Clone()
@@ -37,7 +33,12 @@ local function _setupComponents(args, required)
         crosshair = aimPoint;
         zoom = statsPanel:FindFirstChild("Zoom");
 
+        aiming = statsPanel.Aiming;
         joystick = statsPanel.Aiming.Stick;
+        joystickRaw = statsPanel.Aiming.StickRaw;
+        horizAxis = statsPanel.Aiming.Horizontal;
+        vertAxis = statsPanel.Aiming.Vertical;
+
         joystickControlFrame = canvas:FindFirstChild("ControlFrame");
     }
 
@@ -95,13 +96,24 @@ function UI:GetRequired()
 end
 
 function UI:Update(dt, state)
+    -- joystick lerp
     local lerpFac = math.min(JOYSTICK_LERP_RATE * dt * 60, 1)
     self.joystickPos = Vector2.new((1 + state.stickPos.X)/2, (1 + state.stickPos.Y)/2)
+    self.joystickRaw = Vector2.new((1 + state.stickRaw.X)/2, (1 + state.stickRaw.Y)/2)
+
     self.components.joystick.Position = UDim2.fromScale(
         Lerp(self.components.joystick.Position.X.Scale, self.joystickPos.X, lerpFac),
         Lerp(self.components.joystick.Position.Y.Scale, self.joystickPos.Y, lerpFac)
     )
 
+    self.components.joystickRaw.Position = UDim2.fromScale(
+        Lerp(self.components.joystickRaw.Position.X.Scale, self.joystickRaw.X, lerpFac),
+        Lerp(self.components.joystickRaw.Position.Y.Scale, self.joystickRaw.Y, lerpFac)
+    )
+
+    self.components.joystickRaw.BackgroundTransparency = (state.lockedAxes.x or state.lockedAxes.y)
+        and 0.8 or 0.5
+    -- stats update
     self.components["stats"].Deflection.Text =
         "DFL: (" .. math.round((180 - state.orient.yaw) % 360) .. "°G) " .. math.round(state.rot.X) .. "° L"
 	self.components["stats"].Elevation.Text = 
@@ -109,9 +121,28 @@ function UI:Update(dt, state)
 	self.components["stats"].Altitude.Text =
         "ALT: " .. math.round(state.pos.Y) .. " ft"
     self.components["stats"].Coords.Text = "COORDS: [" .. math.round(state.pos.X) .. "," .. math.round(state.pos.Z) .. "]"
+    
+    -- crosshair update
     local crosshairPos, onScreen = game.Workspace.CurrentCamera:WorldToScreenPoint(state.crosshair)
+
+    -- aiming update
+    if state.stickTime > 0.25 then
+        self.components["aiming"].BackgroundColor3 = ENABLED_AIMING_COLOR
+    elseif state.stickTime > 0 then
+        self.components["aiming"].BackgroundColor3 = START_AIMING_COLOR
+    else
+        self.components["aiming"].BackgroundColor3 = DISABLED_AIMING_COLOR
+    end
+
     self.components["crosshair"].Position = UDim2.new(0,crosshairPos.X,0,crosshairPos.Y)
     self.components["crosshair"].Visible = onScreen
+
+    self.components["vertAxis"].BackgroundColor3 = state.lockedAxes.x
+        and FOCUS_AXIS_COLOR or FREE_AXIS_COLOR
+    self.components["horizAxis"].BackgroundColor3 = state.lockedAxes.y
+        and FOCUS_AXIS_COLOR or FREE_AXIS_COLOR
+
+    
 end
 
 function UI:Destroy()

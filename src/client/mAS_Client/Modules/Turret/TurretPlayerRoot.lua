@@ -25,18 +25,23 @@ function TurretPlayerRoot.new(args, required)
     local self = setmetatable({}, TurretPlayerRoot)
     self.maid = dir.Maid.new()
 
+    -- 1: set up base turret
     self.turretBase = TurretClientBase.new(args, required)
 
+    -- 2: wrap player controls around base and provide init. args
     self.playerControls = TurretPlayerControls.new({
         controller = self.turretBase,
-        Joystick = args.Joystick,
+        joystick = args.Joystick,
     }, required)
 
+    -- 3: set up UI handler with signals from base & joystick from player controls
     self.uiHandler = uiHandler.new({
         signals = self.turretBase.localSignals,
         joystickComponent = self.playerControls.joystick,
     }, required)
 
+    -- flow of information:
+    -- Input (playerControls) -> Logic (turretBase) -> UI (uiHandler)
 
     self.maid:GiveTasks(
         self.turretBase,
@@ -48,8 +53,15 @@ function TurretPlayerRoot.new(args, required)
         self.turretBase:Update(dt)
         self.playerControls:Update(dt)
 
+        local stickPos, stickRaw = self.playerControls.joystick:GetInput()
         self.uiHandler:Update(dt, {
-            stickPos = self.playerControls.joystick:GetInput(),
+            stickPos = stickPos,
+            stickRaw = stickRaw,
+            stickTime = self.playerControls.timeHoldingJoystick,
+            lockedAxes = {
+                x = self.playerControls.joystick.lockedX,
+                y = self.playerControls.joystick.lockedY},
+            
             rot = self.turretBase.TwoAxisRotator:GetRot(),
             orient = self.turretBase.OrientationReader:GetDirection(),
             pos = self.turretBase.OrientationReader:GetPos(),

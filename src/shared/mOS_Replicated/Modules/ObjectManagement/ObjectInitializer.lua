@@ -24,14 +24,14 @@ function ObjectInitializer:Execute(required)
         return
     end
     local entryPoint = validator:Exists(
-        required:FindFirstChild("InitRoot"), "InitRoot of seat activator")
+        required:FindFirstChild("InitRoot"), "InitRoot of activator")
 
     local controllerRef = entryPoint:FindFirstChild(self.controller)
 
-    if controllerRef and controllerRef.Value then
+    if not controllerRef then return end
+    if controllerRef.Value then
         local controller = require(controllerRef.Value)
-        local prefab = require(validator:Exists(
-            entryPoint:FindFirstChild("Prefab"), "prefab ObjectValue").Value)
+        local prefab = entryPoint:FindFirstChild("Prefab") and require(entryPoint:FindFirstChild("Prefab").Value) or {}
         validator:Exists(controller["new"], "new function of obj. controller")
         local obj = controller.new(prefab, required)
 
@@ -45,7 +45,7 @@ function ObjectInitializer:Execute(required)
             destroy = DestroyObj,
         }
     else
-       warn("object attempted to be initialized, but initroot was incomplete/missing") 
+       warn("you are missing a value in the " .. controllerRef.Name) 
     end
     return nil
 end

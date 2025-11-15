@@ -31,27 +31,31 @@ function MouseBasedJoystick:SetFrame(frame)
     self.frame = frame
 end
 
+-- return arg 1 is the real input. return arg 2 is the raw input before applying any funny business
 function MouseBasedJoystick:GetInput()
-    if not self.enabled or not self.frame then
-        return Vector2.new()
-    end
+
     local sens = self.config["sens"]
     local deadzone = self.config["deadzone"] * sens
     local offset = self.frame.AbsolutePosition
     local scale = self.frame.AbsoluteSize
-    local mousePropX = self.lockedX and 0 or (mouse.X - offset.X - scale.X / 2) / scale.X
-    local mousePropY = self.lockedY and 0 or (mouse.Y - offset.Y - scale.Y / 2) / scale.Y
+    local mousePropX = (mouse.X - offset.X - scale.X / 2) / scale.X
+    local mousePropY = (mouse.Y - offset.Y - scale.Y / 2) / scale.Y
 
     local xRatio = math.clamp(mousePropX * 2 * sens, -1, 1)
     local yRatio = math.clamp(mousePropY * 2 * sens, -1, 1)
-    if math.abs(xRatio) < deadzone.X then
+    local inputRaw = Vector2.new(xRatio, yRatio)
+    if not self.enabled or not self.frame then
+        return Vector2.new(), inputRaw
+    end
+
+    if math.abs(xRatio) < deadzone.X or self.lockedX then
         xRatio = 0
     end
 
-    if math.abs(yRatio) < deadzone.Y then
+    if math.abs(yRatio) < deadzone.Y or self.lockedY then
         yRatio = 0
     end
-    return Vector2.new(xRatio, yRatio)
+    return Vector2.new(xRatio, yRatio), inputRaw
 end
 
 function MouseBasedJoystick:CanEnable()
