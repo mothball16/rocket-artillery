@@ -9,8 +9,9 @@ return {
         RangeFinder = Enum.KeyCode.K;
         ToggleFCU = Enum.KeyCode.L;
 
-        ToggleHorizontalLock = Enum.KeyCode.LeftBracket;
-        ToggleVerticalLock = Enum.KeyCode.RightBracket;
+        HoldPreciseAdjustment = Enum.KeyCode.LeftShift;
+        ToggleHorizontalLock = Enum.KeyCode.Z;
+        ToggleVerticalLock = Enum.KeyCode.C;
         
         DoAction = Enum.UserInputType.MouseButton1;
     }

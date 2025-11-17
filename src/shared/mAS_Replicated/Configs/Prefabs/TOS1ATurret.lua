@@ -14,6 +14,7 @@ return {
         pitchMax = 48,
         pitchMin = 0,
         pitchSpeed = 2.2 * SPEED_MULT,
+        maxStep = 1.5,
     };
 
     Joystick = {

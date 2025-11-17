@@ -39,6 +39,14 @@ BASIC CONFIGURATION
 
 - Projectiles: tba
 
+
+TROUBLESHOOTING
+
+1. compass is off/reversed!
+- Look for OrientationReader.lua and modify options as necessary. (Instructions in file)
+
+2
+
 ADVANCED CONFIGURATION
 - Projectile behaviors: Lua doesn't have interfaces, so you'll just need to make sure you add
 the existing methods for OnFire/OnHit behaviors. Look into the scripts to figure out how they 

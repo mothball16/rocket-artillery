@@ -1,5 +1,10 @@
 {
     "accessibleCodeRuler.languageMaximumLineLength": {
         "lua": 100
-    }
+    },
+    "folder-color.pathColors": [
+        {
+            "folderPath": "wargame-systems\\src\\client\\mAS_Client\\Modules\\"
+        }
+    ]
 }

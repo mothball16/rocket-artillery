@@ -19,6 +19,7 @@ local TurretPlayerControls = {}
 TurretPlayerControls.__index = TurretPlayerControls
 
 local JOYSTICK_TOGGLE_THRESHOLD = 0.25
+local JOYSTICK_PRECISION_MULT = 0.25
 export type TurretPlayerControls = {
 	controller: TurretClientBase.TurretClientBase,
 }
@@ -37,15 +38,18 @@ function TurretPlayerControls.new(args: {
 	joystick: any,
 
 }, required)
-    local self = setmetatable({}, TurretPlayerControls)
 	local joystick = _checkSetup(required)
 
-	self.config = dir.Helpers:TableOverwrite(fallbacks, args)
-	self.controller = args.controller
+    local self = setmetatable({
+		rotationMult = 1,
+		config = dir.Helpers:TableOverwrite(fallbacks, args),
+		controller = args.controller,
+		joystick = joystick.new(args.joystick, nil),
+		timeHoldingJoystick = 0,
+		maid = dir.Maid.new(),
+	}, TurretPlayerControls)
 
-	self.joystick = joystick.new(args.joystick, nil)
 	self.keybinds = self.config.keybinds
-	self.timeHoldingJoystick = 0
 
 	-- set up input system
 	self.InputSystem = InputSystem.new({
@@ -67,12 +71,13 @@ function TurretPlayerControls.new(args: {
 			end,
 
 			[self.keybinds.ToggleCamera] = function()
-				local inCam = self.Camera and self.Camera.enabled
+				--[[
+				local inCam = self.controller.Camera and self.controller.Camera.enabled
 				if inCam then
 					self.controller.Camera:Disable()
 				else
 					self.controller.Camera:Enable()
-				end
+				end]]
 			end,
 
 			[self.keybinds.ZoomIn] = function()
@@ -99,6 +104,10 @@ function TurretPlayerControls.new(args: {
 				self.joystick.lockedY = not self.joystick.lockedY
 				self.joystick.lockedX = false
 			end,
+
+			[self.keybinds.HoldPreciseAdjustment] = function()
+				self.rotationMult = JOYSTICK_PRECISION_MULT
+			end,
 		},
 
 		off = {
@@ -108,19 +117,19 @@ function TurretPlayerControls.new(args: {
 					return
 				end
 				self.joystick:Disable()
-			end
+			end,
+			[self.keybinds.HoldPreciseAdjustment] = function()
+				self.rotationMult = 1
+			end,
 		}
 	})
 
-	self.maid = dir.Maid.new()
-	self.maid:GiveTasks(
-		self.joystick,
-		self.InputSystem)
+	self.maid:GiveTasks(self.joystick, self.InputSystem)
     return self
 end
 
 function TurretPlayerControls.Update(self: TurretPlayerControls, dt: number)
-	self.controller.state.rotationIntent = self.joystick:GetInput()
+	self.controller.state.rotationIntent = self.joystick:GetInput() * self.rotationMult
 	self.timeHoldingJoystick = self.joystick.enabled and (self.timeHoldingJoystick + dt) or 0
 end
 

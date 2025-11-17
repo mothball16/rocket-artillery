@@ -12,6 +12,8 @@ initializes the turret systems in order & passes local dependencies down the lin
 local TurretPlayerRoot = {}
 TurretPlayerRoot.__index = TurretPlayerRoot
 
+
+
 local function _checkSetup(required)
     local uiHandler = require(validator:ValueIsOfClass(required:FindFirstChild("UIHandler"), "ModuleScript"))
     validator:Exists(uiHandler.new, "constructor of UI handler")
@@ -19,6 +21,12 @@ local function _checkSetup(required)
     validator:Exists(uiHandler.SetupStatic, "static label initializer of UI handler")
     return uiHandler
 end
+
+
+function TurretPlayerRoot:Destroy()
+    self.maid:DoCleaning()
+end
+
 function TurretPlayerRoot.new(args, required)
     local uiHandler = _checkSetup(required)
 
@@ -58,6 +66,7 @@ function TurretPlayerRoot.new(args, required)
             stickPos = stickPos,
             stickRaw = stickRaw,
             stickTime = self.playerControls.timeHoldingJoystick,
+            stickMult = self.playerControls.rotationMult,
             lockedAxes = {
                 x = self.playerControls.joystick.lockedX,
                 y = self.playerControls.joystick.lockedY},
@@ -65,16 +74,34 @@ function TurretPlayerRoot.new(args, required)
             rot = self.turretBase.TwoAxisRotator:GetRot(),
             orient = self.turretBase.OrientationReader:GetDirection(),
             pos = self.turretBase.OrientationReader:GetPos(),
-            crosshair = self.turretBase.OrientationReader:GetForwardPos(200),
+            HUD = self.turretBase.OrientationReader:GetForwardPos(400),
+            crosshair = self.turretBase.OrientationReader:GetForwardPos(4000),
             inCamera = self.turretBase.ForwardCamera 
                 and self.playerControls.controller.ForwardCamera.enabled or false
-        })
+        } :: UILoad)
     end))
     return self
 end
 
-function TurretPlayerRoot:Destroy()
-    self.maid:DoCleaning()
-end
+export type UILoad = {
+    stickPos: Vector2,
+    stickRaw: Vector2,
+    stickTime: number,
+    stickMult: number,
+    lockedAxes: {
+        x: number,
+        y: number
+    },
+    rot: Vector2,
+    orient: {
+        yaw: number,
+        pitch: number,
+        roll: number
+    },
+    pos: Vector3,
+    crosshair: Vector3,
+    inCamera: boolean,
+}
+
 
 return TurretPlayerRoot

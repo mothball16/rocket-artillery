@@ -97,7 +97,7 @@ function TurretClientBase.new(args, required)
 	self.state = {
 		salvoIndex = 1,
 		timeIndex = 1,
-		rotationIntent = Vector2.new()
+		rotationIntent = Vector2.new(),
 	}
 
 	-- component setup
