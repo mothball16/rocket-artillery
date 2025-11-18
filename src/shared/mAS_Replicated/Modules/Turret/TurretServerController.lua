@@ -20,7 +20,7 @@ end
 local function SetupSlot(attacher, slot, initLoaded)
     if initLoaded then
         validator:Warn("TODO: un-hardcode the projectile selection")
-        local result = attacher:AttachAt(nil, tonumber(slot.Name), "TOS220Short")
+        local result = attacher:AttachAt(nil, tonumber(slot.Name), (math.random() > 0.5 and "TOS220Short" or "TOS220Long"))
     end
 end
 

@@ -20,6 +20,7 @@ return {
         RequestAttachmentDetach = "RequestAttachmentDetach",
         RequestAttachmentUse = "RequestAttachmentUse",
         RequestAttachmentAttach = "RequestAttachmentAttach",
+        OnAttachStateModified = "OnAttachStateModified", -- (required), calls clients to refresh the attachstate. this would only be connected to within clientcontrollers that need the information
 
         -- fx
         OnParticlePlayed = "OnParticlePlayed",

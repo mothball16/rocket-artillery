@@ -28,12 +28,14 @@ end
 
 
 function AttachServerController.new(args, required)
-    local self = setmetatable({}, AttachServerController)
-    self.config = dir.Helpers:TableOverwrite(fallbacks, args)
-    self.selector = AttachSelector.new(args, required)
-    self.required = required
-    self.attachInteractionPoint = _checkSetup(required)
-    self.proxInUse = false
+    local self = setmetatable({
+        config = dir.Helpers:TableOverwrite(fallbacks, args),
+        selector = AttachSelector.new(args, required),
+        required = required,
+        attachInteractionPoint = _checkSetup(required),
+        proxInUse = false
+    }, AttachServerController)
+
     self:SetupAttachInteractionPoint(self.attachInteractionPoint)
     return self
 end
@@ -79,6 +81,7 @@ function AttachServerController:AttachAt(actor, index, attachType)
         ["required"] = self.required
     })
     dir.Helpers:Weld(slot, instance:FindFirstChild("Attachment")).Name = dir.Consts.ATTACH_WELD_NAME
+    --dir.NetUtils:FireOtherClients(actor, dir.Events.Reliable.OnAttachStateModified, self.required)
     return true
 end
 
@@ -117,7 +120,8 @@ function AttachServerController:DetachAt(actor, index)
         -- let client side replication grab the particles if needed
         instance.Parent = game.ReplicatedStorage
         game.Debris:AddItem(instance, 8)
-        end
+    end
+    --dir.NetUtils:FireOtherClients(actor, dir.Events.Reliable.OnAttachStateModified, self.required)
     return true
 end
 

@@ -12,6 +12,7 @@ local GoBoom = require(dir.Modules.OnHit.GoBoom)
 
 local TOS220Long = {
 	-- gen. config
+	ID = script.Name;
 	name = "220mm MO.1.01.04M Thermobaric (Long Range)";
 }
 
