@@ -80,4 +80,16 @@ end
 
 return component
 ========================================================================================
+
+[Communicating from client controller to a server controller]
+1. on startup, get ID of the object on the client with NetUtils:GetId(required) -> this will return the attribute identifier used to find the object
+...
+2. fire event, with the ID as an arg with NetUtils:FireServer(evt, id, ...)     -> this will let the server identify which object you are referring to
+3. on server handler, retrieve the object with NetUtils:GetObject(id)           -> this will make the server retrieve the object from the object registry. you now have the table of components
+4. retrieve server controller from the object table + validate the request      -> this will make sure there even is a server controller to interact with, and will abort early if not found
+5. the handler can now call server controller methods!
+
+[Communicating from server controller to client controller]
+follow above steps, but replace Server with Client
+^ WARNING! given the constraints of this framework, this should only ever communicate back to the original client. if the server needs to communicate to multiple clients, use a manager
 ]=]
