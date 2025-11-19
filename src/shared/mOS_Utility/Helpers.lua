@@ -8,6 +8,17 @@ function Helpers:TableCombine(tbl1, ...)
     end
 end
 
+function Helpers:TableCombineNew(...)
+    local tbl = {}
+    for _, t in pairs({...}) do
+        for k, v in pairs(t) do
+            tbl[k] = v
+        end
+    end
+    return tbl
+end
+
+
 function Helpers:TableOverwrite(orig, overwrite)
     local tbl = {}
     for k,v in pairs(orig) do

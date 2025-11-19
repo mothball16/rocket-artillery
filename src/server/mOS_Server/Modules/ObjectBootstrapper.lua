@@ -8,6 +8,12 @@ local CS = game:GetService("CollectionService")
 
 local ServerSignals = dir.ServerSignals
 
+local function _checkServerPreload(required)
+    if not required:GetAttribute(dir.Consts.LAZY_LOAD_SERVER_CONTROLLER_ATTR) then
+        ServerSignals.InitObject:Fire(required)
+    end
+end
+
 local function Initialize(player, required)
     --[[
         this will initialize the server object only if it hasn't been created yet
@@ -42,6 +48,7 @@ end
 
 local function AddSeatInitListener(required)
     required:SetAttribute(dir.Consts.OBJECT_IDENT_ATTR, HTTP:GenerateGUID())
+    _checkServerPreload(required)
     local seat = required.ControlSeat.Value
     local lastOccupant
     seat:GetPropertyChangedSignal("Occupant"):Connect(function()
@@ -72,6 +79,7 @@ local function AddToolInitListener(required)
     local owner = nil
     local toolId =  HTTP:GenerateGUID()
     required:SetAttribute(dir.Consts.OBJECT_IDENT_ATTR, toolId)
+    --_checkServerPreload(required)
     tool.Equipped:Connect(function()
         local char = tool.Parent
         local player = game.Players:GetPlayerFromCharacter(char)
@@ -85,6 +93,8 @@ local function AddToolInitListener(required)
         Destroy(owner, required)
     end)
 end
+
+
 
 return function()
     for _, v in pairs(CS:GetTagged(dir.Consts.SEATED_INIT_TAG_NAME)) do

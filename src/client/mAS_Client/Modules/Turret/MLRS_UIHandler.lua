@@ -24,8 +24,8 @@ local function _setupComponents(args, required)
     local canvas = template:Clone()
 
     local mainPanel = canvas:FindFirstChild("Main")
-    local crosshairPanel = canvas:FindFirstChild("Crosshair")
-    local instrumentPanel = mainPanel:FindFirstChild("Instruments")
+    local sidePanel = canvas:FindFirstChild("SidePanel")
+    local joystickPanel = mainPanel:FindFirstChild("Aiming")
     local elevation, deflection = mainPanel.Elevation, mainPanel.Deflection
     local elevationStrokes = elevation.StrokeClipper.Strokes
     local elevationDisplay = elevation.Display
@@ -33,9 +33,17 @@ local function _setupComponents(args, required)
     local deflectionDisplay = deflection.Display
     local components = {
         main = mainPanel;
-        crosshair = crosshairPanel;
-        instruments = instrumentPanel;
+        mainPanelInstruments = mainPanel:FindFirstChild("Instruments");
+        side = sidePanel;
+        sidePanelInstruments = sidePanel:FindFirstChild("Instruments");
+        projectileTypes = sidePanel:FindFirstChild("ProjectileTypes");
+
+        joystick = joystickPanel.Stick;
+        joystickRaw = joystickPanel.StickRaw;
+        vertAxis = joystickPanel.Vertical;
+        horizAxis = joystickPanel.Horizontal;
         joystickControlFrame = canvas:FindFirstChild("ControlFrame");
+
         elevation = elevation;
         elevationDisplay = elevationDisplay;
         elevationStrokes = ticker.new({
@@ -69,17 +77,40 @@ end
 local function _checkSetup(args)
     
 end
+local function _buildProjectileTable(self, component, rack)
+    for _, v in pairs(component:GetChildren()) do
+        if v:IsA("Frame") and v.Name ~= "Template" then
+            v:Destroy()
+        end
+    end
+    print(rack)
+    for id, data in pairs(rack) do
+        local projectileCount = #data.slots
+        local projectileName = data.name
+        local clone = component.Template:Clone()
+        clone.Name = id
+        clone.ProjectileName.Text = projectileName
+        clone.Count.Text = "x" .. projectileCount
+        clone.Parent = component
+        clone.Visible = true
+        clone.Place.MouseButton1Down:Connect(function()
+            self.signals.RequestProjectileSwap:Fire(id)
+        end)
+    end
+end
+
 
 function UI.new(args, required)
     local self = setmetatable({
         maid = dir.Maid.new();
         joystickPos = Vector2.new();
+        signals = args.signals;
     }, UI)
     self.canvas, self.components = _setupComponents(args, required)
     self.canvas.Parent = player.PlayerGui
     self.maid:GiveTask(self.canvas)
-    
-    self:SetupConnections(args.signals)
+     _buildProjectileTable(self, self.components["projectileTypes"], args.rack)
+    self:SetupConnections(self.signals)
     return self
 end
 
@@ -93,23 +124,23 @@ local function Lerp(a, b, t)
 	return a + (b - a) * t
 end
 
+
 function UI:SetupConnections(signals)
-    --[[
-    self.maid:GiveTask(signals.OnFire:Connect(function()
-        print("fired")
+    self.maid:GiveTask(signals.OnRackUpdated:Connect(function(rack)
+        _buildProjectileTable(self, self.components["projectileTypes"], rack)
     end))
 
     self.maid:GiveTask(signals.OnSalvoIntervalModified:Connect(function(salvoAmount)
-	    self.components.combat.Quantity.Text = "QTY: " .. salvoAmount
+	    self.components["mainPanelInstruments"].Salvo.Text = "QTY: " .. salvoAmount
     end))
 
     self.maid:GiveTask(signals.OnTimedIntervalModified:Connect(function(timeDelay)
-        self.components.combat.Interval.Text = "INT: " .. timeDelay .. "s"
+        self.components["mainPanelInstruments"].Interval.Text = "INT: " .. timeDelay .. "s"
     end))
 
     self.maid:GiveTask(signals.OnRangeFinderToggled:Connect(function(toggle)
         
-    end))]]
+    end))
 end
 
 function UI:GetRequired()
@@ -118,7 +149,7 @@ end
 
 function UI:Update(dt, state: types.UILoad)
 
-    --[[
+
     -- joystick lerp
     local lerpFac = math.min(JOYSTICK_LERP_RATE * dt * 60, 1)
     self.joystickPos = Vector2.new((1 + state.stickPos.X)/2, (1 + state.stickPos.Y)/2)
@@ -136,19 +167,10 @@ function UI:Update(dt, state: types.UILoad)
 
     self.components.joystickRaw.BackgroundTransparency = (state.lockedAxes.x or state.lockedAxes.y)
         and 0.8 or 0.5
-    -- stats update
-    self.components["stats"].Deflection.Text =
-        "DFL: (" .. math.round((180 - state.orient.yaw) % 360) .. "°G) " .. math.round(state.rot.X) .. "° L"
-	self.components["stats"].Elevation.Text = 
-        "ELV: (".. math.round(state.orient.pitch) .. "°G) " .. math.round(state.rot.Y) .. "° L"
-	self.components["stats"].Altitude.Text =
-        "ALT: " .. math.round(state.pos.Y) .. " ft"
-    self.components["stats"].Coords.Text = "COORDS: [" .. math.round(state.pos.X) .. "," .. math.round(state.pos.Z) .. "]"
-    ]]
 
-	self.components["instruments"].Altitude.Label.Text = math.round(state.pos.Y)
-    self.components["instruments"].CoordX.Label.Text = math.round(state.pos.X)
-    self.components["instruments"].CoordZ.Label.Text = math.round(state.pos.Z)
+	self.components["sidePanelInstruments"].Altitude.Label.Text = math.round(state.pos.Y)
+    self.components["sidePanelInstruments"].CoordX.Label.Text = math.round(state.pos.X)
+    self.components["sidePanelInstruments"].CoordZ.Label.Text = math.round(state.pos.Z)
 
 
     local elv = (state.orient.pitch > 0 and "+" or "") .. tostring(math.round(state.orient.pitch * 10)/10) .. "°"
@@ -159,24 +181,15 @@ function UI:Update(dt, state: types.UILoad)
     self.components["deflectionStrokes"]:Update(state.orient.yaw)
 
     -- crosshair update
-    local crosshairPos, crosshairOnScreen = game.Workspace.CurrentCamera:WorldToScreenPoint(state.crosshair)
     local HUDPos, hudOnScreen = game.Workspace.CurrentCamera:WorldToScreenPoint(state.HUD)
 
     self.components["main"].Position = UDim2.new(0,HUDPos.X,0,HUDPos.Y)
     self.components["main"].Visible = hudOnScreen
 
-    self.components["crosshair"].Position = UDim2.new(0,crosshairPos.X,0,crosshairPos.Y)
-    self.components["crosshair"].Visible = crosshairOnScreen
-
-
-
-    --[[
     self.components["vertAxis"].BackgroundColor3 = state.lockedAxes.x
         and FOCUS_AXIS_COLOR or FREE_AXIS_COLOR
     self.components["horizAxis"].BackgroundColor3 = state.lockedAxes.y
-        and FOCUS_AXIS_COLOR or FREE_AXIS_COLOR]]
-
-    
+        and FOCUS_AXIS_COLOR or FREE_AXIS_COLOR
 end
 
 function UI:Destroy()

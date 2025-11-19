@@ -46,7 +46,6 @@ function AttachmentTool:SetupConnections()
 end
 
 function AttachmentTool:Destroy()
-    print("hello")
     _toggleInteractionPoints(false)
 end
 

@@ -21,6 +21,8 @@ return {
     REPLICATION_THROTTLE = 0.2;
 
 
+    SLOT_TYPE_ATTR = "SlotType";
+    SLOT_OCCUPIED_ATTR = "Occupied";
 
     REPL_ID = "mAS_ReplId";
     DESTROYABLE_JOINT_ATTR = "mAS_Destroyable";

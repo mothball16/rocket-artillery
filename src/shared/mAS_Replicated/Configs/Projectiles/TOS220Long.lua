@@ -16,6 +16,10 @@ local TOS220Long = {
 	name = "220mm MO.1.01.04M Thermobaric (Long Range)";
 }
 
+-- for attachables
+TOS220Long.SlotTypes = { "TOSSeries" };
+dir.Helpers:TableCombine(TOS220Long, RocketAttachableBase)
+
 -- for funcs
 TOS220Long.OnFire = {
 	{func = RocketController, data = {
@@ -25,8 +29,9 @@ TOS220Long.OnFire = {
 		["despawn"] = 10;
 		["shakeIntensity"] = 1.8;
 	}},
-	{func = FX.Activate, replicateAcrossClients = true},
 	{func = DoShake, data = {["amplitude"] = 1.5}},
+
+	{func = FX.Activate, replicateAcrossClients = true},
 };
 TOS220Long.OnHit = {
 	{func = GoBoom, data = {
@@ -48,9 +53,5 @@ TOS220Long.OnHit = {
 
 -- for rangefinder/FCU
 TOS220Long.FlightPathArgs = TOS220Long.OnFire[1].data;
-
--- for attachables
-TOS220Long.SlotTypes = { "TOSSeries" };
-dir.Helpers:TableCombine(TOS220Long, RocketAttachableBase)
 
 return TOS220Long

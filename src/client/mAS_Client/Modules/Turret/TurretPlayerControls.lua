@@ -1,8 +1,9 @@
 --#region required
+local dirClient = require(script.Parent.Parent.Parent.Directory)
 local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
 local TurretClientBase = require(script.Parent.TurretClientBase)
-local dirClient = require(script.Parent.Parent.Parent.Directory)
 local InputSystem = require(dirClient.mOS.Modules.InputSystem)
+local Signal = require(dir.Utility.Signal)
 local validator = dir.Validator.new(script.Name)
 local RuS = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
@@ -21,7 +22,7 @@ TurretPlayerControls.__index = TurretPlayerControls
 local JOYSTICK_TOGGLE_THRESHOLD = 0.25
 local JOYSTICK_PRECISION_MULT = 0.25
 export type TurretPlayerControls = {
-	controller: TurretClientBase.TurretClientBase,
+	controller: TurretClientBase.TurretClientBase
 }
 
 local function _checkSetup(required)
@@ -47,6 +48,9 @@ function TurretPlayerControls.new(args: {
 		joystick = joystick.new(args.joystick, nil),
 		timeHoldingJoystick = 0,
 		maid = dir.Maid.new(),
+		localSignals = {
+			RequestProjectileSwap = Signal.new()
+		}
 	}, TurretPlayerControls)
 
 	self.keybinds = self.config.keybinds
@@ -123,6 +127,9 @@ function TurretPlayerControls.new(args: {
 			end,
 		}
 	})
+	self.maid:GiveTask(self.localSignals.RequestProjectileSwap:Connect(function(newProjectile)
+		self.controller.state.selectedProjectile = newProjectile
+	end))
 
 	self.maid:GiveTasks(self.joystick, self.InputSystem)
     return self

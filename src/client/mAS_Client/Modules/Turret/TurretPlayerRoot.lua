@@ -44,8 +44,12 @@ function TurretPlayerRoot.new(args, required)
 
     -- 3: set up UI handler with signals from base & joystick from player controls
     self.uiHandler = uiHandler.new({
-        signals = self.turretBase.localSignals,
+        signals = dir.Helpers:TableCombineNew(self.turretBase.localSignals, {
+            ["OnRackUpdated"] = self.turretBase.AttachClientController.localSignals.OnRackUpdated,
+            ["RequestProjectileSwap"] = self.playerControls.localSignals.RequestProjectileSwap,
+        }),
         joystickComponent = self.playerControls.joystick,
+        rack = self.turretBase:GetRackedProjectiles()
     }, required)
 
     -- flow of information:
@@ -62,6 +66,8 @@ function TurretPlayerRoot.new(args, required)
         self.playerControls:Update(dt)
 
         local stickPos, stickRaw = self.playerControls.joystick:GetInput()
+
+        --TODO: cache the table instead of allocating a new one every frame
         self.uiHandler:Update(dt, {
             stickPos = stickPos,
             stickRaw = stickRaw,
@@ -76,32 +82,14 @@ function TurretPlayerRoot.new(args, required)
             pos = self.turretBase.OrientationReader:GetPos(),
             HUD = self.turretBase.OrientationReader:GetForwardPos(400),
             crosshair = self.turretBase.OrientationReader:GetForwardPos(4000),
-            inCamera = self.turretBase.ForwardCamera 
-                and self.playerControls.controller.ForwardCamera.enabled or false
-        } :: UILoad)
+            inCamera = self.turretBase.ForwardCamera
+                and self.playerControls.controller.ForwardCamera.enabled or false,
+            selectedProjectileType = self.turretBase.selectedProjectileType,
+            rackedProjectiles = self.turretBase:GetRackedProjectiles()
+        })
     end))
     return self
 end
-
-export type UILoad = {
-    stickPos: Vector2,
-    stickRaw: Vector2,
-    stickTime: number,
-    stickMult: number,
-    lockedAxes: {
-        x: number,
-        y: number
-    },
-    rot: Vector2,
-    orient: {
-        yaw: number,
-        pitch: number,
-        roll: number
-    },
-    pos: Vector3,
-    crosshair: Vector3,
-    inCamera: boolean,
-}
 
 
 return TurretPlayerRoot

@@ -45,7 +45,7 @@ function AttachSelector.new(args, required)
 end
 
 function AttachSelector:SlotOccupied(attach)
-	return attach:GetAttribute("Occupied") == true
+	return attach:GetAttribute(dir.Consts.SLOT_OCCUPIED_ATTR) == true
 end
 
 function AttachSelector:SlotAt(index)
@@ -65,6 +65,7 @@ function AttachSelector:GetAttachPointDataAt(index): (Instance, {any}, Weld)
 	local weld = self:GetAttachWeldAt(index)
 	if not weld or not weld.Part1 or not weld.Part1.Parent then
 		validator:Warn("no weld or no part1")
+		warn(weld, weld.Part1, weld.Part1.Parent)
 		return
 	end
 	local projectileInstance = weld.Part1.Parent
@@ -127,20 +128,20 @@ function AttachSelector:GetSlots()
 	return self.attachPoints
 end
 
-function AttachSelector:GetSlotsByID(): {[string]: {name: string, slot: Instance}}
+function AttachSelector:GetSlotsByID(): {[string]: {name: string, slots: {Instance}}}
 	local slotData = {}
-	for _, slotIndex in pairs(self.slotsByIndex) do
-		local slot = self.slotsByIndex[slotIndex]
-		if not self:SlotOccupied(slot) then continue end
-		local instance, config, weld = self:GetAttachPointDataAt(slotIndex)
-		local ID = config.ID
-		local name = (config.name or "none")
-		if not config.ID then
+	for i = 1, #self.slotsByIndex do
+		local slot = self.slotsByIndex[i]
+		if not self:SlotOccupied(slot) or not slot:FindFirstChild(dir.Consts.ATTACH_WELD_NAME) then continue end
+		local _, config, _ = self:GetAttachPointDataAt(i)
+		local ID = config.Config.ID
+		local name = (config.Config.name or "none")
+		if not ID then
 			validator:Warn("Attachments should ALWAYS have IDs.")
 			continue
 		end
-		if not slotData[config.ID] then slotData[config.ID] = {} end
-		table.insert(slotData[config.ID], {name = name, slot = slot})
+		if not slotData[ID] then slotData[ID] = {name = name, slots = {}} end
+		table.insert(slotData[ID].slots, slot)
 	end
 	return slotData
 end

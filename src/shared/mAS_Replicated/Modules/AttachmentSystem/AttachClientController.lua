@@ -1,6 +1,7 @@
 --#region requires
 local dir = require(script.Parent.Parent.Parent.Directory)
 local AttachSelector = require(script.Parent.AttachSelector)
+local Signal = require(dir.Utility.Signal)
 -- local RequestAttachmentAttach = dir.Net:RemoteEvent(dir.Events.Reliable.RequestAttachmentAttach)
 local RequestAttachmentUse = dir.Net:RemoteEvent(dir.Events.Reliable.RequestAttachmentUse)
 local RequestAttachmentDetach = dir.Net:RemoteEvent(dir.Events.Reliable.RequestAttachmentDetach)
@@ -18,18 +19,38 @@ AttachClientController.__index = AttachClientController
 
 local fallbacks = {}
 
+local function _setupRackListeners(self)
+    for _, slot: BasePart in pairs(self.AttachSelector:GetSlots():GetChildren()) do
+        assert(slot:GetAttribute(dir.Consts.SLOT_TYPE_ATTR) ~= nil, "slot " .. slot.Name .. "is missing slot type attribute")
+        self.maid:GiveTask(slot.AttributeChanged:Connect(function(attribute)
+            if attribute == dir.Consts.SLOT_OCCUPIED_ATTR then
+                self.rackedProjectiles = self.AttachSelector:GetSlotsByID()
+                print("refreshed rack state")
+                self.localSignals.OnRackUpdated:Fire(self.rackedProjectiles)
+            end
+        end))
+    end
+end
+
 -- (args, required)
 function AttachClientController.new(args, required)
-    local self = setmetatable({}, AttachClientController)
-    self.id = dir.NetUtils:GetId(required)
-    self.config = dir.Helpers:TableOverwrite(fallbacks, args)
-    self.AttachSelector = AttachSelector.new(args, required)
-    self.required = required
+    local self = setmetatable({
+        id = dir.NetUtils:GetId(required),
+        config = dir.Helpers:TableOverwrite(fallbacks, args),
+        required = required,
+        maid = dir.Maid.new(),
+    }, AttachClientController)
+    self.AttachSelector = AttachSelector.new(self.config, required)
+    self.rackedProjectiles = self.AttachSelector:GetSlotsByID()
+    self.localSignals = {OnRackUpdated = Signal.new()}
+    _setupRackListeners(self)
     return self
 end
 
 -- (index, attachType)
 function AttachClientController:FireAt(attachType)
+    if attachType == nil then return false end
+
     -- finds out what our next slot will be
     local nextFilledSlot = self.AttachSelector:FindNextFull(attachType)
     if not (nextFilledSlot and self.AttachSelector:SlotOccupied(nextFilledSlot)) then
@@ -76,7 +97,7 @@ function AttachClientController:DetachAt(index)
 end
 
 function AttachClientController:Destroy()
-    
+    self.maid:DoCleaning()
 end
 
 return AttachClientController

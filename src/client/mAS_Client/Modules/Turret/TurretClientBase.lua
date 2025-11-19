@@ -14,7 +14,7 @@ local validator = dir.Validator.new(script.Name)
 --[[
 this bridges all of the relevant turret systems together for clean functionality
 !!this does not handle input!!
-!!this is never independently run!! !!runservice should not be used!!
+!!this is never independently run!!
 ]]
 
 local player = game.Players.LocalPlayer
@@ -59,10 +59,12 @@ export type TurretClientBase = {
 	ForwardCamera: typeof(ForwardCamera)?,
 
 	-- methods
+
 	Destroy: (self: TurretClientBase) -> (),
 	Update: (self: TurretClientBase, dt: number) -> (),
 	Fire: (self: TurretClientBase) -> boolean?,
 	FireSingle: (self: TurretClientBase) -> boolean?,
+	
 	SwapSalvo: (self: TurretClientBase) -> number,
 	GetSalvo: (self: TurretClientBase) -> number,
 	SwapInterval: (self: TurretClientBase) -> number,
@@ -81,23 +83,13 @@ function TurretClientBase.new(args, required)
 	self.maid = dir.Maid.new()
 	self.vehicle = required.Parent
 
-	--TODO: un-hardcode this
-	self.selectedProjectileType = "TOS220Short"
-
-	-- provide for outside systems
-	self.localSignals = {
-		OnFire = Signal.new(),
-		OnSalvoIntervalModified = Signal.new(),
-		OnTimedIntervalModified = Signal.new(),
-		OnRangeFinderToggled = Signal.new(),
-	}
-
 	-- core setup
 	self.config = dir.Helpers:TableOverwrite(fallbacks, args.TurretBase)
 	self.state = {
 		salvoIndex = 1,
 		timeIndex = 1,
 		rotationIntent = Vector2.new(),
+		selectedProjectile = nil,
 	}
 
 	-- component setup
@@ -107,7 +99,7 @@ function TurretClientBase.new(args, required)
 
 	self.RangeSheet = RangeSheet.new({
 		controller = require(dir.Modules.OnFire.RocketController),
-		projectile = self.selectedProjectileType,
+		projectile = "TOS220Short",
 	})
 
 	-- give GC tasks
@@ -120,10 +112,21 @@ function TurretClientBase.new(args, required)
 		self.maid:GiveTask(self.ForwardCamera)
 	end
 
+	-- provide for outside systems
+	self.localSignals = {
+		OnFire = Signal.new(),
+		OnSalvoIntervalModified = Signal.new(),
+		OnTimedIntervalModified = Signal.new(),
+		OnRangeFinderToggled = Signal.new(),
+	}
+
 	-- fire off signals for UI on first update
 	self.localSignals.OnSalvoIntervalModified:Fire(self:GetSalvo())
 	self.localSignals.OnTimedIntervalModified:Fire(self:GetInterval())
 
+	self.AttachClientController.localSignals.OnRackUpdated:Connect(function()
+		-- here we would cycle the selected projetile if necessary
+	end)
 	return self
 end
 
@@ -151,14 +154,17 @@ end
 
 function TurretClientBase.FireSingle(self: TurretClientBase)
 	-- attempt fire, no fire? return
-	local success, slot = self.AttachClientController:FireAt(self.selectedProjectileType)
+	local success, slot = self.AttachClientController:FireAt(self.state.selectedProjectile)
 	if not success then return end
 
-	dir.Signals.FireProjectile:Fire(slot, self.selectedProjectileType, { self.vehicle, player.Character })
+	-- we did manage to find something to unrack. 
+	dir.Signals.FireProjectile:Fire(slot, self.state.selectedProjectile, { self.vehicle, player.Character })
 	self.localSignals.OnFire:Fire()
 	return true
 end
 
+
+--TODO: consider moving this to TurretPlayerControls - an NPC controller would not be swapping salvos/intervals like this
 function TurretClientBase.SwapSalvo(self: TurretClientBase)
 	self.state.salvoIndex = (self.state.salvoIndex % #self.config["salvoIntervals"]) + 1
 	local newSalvo = self:GetSalvo()
@@ -179,6 +185,10 @@ end
 
 function TurretClientBase.GetInterval(self: TurretClientBase)
 	return self.config["timeIntervals"][self.state.timeIndex]
+end
+
+function TurretClientBase.GetRackedProjectiles(self: TurretClientBase)
+	return self.AttachClientController.rackedProjectiles
 end
 
 return TurretClientBase

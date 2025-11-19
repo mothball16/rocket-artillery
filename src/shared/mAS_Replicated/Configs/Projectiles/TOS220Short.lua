@@ -16,6 +16,10 @@ local TOS220Short = {
 	name = "220mm MO.1.01.04 Thermobaric";
 }
 
+-- for attachables
+TOS220Short.SlotTypes = { "TOSSeries" };
+dir.Helpers:TableCombine(TOS220Short, RocketAttachableBase)
+
 -- for funcs
 TOS220Short.OnFire = {
 	{func = RocketController, data = {
@@ -50,8 +54,5 @@ TOS220Short.OnHit = {
 -- for rangefinder/FCU
 TOS220Short.FlightPathArgs = TOS220Short.OnFire[1].data;
 
--- for attachables
-TOS220Short.SlotTypes = { "TOSSeries" };
-dir.Helpers:TableCombine(TOS220Short, RocketAttachableBase)
 
 return TOS220Short
