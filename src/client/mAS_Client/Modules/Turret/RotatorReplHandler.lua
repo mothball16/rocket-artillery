@@ -1,6 +1,8 @@
-local dir = require(script.Parent.Parent.Parent.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
+local RotatorReplHandler = {}
 
-return function()
+function RotatorReplHandler:Init()
     dir.Net:ConnectUnreliable(dir.Events.Unreliable.OnTurretWeldsUpdated,
         function(state)
         if not state then return end
@@ -12,3 +14,6 @@ return function()
         pitch.C1 = CFrame.Angles(0,0,-math.rad(state:GetAttribute("Y")))
     end)
 end
+
+
+return RotatorReplHandler

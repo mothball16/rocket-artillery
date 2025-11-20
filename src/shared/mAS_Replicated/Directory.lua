@@ -17,8 +17,6 @@ return {
     Modules =           modules,
     Assets =            assets,
     Utility =           utility,
-    Signals =           require(root.Signals),
-    ServerSignals =     require(root.ServerSignals),
     Consts =            require(modules.Constants),
     Maid =              require(utility.Maid),
     Validator =         require(utility.Validator),

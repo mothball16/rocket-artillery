@@ -29,7 +29,9 @@ local function Initialize(player, required)
 
         client object will be initialized below
     ]]
-    dir.NetUtils:FireClient(player, dir.Events.Reliable.OnInitialize, required)
+    if player then
+        dir.NetUtils:FireClient(player, dir.Events.Reliable.OnInitialize, required)
+    end
     ServerSignals.InitObject:Fire(required)
 end
 
@@ -104,6 +106,11 @@ return function()
         AddToolInitListener(v)
     end
 
+    for _, v in pairs(CS:GetTagged(dir.Consts.SPAWN_INIT_TAG_NAME)) do
+        _checkServerPreload(v)
+    end
+
     CS:GetInstanceAddedSignal(dir.Consts.SEATED_INIT_TAG_NAME):Connect(AddSeatInitListener)
     CS:GetInstanceAddedSignal(dir.Consts.TOOL_INIT_TAG_NAME):Connect(AddToolInitListener)
+    CS:GetInstanceAddedSignal(dir.Consts.SPAWN_INIT_TAG_NAME):Connect(_checkServerPreload)
 end

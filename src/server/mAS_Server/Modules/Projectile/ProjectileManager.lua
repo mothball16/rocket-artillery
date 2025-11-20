@@ -1,4 +1,5 @@
-local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
+local dirServer = require(script.Parent.Parent.Parent.Directory)
+local dir = dirServer.Main
 local validator = dir.Validator.new(script.Name)
 local ProjectileManager = {}
 local registry = {}
@@ -80,7 +81,7 @@ function ProjectileManager:Destroy(player, id)
     dir.NetUtils:FireOtherClients(player, dir.Events.Reliable.OnProjectileDestroyed, id)
 end
 
-function ProjectileManager:SetupConnections()
+function ProjectileManager:Init()
     game.Players.PlayerAdded:Connect(function(player)
         registry[player.UserId] = {}
     end)
@@ -106,4 +107,4 @@ function ProjectileManager:SetupConnections()
     end)
 end
 
-return function() ProjectileManager:SetupConnections() end
+return ProjectileManager

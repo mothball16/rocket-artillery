@@ -2,7 +2,8 @@
 this script is used to boot up objects
 ]]
 
-local dir = require(script.Parent.Parent.Parent.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
 
 local objectInitializer = require(game.ReplicatedStorage.Shared.mOS_Replicated.Modules.ObjectManagement.ObjectInitializer).new("LocalController")
 local owned = {}

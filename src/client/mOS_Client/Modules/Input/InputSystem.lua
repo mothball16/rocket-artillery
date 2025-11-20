@@ -1,8 +1,8 @@
 --[[
 a wrapper around UIS for triggering actions
 ]]
-
-local dir = require(game.ReplicatedStorage.Shared.mOS_Replicated.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
 local UIS = game:GetService("UserInputService")
 
 local InputSystem = {}

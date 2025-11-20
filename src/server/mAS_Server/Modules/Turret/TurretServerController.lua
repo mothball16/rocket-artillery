@@ -1,8 +1,9 @@
 --#region required
-local dir = require(script.Parent.Parent.Parent.Directory)
+local dirServer = require(script.Parent.Parent.Parent.Directory)
+local dir = dirServer.Main
 local validator = dir.Validator.new(script.Name)
 local AttachSelector = require(dir.Modules.AttachmentSystem.AttachSelector)
-local AttachServerController = require(dir.Modules.AttachmentSystem.AttachServerController)
+local AttachServerController = require(dirServer.Root.Modules.AttachmentSystem.AttachServerController)
 local maid = dir.Maid.new()
 --#endregion required
 --[[

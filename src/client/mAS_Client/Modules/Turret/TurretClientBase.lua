@@ -1,9 +1,9 @@
 --#region requires
 local dirClient = require(script.Parent.Parent.Parent.Directory)
-local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
-local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
+local dir = dirClient.Main
+
 local TwoAxisRotator = require(dir.Modules.Turret.TwoAxisRotator)
-local AttachClientController = require(dir.Modules.AttachmentSystem.AttachClientController)
+local AttachClientController = require(dirClient.Root.Modules.AttachmentSystem.AttachClientController)
 local OrientationReader = require(dir.Modules.Instruments.OrientationReader)
 local ForwardCamera = require(dir.Modules.Instruments.ForwardCamera)
 local RangeSheet = require(dir.Modules.Instruments.RangeSheet)
@@ -157,8 +157,14 @@ function TurretClientBase.FireSingle(self: TurretClientBase)
 	local success, slot = self.AttachClientController:FireAt(self.state.selectedProjectile)
 	if not success then return end
 
-	-- we did manage to find something to unrack. 
-	dir.Signals.FireProjectile:Fire(slot, self.state.selectedProjectile, { self.vehicle, player.Character })
+
+	-- we did manage to find something to unrack.
+	dirClient.Signals.FireProjectile:Fire(
+		slot,
+		self.state.selectedProjectile,
+		{ self.vehicle, player.Character })
+
+	
 	self.localSignals.OnFire:Fire()
 	return true
 end

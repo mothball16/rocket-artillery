@@ -1,5 +1,6 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
 local validator = dir.Validator.new(script.Name)
 local TurretClientBase = require(script.Parent.TurretClientBase)
 local TurretPlayerControls = require(script.Parent.TurretPlayerControls)

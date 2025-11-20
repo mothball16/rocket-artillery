@@ -1,5 +1,6 @@
 --#region required
-local dir = require(script.Parent.Parent.Parent.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
 local validator = dir.Validator.new(script.Name)
 local ticker = require(script.Parent.Parent.UIComponents.Ticker)
 local types = require(script.Parent.Types)
@@ -8,7 +9,7 @@ local types = require(script.Parent.Types)
 the original UI from the 2022 version of this system
 quarantine zone for spaghetti with meatballs code
 ]]
-local template = dir.Repl.Assets.UI.MLRS_UI_V2
+local template = dir.Assets.UI.MLRS_UI_V2
 local player = game.Players.LocalPlayer
 local JOYSTICK_LERP_RATE = 0.5
 local FOCUS_AXIS_COLOR = Color3.fromRGB(255, 50, 50)

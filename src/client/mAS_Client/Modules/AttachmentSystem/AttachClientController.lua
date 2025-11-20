@@ -1,6 +1,7 @@
 --#region requires
-local dir = require(script.Parent.Parent.Parent.Directory)
-local AttachSelector = require(script.Parent.AttachSelector)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
+local AttachSelector = require(dir.Modules.AttachmentSystem.AttachSelector)
 local Signal = require(dir.Utility.Signal)
 -- local RequestAttachmentAttach = dir.Net:RemoteEvent(dir.Events.Reliable.RequestAttachmentAttach)
 local RequestAttachmentUse = dir.Net:RemoteEvent(dir.Events.Reliable.RequestAttachmentUse)
@@ -32,7 +33,6 @@ local function _setupRackListeners(self)
     end
 end
 
--- (args, required)
 function AttachClientController.new(args, required)
     local self = setmetatable({
         id = dir.NetUtils:GetId(required),
@@ -47,7 +47,6 @@ function AttachClientController.new(args, required)
     return self
 end
 
--- (index, attachType)
 function AttachClientController:FireAt(attachType)
     if attachType == nil then return false end
 
@@ -62,7 +61,6 @@ function AttachClientController:FireAt(attachType)
     return (self:UseAt(slotIndex) and self:DetachAt(slotIndex)), nextFilledSlot
 end
 
--- (index)
 function AttachClientController:UseAt(index)
     local instance, projectile, weld = self.AttachSelector:GetAttachPointDataAt(index)
     if not (instance and projectile and weld) then
@@ -77,7 +75,6 @@ function AttachClientController:UseAt(index)
     return true
 end
 
--- (index)
 function AttachClientController:DetachAt(index)
     local instance, projectile, weld = self.AttachSelector:GetAttachPointDataAt(index)
     if not (instance and projectile and weld) then

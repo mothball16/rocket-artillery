@@ -8,7 +8,7 @@ local GoShake = require(dir.Modules.OnHit.GoShake)
 picks up shit that just re-routes the client event back to the behavior module.
 to find behavior look in the behavior module itself, this just wires it up
 ]]
-
+local GeneralReplHandler = {}
 
 local function RouteSingle(evtName, behavior)
     validator:Exists(behavior.ExecuteOnClient, "ExecuteOnClient func of behavior")
@@ -23,10 +23,11 @@ local function Route(connections)
     end
 end
 
-return function()
+function GeneralReplHandler:Init()
     Route({
         {dir.Events.Reliable.OnParticleCreated, FX.Create},
         {dir.Events.Reliable.OnParticlePlayed, FX.Activate},
         {dir.Events.Reliable.OnShake, GoShake},
     })
 end
+return GeneralReplHandler

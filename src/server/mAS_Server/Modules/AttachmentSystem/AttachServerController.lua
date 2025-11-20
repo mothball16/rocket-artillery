@@ -1,7 +1,8 @@
 local CollectionService = game:GetService("CollectionService")
 --#region requires
-local dir = require(script.Parent.Parent.Parent.Directory)
-local AttachSelector = require(script.Parent.AttachSelector)
+local dirServer = require(script.Parent.Parent.Parent.Directory)
+local dir = dirServer.Main
+local AttachSelector = require(dir.Modules.AttachmentSystem.AttachSelector)
 local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 --#endregion
 

@@ -1,12 +1,13 @@
 --#region required
-local dir = require(script.Parent.Parent.Parent.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
 local validator = dir.Validator.new(script.Name)
 --#endregion required
 --[[
 the original UI from the 2022 version of this system
 quarantine zone for spaghetti with meatballs code
 ]]
-local template = dir.Repl.Assets.UI.TurretUI_Classic
+local template = dir.Assets.UI.TurretUI_Classic
 local player = game.Players.LocalPlayer
 local JOYSTICK_LERP_RATE = 0.5
 local FOCUS_AXIS_COLOR = Color3.fromRGB(255, 50, 50)

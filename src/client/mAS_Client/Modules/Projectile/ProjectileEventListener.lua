@@ -4,11 +4,16 @@ TODO: Get rid of this
 ]]
 
 local dirClient = require(script.Parent.Parent.Parent.Directory)
-local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
+local dir = dirClient.Main
 local ProjectileController = require(dir.Modules.Projectile.ProjectileController)
-local owned = {}
--- load order
+local ProjectileEventListener = {}
 
-return function()
-    dir.Signals.FireProjectile:Connect(ProjectileController.Fire)
+
+function ProjectileEventListener:Init()
+    dirClient.Signals.FireProjectile:Connect(ProjectileController.Fire)
+    dirClient.Signals.FireProjectile:Connect(function()
+        print("yuh uh")
+    end)
 end
+
+return ProjectileEventListener

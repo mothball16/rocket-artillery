@@ -1,8 +1,8 @@
 --#region required
 local dirClient = require(script.Parent.Parent.Parent.Directory)
-local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
+local dir = dirClient.Main
 local TurretClientBase = require(script.Parent.TurretClientBase)
-local InputSystem = require(dirClient.mOS.Modules.InputSystem)
+local InputSystem = require(dirClient.mOS.Modules.Input.InputSystem)
 local Signal = require(dir.Utility.Signal)
 local validator = dir.Validator.new(script.Name)
 local RuS = game:GetService("RunService")

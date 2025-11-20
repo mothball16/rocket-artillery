@@ -1,8 +1,10 @@
 --[=[
-this codebase used to be <400 lines long...
+Unnecessary decoupling final boss...
 
-mothball artillery system - how to set up everything
+mothball assault systems - how to set up everything
 msg me on cord @ mothball16 for help
+
+
 
 PHYSICAL TURRET SETUP
 - Required Folder: Clone a required folder from some working example unless you want to hurt 
@@ -49,8 +51,8 @@ TROUBLESHOOTING
 
 ADVANCED CONFIGURATION
 - Projectile behaviors: Lua doesn't have interfaces, so you'll just need to make sure you add
-the existing methods for OnFire/OnHit behaviors. Look into the scripts to figure out how they 
-look like. If you're doing something with this I'm assuming you code better than I do so you 
+the existing methods for OnFire/OnHit behaviors. Look into the scripts to figure out how they
+look like. If you're doing something with this I'm assuming you code better than I do so you
 should probably be able to figure it out pretty easily.
 
 
@@ -91,5 +93,17 @@ return component
 
 [Communicating from server controller to client controller]
 follow above steps, but replace Server with Client
-^ WARNING! given the constraints of this framework, this should only ever communicate back to the original client. if the server needs to communicate to multiple clients, use a manager
+^ WARNING! given the constraints of this framework, this should only ever communicate back to the original client. if the server needs to communicate to multiple clients, use a manager pattern
+
+========================================================================================
+
+[Directory file conventions]
+this is more for me so i dont forget how i structure my own code
+- Server/Client only directories should only have:
+1. Repl -> the corresponding shared folder
+2. Root -> the top-level folder in the local directory
+3. mOS -> the reference to the mOS folder for core operations
+4. Main -> the required shared folder directory
+
+- Shared directories can have whateevr tf they want since they are the dependency locator for everything
 ]=]

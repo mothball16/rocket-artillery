@@ -1,5 +1,6 @@
 --#region required
-local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
+local dirClient = require(script.Parent.Parent.Parent.Directory)
+local dir = dirClient.Main
 local validator = dir.Validator.new(script.Name)
 local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
 --#endregion required
@@ -57,7 +58,7 @@ function ProjectileReplHandler:HandleDestroy(id)
     registry[id] = nil
 end
 
-function ProjectileReplHandler:SetupConnections()
+function ProjectileReplHandler:Init()
     dir.Net:Connect(dir.Events.Reliable.OnProjectileCreated, function(id, args)
         self:HandleRegister(id, args)
     end)
@@ -76,4 +77,4 @@ function ProjectileReplHandler:PrintForDebugging()
     print("------------------------------------------")
 end
 
-return function() ProjectileReplHandler:SetupConnections() end
+return ProjectileReplHandler

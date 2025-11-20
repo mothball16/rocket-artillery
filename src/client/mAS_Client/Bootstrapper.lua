@@ -1,18 +1,15 @@
 local bootstrapper = {}
-local dir = require(script.Parent.Directory)
+local dirClient = require(script.Parent.Directory)
+local dir = dirClient.Main
+local loader = require(dir.Utility.Loader)
 local modules = script.Parent.Modules
-local ProjectileRegistry = require(dir.Repl.Modules.Projectile.ProjectileRegistry)
-local GeneralReplHandler = require(modules.GeneralReplHandler)
-local ProjectileReplHandler = require(modules.Projectile.ProjectileReplHandler)
-local ProjectileEventListener = require(modules.Projectile.ProjectileEventListener)
-local RotatorReplHandler = require(modules.Turret.RotatorReplHandler)
+local ProjectileRegistry = require(dir.Modules.Projectile.ProjectileRegistry)
+local ProjectileController = require(dir.Modules.Projectile.ProjectileController)
+
 function bootstrapper:Init()
     ProjectileRegistry:Init()
-    
-    GeneralReplHandler()
-    RotatorReplHandler()
-    ProjectileReplHandler()
-    ProjectileEventListener()
+    ProjectileController:Init()
+    loader.SpawnAll(loader.LoadDescendants(modules), "Init")
 end
 
 return bootstrapper

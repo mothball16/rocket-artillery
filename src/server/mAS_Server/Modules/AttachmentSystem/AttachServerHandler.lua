@@ -1,6 +1,8 @@
-local dir = require(script.Parent.Parent.Parent.Directory)
+local dirServer = require(script.Parent.Parent.Parent.Directory)
+local dir = dirServer.Main
 local validator = dir.Validator.new(script.Name)
-return function()
+local AttachServerHandler = {}
+function AttachServerHandler:Init()
     dir.Net:Connect(dir.Events.Reliable.RequestAttachmentDetach, function(plr, id, index)
         local obj = dir.NetUtils:GetObject(id)
         if not obj then return end
@@ -19,3 +21,5 @@ return function()
         serverController:UseAt(plr, index)
     end)
 end
+
+return AttachServerHandler
