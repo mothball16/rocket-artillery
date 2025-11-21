@@ -49,6 +49,7 @@ export type TurretClientBase = {
 		salvoIndex: number,
 		timeIndex: number,
 		rotationIntent: Vector2,
+		selectedProjectile: string,
 	},
 
 	-- components
@@ -89,7 +90,7 @@ function TurretClientBase.new(args, required)
 		salvoIndex = 1,
 		timeIndex = 1,
 		rotationIntent = Vector2.new(),
-		selectedProjectile = nil,
+		selectedProjectile = self.config.preSelect,
 	}
 
 	-- component setup

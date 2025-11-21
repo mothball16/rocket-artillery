@@ -10,19 +10,19 @@ local FX = require(dir.Modules.FX.FX)
 local GoBoom = require(dir.Modules.OnHit.GoBoom)
 --#endregion
 
-local Rocket_9M27F = {
+local Rkt9M27F = {
 	-- gen. config
 	ID = script.Name;
 	name = "220mm 9M27F Unguided Rocket, HE-Frag";
-	offset = 8;
+	--offset = 8;
 }
 
 -- for attachables
-Rocket_9M27F.SlotTypes = { "BM27" };
-dir.Helpers:TableCombine(Rocket_9M27F, RocketAttachableBase)
+Rkt9M27F.SlotTypes = { "BM27" };
+dir.Helpers:TableCombine(Rkt9M27F, RocketAttachableBase)
 
 -- for funcs
-Rocket_9M27F.OnFire = {
+Rkt9M27F.OnFire = {
 	{func = RocketController, data = {
 		["initSpeed"] = 30; ["maxSpeed"] = 600;
 		["burnIn"] = 0; ["burnOut"] = 0.6;
@@ -33,7 +33,7 @@ Rocket_9M27F.OnFire = {
 	{func = FX.Activate, replicateAcrossClients = true},
 	{func = DoShake, data = {["amplitude"] = 1.5}},
 };
-Rocket_9M27F.OnHit = {
+Rkt9M27F.OnHit = {
 	{func = GoBoom, data = {
 		["blastRadius"] = 60,
 		["blastPressure"] = 1000,
@@ -52,7 +52,7 @@ Rocket_9M27F.OnHit = {
 };
 
 -- for rangefinder/FCU
-Rocket_9M27F.FlightPathArgs = Rocket_9M27F.OnFire[1].data;
+Rkt9M27F.FlightPathArgs = Rkt9M27F.OnFire[1].data;
 
 
-return Rocket_9M27F
+return Rkt9M27F

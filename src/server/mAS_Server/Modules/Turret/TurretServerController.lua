@@ -18,21 +18,21 @@ local function _checkSetup(required)
     
 end
 
-local function SetupSlot(attacher, slot, initLoaded)
-    if initLoaded then
-        validator:Warn("TODO: un-hardcode the projectile selection")
-        local result = attacher:AttachAt(nil, tonumber(slot.Name), "9M27F")
-        print(result)
+-- there was more here, this may be refactored because initWith iskinda redundant to check for atm
+local function SetupSlot(attacher, slot, initWith)
+    if initWith then
+        local result = attacher:AttachAt(nil, tonumber(slot.Name), initWith)
     end
 end
 
 -- TODO: we don't need attachselector initialized here
 function TurretServerController.new(args, required)
+    print(args)
     local self = setmetatable({}, TurretServerController)
-    self.AttachSelector = AttachSelector.new(args.AttachSelector, required)
-    self.AttachServerController = AttachServerController.new(args.AttachServerController, required)
+    self.AttachSelector = AttachSelector.new(args["AttachSelector"], required)
+    self.AttachServerController = AttachServerController.new(args["AttachServerController"], required)
     for _, slot in pairs(self.AttachSelector:GetSlots():GetChildren()) do
-        SetupSlot(self.AttachServerController, slot, true)
+        SetupSlot(self.AttachServerController, slot, args["TurretServerController"].initWith)
     end
     return self
 end
