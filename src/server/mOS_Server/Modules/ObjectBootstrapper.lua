@@ -10,6 +10,7 @@ local ServerSignals = dir.ServerSignals
 
 local function _checkServerPreload(required)
     if not required:GetAttribute(dir.Consts.LAZY_LOAD_SERVER_CONTROLLER_ATTR) then
+        print("geg")
         ServerSignals.InitObject:Fire(required)
     end
 end
@@ -96,21 +97,29 @@ local function AddToolInitListener(required)
     end)
 end
 
-
+local function SpawnListener(required, add)
+    print("loaded")
+    add(required)
+    _checkServerPreload(required)
+end
 
 return function()
     for _, v in pairs(CS:GetTagged(dir.Consts.SEATED_INIT_TAG_NAME)) do
-        AddSeatInitListener(v)
+        SpawnListener(v, AddSeatInitListener)
     end
     for _, v in pairs(CS:GetTagged(dir.Consts.TOOL_INIT_TAG_NAME)) do
-        AddToolInitListener(v)
+        SpawnListener(v, AddToolInitListener)
     end
 
     for _, v in pairs(CS:GetTagged(dir.Consts.SPAWN_INIT_TAG_NAME)) do
         _checkServerPreload(v)
     end
 
-    CS:GetInstanceAddedSignal(dir.Consts.SEATED_INIT_TAG_NAME):Connect(AddSeatInitListener)
-    CS:GetInstanceAddedSignal(dir.Consts.TOOL_INIT_TAG_NAME):Connect(AddToolInitListener)
+    CS:GetInstanceAddedSignal(dir.Consts.SEATED_INIT_TAG_NAME):Connect(function(inst)
+        SpawnListener(inst, AddSeatInitListener)
+    end)
+    CS:GetInstanceAddedSignal(dir.Consts.TOOL_INIT_TAG_NAME):Connect(function(inst)
+        SpawnListener(inst, AddToolInitListener)
+    end)
     CS:GetInstanceAddedSignal(dir.Consts.SPAWN_INIT_TAG_NAME):Connect(_checkServerPreload)
 end

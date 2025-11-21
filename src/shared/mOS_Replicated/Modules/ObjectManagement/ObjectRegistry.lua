@@ -33,8 +33,11 @@ end
 
 function ObjectRegistry:Deregister(required)
     local ident = validator:HasAttr(required, consts.OBJECT_IDENT_ATTR)
-    objects[ident]:Destroy()
+    if objects[ident] then
+        objects[ident]:Destroy()
+    end
     objects[ident] = nil
+
 end
 
 function ObjectRegistry:WasRegistered(required)    

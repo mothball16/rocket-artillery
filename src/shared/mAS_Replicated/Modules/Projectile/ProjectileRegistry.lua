@@ -8,8 +8,10 @@ local cache = {}
 local cacheBySlot = {}
 local ProjectileRegistry = {}
 local IGNORE_IN__CONFIG_FOLDER = "IgnorePreCache"
+local loaded = false
 
 function ProjectileRegistry:Init()
+    if loaded then return end
     -- pre-load all projectile configs
     for _, module in ipairs(configs:GetChildren()) do
         if module:GetAttribute(IGNORE_IN__CONFIG_FOLDER) then continue end
@@ -32,7 +34,10 @@ end
 
 function ProjectileRegistry:GetProjectile(name)
     if not cache[name] then
-        error("projectile config not found for " .. tostring(name))
+        if loaded then
+            error("projectile config not found for " .. tostring(name))
+        end
+        self:Init()
     end
     return cache[name]
 end
