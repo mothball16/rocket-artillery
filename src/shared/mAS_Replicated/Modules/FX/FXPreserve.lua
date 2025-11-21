@@ -17,7 +17,7 @@ local fallbacks = {
 local function SetupFXPreserve(config, emitterPart: BasePart)
     local debrisTime = 0
     for _, fx in pairs(emitterPart:GetChildren()) do
-        if not fx:IsA("ParticleEmitter") or fx:IsA("Trail") or fx:IsA("Beam") or fx:IsA("Smoke") or fx:IsA("Sound") then continue end
+        if not (fx:IsA("ParticleEmitter") or fx:IsA("Trail") or fx:IsA("Beam") or fx:IsA("Smoke") or fx:IsA("Sound")) then continue end
 
 		local emitLength = fx:GetAttribute("PlayFor") or config["playFor"]
 		debrisTime = math.max(debrisTime, emitLength)
@@ -32,7 +32,11 @@ local function SetupFXPreserve(config, emitterPart: BasePart)
                 debrisTime = math.max(debrisTime, emitLength + fx.Lifetime)
                 fx.Enabled = false
             end;
-            default = function() 
+            ["Sound"] = function()
+                fx = fx :: Sound
+                fx:Destroy()
+            end;
+            default = function()
                 debrisTime = math.max(debrisTime, emitLength)
                 if fx.Enabled then fx.Enabled = false end
             end
