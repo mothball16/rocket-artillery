@@ -17,6 +17,8 @@ local fallbacks = {
 local function SetupFXPreserve(config, emitterPart: BasePart)
     local debrisTime = 0
     for _, fx in pairs(emitterPart:GetChildren()) do
+        if not fx:IsA("ParticleEmitter") or fx:IsA("Trail") or fx:IsA("Beam") or fx:IsA("Smoke") or fx:IsA("Sound") then continue end
+
 		local emitLength = fx:GetAttribute("PlayFor") or config["playFor"]
 		debrisTime = math.max(debrisTime, emitLength)
         dir.Helpers:Switch (fx.ClassName) {

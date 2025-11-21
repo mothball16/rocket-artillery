@@ -12,7 +12,7 @@ return {
         HoldPreciseAdjustment = Enum.KeyCode.LeftShift;
         ToggleHorizontalLock = Enum.KeyCode.Z;
         ToggleVerticalLock = Enum.KeyCode.C;
-        
+
         DoAction = Enum.UserInputType.MouseButton1;
     }
 }

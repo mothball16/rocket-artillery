@@ -109,7 +109,12 @@ function TwoAxisRotator:Update(dt)
         if rotLimited then
             self.curX = math.clamp(self.curX, self.config["rotMin"], self.config["rotMax"])
         end
-        self.curX %= 360
+        if self.curX > 360 then
+            self.curX -= 360
+        elseif self.curX < -360 then
+            self.curX += 360
+        end
+
         local pitchSpeed = math.rad(self.config["pitchSpeed"])
         self.curY = math.clamp(self.curY - (self.dir.Y * pitchSpeed * adjustForDt), self.config["pitchMin"], self.config["pitchMax"])
         self:UpdateWelds(self.curX, self.curY, true)

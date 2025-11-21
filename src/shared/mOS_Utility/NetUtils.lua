@@ -44,7 +44,7 @@ end
 function NetUtils:GetObject(id)
     local object = ObjectRegistry:Get(id)
     if not object then
-        validator:Warn("object of id " .. id .. "doesn't exist on the server.")
+        validator:Warn("object of id " .. id .. "doesn't exist.")
         return nil
     end
     return object

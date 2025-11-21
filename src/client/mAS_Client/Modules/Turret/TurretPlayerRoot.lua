@@ -46,11 +46,16 @@ function TurretPlayerRoot.new(args, required)
     -- 3: set up UI handler with signals from base & joystick from player controls
     self.uiHandler = uiHandler.new({
         signals = dir.Helpers:TableCombineNew(self.turretBase.localSignals, {
-            ["OnRackUpdated"] = self.turretBase.AttachClientController.localSignals.OnRackUpdated,
+            ["OnRackUpdated"] = self.turretBase.localSignals.OnRackUpdated,
             ["RequestProjectileSwap"] = self.playerControls.localSignals.RequestProjectileSwap,
+
         }),
         joystickComponent = self.playerControls.joystick,
-        rack = self.turretBase:GetRackedProjectiles()
+        rack = self.turretBase:GetRackedProjectiles(),
+        selected = self.turretBase.state.selectedProjectile,
+        static = {
+            title = self.turretBase.config.turretName,
+        }
     }, required)
 
     -- flow of information:
@@ -81,8 +86,7 @@ function TurretPlayerRoot.new(args, required)
             rot = self.turretBase.TwoAxisRotator:GetRot(),
             orient = self.turretBase.OrientationReader:GetDirection(),
             pos = self.turretBase.OrientationReader:GetPos(),
-            HUD = self.turretBase.OrientationReader:GetForwardPos(400),
-            crosshair = self.turretBase.OrientationReader:GetForwardPos(4000),
+            crosshair = self.turretBase.OrientationReader:GetForwardPos(2000),
             inCamera = self.turretBase.ForwardCamera
                 and self.playerControls.controller.ForwardCamera.enabled or false,
             selectedProjectileType = self.turretBase.selectedProjectileType,

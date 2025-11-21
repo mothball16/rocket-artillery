@@ -99,7 +99,7 @@ function TurretClientBase.new(args, required)
 
 	self.RangeSheet = RangeSheet.new({
 		controller = require(dir.Modules.OnFire.RocketController),
-		projectile = "TOS220Short",
+		projectile = "TOS220Short", -- TODO: un-hardcode this
 	})
 
 	-- give GC tasks
@@ -118,15 +118,17 @@ function TurretClientBase.new(args, required)
 		OnSalvoIntervalModified = Signal.new(),
 		OnTimedIntervalModified = Signal.new(),
 		OnRangeFinderToggled = Signal.new(),
+		OnProjectileSwapped = Signal.new(),
+		OnRackUpdated = Signal.new()
 	}
 
 	-- fire off signals for UI on first update
 	self.localSignals.OnSalvoIntervalModified:Fire(self:GetSalvo())
 	self.localSignals.OnTimedIntervalModified:Fire(self:GetInterval())
 
-	self.AttachClientController.localSignals.OnRackUpdated:Connect(function()
-		-- here we would cycle the selected projetile if necessary
-	end)
+	self.maid:GiveTask(self.AttachClientController.localSignals.OnRackUpdated:Connect(function(rack)
+		self.localSignals.OnRackUpdated:Fire(rack, self.state.selectedProjectile)
+	end))
 	return self
 end
 

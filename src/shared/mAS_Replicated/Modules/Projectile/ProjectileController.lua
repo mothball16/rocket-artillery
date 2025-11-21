@@ -32,7 +32,7 @@ function ProjectileController.Fire(firePart, ammoName, filterInstances, args)
     -- find our projectile and make the physical copy
     local projectile = data.Model:Clone()
     projectile.Parent = game.Workspace
-    projectile:SetPrimaryPartCFrame(firePart.CFrame)
+    projectile:SetPrimaryPartCFrame(firePart.CFrame * CFrame.new(0,0,-(data.Config.offset or 0)))
 
     -- setup replication data, send to server
     local id = HttpService:GenerateGUID()

@@ -1,0 +1,17 @@
+Converts the old system to the new one for slotting.
+
+local dir = require(game.ReplicatedStorage.Shared.mAS_Replicated.Directory)
+
+for i, v in pairs(game.Workspace["BM-27 Uragan"].Misc.Turret.Required.Rockets:GetChildren()) do
+    if v.PrimaryPart then
+        local part = Instance.new("Part", game.Workspace["BM-27 Uragan"].Misc.Turret.Required.AttachPoints)
+        part.CFrame = v.PrimaryPart.CFrame
+        part.Size = Vector3.new(0.1,0.1,0.1)
+        part.Name = i
+        part.Transparency = 1
+        part.CanCollide = false
+        part:SetAttribute(dir.Consts.SLOT_OCCUPIED_ATTR, false)
+        part:SetAttribute(dir.Consts.SLOT_TYPE_ATTR, "BM27")
+        part.CanQuery = false
+    end
+end

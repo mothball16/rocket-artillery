@@ -59,7 +59,7 @@ function TurretPlayerControls.new(args: {
 	self.InputSystem = InputSystem.new({
 		on = {
 			[self.keybinds.MountedFire] = function()
-				self.controller:FireSingle()
+				self.controller:Fire()
 			end,
 
 			[self.keybinds.SwapSalvo] = function()

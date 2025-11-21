@@ -10,7 +10,7 @@ local fallbacks = {
 	["accel"] = 800;
 
 	["burnIn"] = 0;
-	["burnOut"] = 1;
+	["burnLerp"] = 0.4;
 
 	["arc"] = 10;
 	["speedArcRel"] = 0.5;
